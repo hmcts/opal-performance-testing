@@ -1,36 +1,69 @@
 plugins {
-  id 'org.owasp.dependencycheck' version '12.1.3'
-  id 'scala'
-  id 'java-library'
-  id 'io.gatling.gradle' version '3.14.3'
+    id 'java'
+    id 'uk.gov.hmcts.java' version '0.12.63'
+    id 'io.gatling.gradle' version '3.11.5.2'
 }
 
-java {
-  toolchain {
-    languageVersion = JavaLanguageVersion.of(21)
-  }
-}
-
-tasks.withType(Copy).all{
-  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
+group = 'uk.gov.hmcts'
+version = '0.0.1'
 
 repositories {
-  mavenCentral()
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
-gatling {
-  gatlingVersion = '3.14.3'
-  scalaVersion = '2.13.11'
+dependencyCheck {
+    suppressionFile = 'config/owasp/suppressions.xml'
 }
 
-sourceSets {
-  gatling {
-    scala {
-      srcDir 'src/gatling/simulations'
+dependencies {
+    gatling group: 'org.postgresql', name: 'postgresql', version: '42.7.4'
+    gatling 'com.github.hmcts:juror-generation-support-library:1.5.4'
+}
+
+// Default gatlingRun configuration
+gatlingRun {
+    jvmArgs = ['-Xms4G', '-Xmx8G']
+    simulationClassName = System.getenv("SimulationBlock")
+    doFirst {
+        println "Running simulation: " + simulationClassName
     }
-    resources {
-      srcDir 'src/gatling/resources'
+}
+
+// Run Command = & .\gradlew.bat runCaseRetentionForChildObjectsSimulation
+
+// Function to register a task for a simulation
+def registerSimulationTask(taskName, simulationClassName) {
+    tasks.register(taskName) {
+        doLast {
+            println "Running simulation: ${simulationClassName}"
+        }
+        // Set the simulation class and make this task depend on gatlingRun
+        finalizedBy(gatlingRun)
+        gatlingRun.simulationClassName = simulationClassName
     }
-  }
+}
+// List of simulations with their task names and simulation class names
+def simulations = [
+
+    [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.LoginSimulation'],
+    [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.CreateAccountSimulation']
+
+]
+
+// Register tasks dynamically
+simulations.each { simulation ->
+    registerSimulationTask(simulation.task, simulation.class)
+}
+
+
+checkstyleGatling {
+    maxWarnings = 3035
+}
+
+tasks.register('runAllStyleChecks') {
+    dependsOn 'checkstyleMain'
+    dependsOn 'checkstyleTest'
+    dependsOn 'checkstyleGatling'
 }
