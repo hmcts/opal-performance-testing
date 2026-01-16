@@ -1,6 +1,7 @@
 package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.LoginScenarioBuild;
 import io.gatling.javaapi.core.*;
@@ -22,6 +23,9 @@ public class CreateAccountSimulation extends Simulation {
         System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
+// 2 and 6 simple
+// 5 and 15 complex
+
 
     public CreateAccountSimulation() {
         HttpProtocolBuilder httpProtocol = configureHttp();
@@ -35,18 +39,7 @@ public class CreateAccountSimulation extends Simulation {
                      rampUsers(AppConfig.PerformanceConfig.getUserCount())
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(httpProtocol))           
-                .assertions(global().responseTime().max().lt(60000),              
-                    details(
-                        "OPAL Login Requests",
-                        "OPAL Login",
-                        "Sso - Login - /"
-                    ).responseTime().max().lt(30000)  ,              
-                    details(
-                      "OPAL Login Requests",
-                        "OPAL Login",
-                        "Common - GetCredentialType"                    
-                    ).responseTime().max().lt(30000)                
-        );
+                .assertions(AssertionsConfig.getCreateAccountAssertions());
     }   
 
 private HttpProtocolBuilder configureHttp() {

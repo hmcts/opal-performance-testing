@@ -74,6 +74,10 @@ public class Feeders {
         return CoreDsl.regex("\"sCtx\"\\s*:\\s*\"([^\"]+)\"").saveAs("getSCtx");
     }
 
+    public static CheckBuilder.Final saveBusinessUnitId() {
+        return CoreDsl.jsonPath("$.refData[*].business_unit_id").findRandom().saveAs("getBusinessUnitId");
+    }
+
     public static FeederBuilder<Object> listFeeder(String key, List<Object> items) {
         return CoreDsl.listFeeder(items.stream()
             .map(item -> Map.of(key, item)).toList()

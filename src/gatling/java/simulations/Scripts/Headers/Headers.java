@@ -85,21 +85,13 @@ public final class Headers {
             case TEST_3:
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("Origin", "https://login.microsoftonline.com");
-                headers.put(
-                    "Referer",
-                    "https://login.microsoftonline.com/"
-                    + AppConfig.TenantConfig.AAD_TENANT_ID
-                    + "/oauth2/v2.0/authorize"
-                );
-
+                headers.put("Referer", "https://login.microsoftonline.com/" + AppConfig.TenantConfig.AAD_TENANT_ID + "/oauth2/v2.0/authorize");
                 headers.put("Accept",
                     "text/html,application/xhtml+xml,application/xml;q=0.9," +
                     "image/avif,image/webp,image/apng,*/*;q=0.8," +
                     "application/signed-exchange;v=b3;q=0.7"
                 );
-
                 headers.put("User-Agent", Headers.BROWSER_UA);
-
                 headers.put("sec-ch-ua",
                     "\"Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24\""
                 );
@@ -201,25 +193,52 @@ public final class Headers {
             headers.put("cache-control", "no-cache");
             headers.put("expires", "0");
             headers.put("pragma", "no-cache");
-            headers.put("request-id", "|a4d8145674b44132a9331303de1b9516.3303b477b1de4ee8");
+           // headers.put("request-id", "|a4d8145674b44132a9331303de1b9516.3303b477b1de4ee8");
             headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
-            headers.put("traceparent", "00-a4d8145674b44132a9331303de1b9516-3303b477b1de4ee8-01");
+           // headers.put("traceparent", "00-a4d8145674b44132a9331303de1b9516-3303b477b1de4ee8-01");
             break;
 
             case TEST_12:
             headers.put("Sec-Fetch-Dest", "empty");
             headers.put("Sec-Fetch-Mode", "cors");
             headers.put("Sec-Fetch-Site", "same-origin");
-            headers.put("request-id", "|a4d8145674b44132a9331303de1b9516.9ec923d6645f4b42");
+          //  headers.put("request-id", "|a4d8145674b44132a9331303de1b9516.9ec923d6645f4b42");
             headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
-            headers.put("traceparent", "00-a4d8145674b44132a9331303de1b9516-9ec923d6645f4b42-01");            
+           // headers.put("traceparent", "00-a4d8145674b44132a9331303de1b9516-9ec923d6645f4b42-01");            
+            break; 
+
+            case TEST_13:
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("cache-control", "no-cache");
+            headers.put("expires", "0");
+            headers.put("pragma", "no-cache");
+        //    headers.put("request-id", "|a46d288395244ba59db15adbcdc068df.461dc629d7ec41f2");
+            headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "Windows");
+        //    headers.put("traceparent", "00-a46d288395244ba59db15adbcdc068df-461dc629d7ec41f2-01");
+
+            case TEST_14:
+            headers.put("Origin", "https://opal-frontend.test.platform.hmcts.net");
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("content-type", "application/json");
+        //    headers.put("request-id", "|b733735e71db42668d666ca35767da46.4ecf6022c0384a46");
+            headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "Windows");
+        //    headers.put("traceparent", "00-b733735e71db42668d666ca35767da46-4ecf6022c0384a46-01");
             default:
             break; 
         }
+
         
         return Collections.unmodifiableMap(headers);
     }

@@ -30,7 +30,7 @@ public final class LoginScenario {
                 //        .check(status().is(302)) 
                                        
                 )
-                                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
 
                 .exitHereIfFailed() 
 
@@ -41,6 +41,7 @@ public final class LoginScenario {
                     "&redirect_uri="+ AppConfig.TenantConfig.REDIRECT_URL + 
                     "&client-request-id="+ AppConfig.TenantConfig.CLIENT_REQUEST_ID +"&response_mode=form_post" +
                     "&response_type=code&x-client-SKU=msal.js.node&x-client-VER=2.11.0&x-client-OS=linux&x-client-CPU=x64&client_info=1")
+                    .disableFollowRedirect() 
                     .headers(Headers.getHeaders(9))                    
                     .check(Feeders.saveApiCanary())
                     .check(Feeders.saveSessionId())                    

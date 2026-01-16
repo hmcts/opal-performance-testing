@@ -1,7 +1,9 @@
 package simulations.Scripts.ScenarioBuilder;
 
 
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountScenario;
+import simulations.Scripts.Scenario.OpalLogin.CreateAccountConditionalCautionScenario;
+import simulations.Scripts.Scenario.OpalLogin.CreateAccountFineScenario;
+import simulations.Scripts.Scenario.OpalLogin.CreateAccountFixedScenario;
 import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
@@ -16,7 +18,9 @@ public class CreateAccountScenarioBuild {
             .on(
                 exec(feed(Feeders.createUsers())
                     .exec(LoginScenario.LoginRequest())
-                    .exec(CreateAccountScenario.CreateAccountRequest())
+                    .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
+                    .exec(CreateAccountFineScenario.CreateAccountFineRequest())
+                    .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
                 )
             );
     }
