@@ -22,6 +22,7 @@ import io.gatling.javaapi.core.CheckBuilder;
 public class Feeders {
 
     public static final FeederBuilder<String> Users;
+    public static final FeederBuilder<String> AcceptorUsers;
 
 
 
@@ -31,6 +32,7 @@ public class Feeders {
    static { 
     try {            
         Users = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.USERS_CSV).circular();
+        AcceptorUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.ACCEPTOR_USERS_CSV).circular();
     } catch (Exception e) {
         System.err.println("Error loading CSV: " + e.getMessage());
         throw e;
@@ -42,6 +44,10 @@ public class Feeders {
     public static FeederBuilder<String> createUsers() {
         return Users;
     }  
+
+    public static FeederBuilder<String> acceptorUsers() {
+        return AcceptorUsers;
+    }    
 
 
     public static CheckBuilder.Final saveTokenCode() {

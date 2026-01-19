@@ -230,11 +230,22 @@ public final class Headers {
             headers.put("Sec-Fetch-Mode", "cors");
             headers.put("Sec-Fetch-Site", "same-origin");
             headers.put("content-type", "application/json");
-        //    headers.put("request-id", "|b733735e71db42668d666ca35767da46.4ecf6022c0384a46");
             headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
-        //    headers.put("traceparent", "00-b733735e71db42668d666ca35767da46-4ecf6022c0384a46-01");
+            break; 
+
+            case TEST_15:
+            headers.put("Origin", "https://opal-frontend.test.platform.hmcts.net");
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("content-type", "application/json");
+            headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "Windows");
+            headers.put("Cache-Control", "max-age=0");
+            headers.put("if-match", "0");
             default:
             break; 
         }

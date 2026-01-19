@@ -48,8 +48,8 @@ def registerSimulationTask(taskName, simulationClassName) {
 def simulations = [
 
     [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.LoginSimulation'],
-    [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.CreateAccountSimulation']
-
+    [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.CreateAccountSimulation'],
+    [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.ApproveAccountSimulation']
 ]
 
 // Register tasks dynamically

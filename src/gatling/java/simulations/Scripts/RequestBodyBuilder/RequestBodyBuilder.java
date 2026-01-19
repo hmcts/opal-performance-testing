@@ -1,5 +1,7 @@
 package simulations.Scripts.RequestBodyBuilder;
 
+import java.util.List;
+
 import io.gatling.javaapi.core.Session;
 
 
@@ -498,45 +500,55 @@ public class RequestBodyBuilder {
         userName, accountNoteText, accountNoteText, addressLine1, employeeRef, employerAddressLine1, employerCompanyName, email1, vehicleMake, vehicleReg, email1, forename, nin, surname, prosecutorCaseRef, userName, userName);
     }
 
-    public static String BuildApproveAccountRequestBody(Session session) {
+   public static String BuildApproveAccountRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
-        
-        // Retrieve business unit ID and validation info from session
-        Object selectedBusinessUnitId = session.get("selectedBusinessUnitId");
-        String businessUnitId = selectedBusinessUnitId != null ? selectedBusinessUnitId.toString() : "65";
-        
-        // Get validated by user info
-        String validatedByCode = "L" + businessUnitId + "AO";
-        String validatedByName = userName;
-        
-        // Get current date for timeline
-        java.time.LocalDate today = java.time.LocalDate.now();
-        String statusDate = today.toString();
+        // Gatling username
+        String userName = session.get("Username") != null
+            ? session.get("Username").toString()
+            : "";
+
+        // Business unit ID
+        String businessUnitId = session.get("selectedBusinessUnitId") != null
+            ? session.get("selectedBusinessUnitId").toString()
+            : "65";
+
+        // Extracted from draft summaries
+        String validatedByCode = session.get("submittedBy") != null
+            ? session.get("submittedBy").toString()
+            : "";
+
+        String validatedByName = session.get("submittedByName") != null
+            ? session.get("submittedByName").toString()
+            : "";
+
+        // Current date
+        String statusDate = java.time.LocalDate.now().toString();
 
         return String.format(
-        "{\n" +
-        "    \"account_status\": \"Publishing Pending\",\n" +
-        "    \"business_unit_id\": %s,\n" +
-        "    \"reason_text\": null,\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"2026-01-09\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        },\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Publishing Pending\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
-        "    \"validated_by\": \"%s\",\n" +
-        "    \"validated_by_name\": \"%s\",\n" +
-        "    \"version\": \"\\\"0\\\"\"\n" +
-        "}",
-        businessUnitId, userName, statusDate, userName, validatedByCode, validatedByName);
-    }   
+            "{\n" +
+            "  \"account_status\": \"Publishing Pending\",\n" +
+            "  \"business_unit_id\": %s,\n" +
+            "  \"reason_text\": null,\n" +
+            "  \"timeline_data\": [\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Submitted\",\n" +
+            "      \"status_date\": \"2026-01-09\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Publishing Pending\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"validated_by\": \"%s\",\n" +
+            "  \"validated_by_name\": \"%s\",\n" +
+            "  \"version\": \"\\\"0\\\"\"\n" +
+            "}",
+            businessUnitId, userName, statusDate, userName, validatedByCode, validatedByName
+        );
+    }
+
 }

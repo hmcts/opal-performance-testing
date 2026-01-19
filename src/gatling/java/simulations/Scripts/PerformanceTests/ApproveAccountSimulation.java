@@ -1,6 +1,7 @@
 package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.ScenarioBuilder.ApproveAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.LoginScenarioBuild;
 import io.gatling.javaapi.core.*;
@@ -33,7 +34,7 @@ public class ApproveAccountSimulation extends Simulation {
 
     private void setUpScenarios(HttpProtocolBuilder httpProtocol) {
         setUp(
-            CreateAccountScenarioBuild.build(OPAL_LOGIN_TEST)
+            ApproveAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.getUserCount())
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
