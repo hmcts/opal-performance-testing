@@ -153,8 +153,10 @@ public class AppConfig {
 
         public static class CsvFiles {
             public static final String USERS_CSV = "Users.csv";
+            public static final String ACCEPTOR_USERS_CSV = "AcceptorUsers.csv";
 
             public static final String USERS_FILE_PATH = Paths.get(USERS_CSV).toString();  
+            public static final String ACCEPTOR_USERS_FILE_PATH = Paths.get(ACCEPTOR_USERS_CSV).toString();              
 
         }
 
