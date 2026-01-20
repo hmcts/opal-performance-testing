@@ -551,4 +551,61 @@ public class RequestBodyBuilder {
         );
     }
 
+    public static String BuildRejectAccountRequestBody(Session session) {
+
+        // Gatling username
+        String userName = session.get("Username") != null
+            ? session.get("Username").toString()
+            : "";
+
+        // Business unit ID
+        String businessUnitId = session.get("selectedBusinessUnitId") != null
+            ? session.get("selectedBusinessUnitId").toString()
+            : "65";
+
+        // Random rejection reason text
+        String[] rejectionReasons = {
+            "Incomplete documentation",
+            "Invalid personal details",
+            "Insufficient evidence",
+            "Duplicate account detected",
+            "Failed verification process",
+            "Information does not match records",
+            "Required documents missing",
+            "Account data inconsistency",
+            "Unable to verify identity",
+            "Incorrect business unit assignment"
+        };
+        String reasonText = rejectionReasons[new java.util.Random().nextInt(rejectionReasons.length)];
+
+        // Current date
+        String statusDate = java.time.LocalDate.now().toString();
+
+        return String.format(
+            "{\n" +
+            "  \"account_status\": \"Rejected\",\n" +
+            "  \"business_unit_id\": %s,\n" +
+            "  \"reason_text\": \"%s\",\n" +
+            "  \"timeline_data\": [\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Submitted\",\n" +
+            "      \"status_date\": \"2026-01-09\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"reason_text\": \"%s\",\n" +
+            "      \"status\": \"Rejected\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"validated_by\": null,\n" +
+            "  \"validated_by_name\": null,\n" +
+            "  \"version\": \"\\\"0\\\"\"\n" +
+            "}",
+            businessUnitId, reasonText, userName, reasonText, statusDate, userName
+        );
+    }
+
 }

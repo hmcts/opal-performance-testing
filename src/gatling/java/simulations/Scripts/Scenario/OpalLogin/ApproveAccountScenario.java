@@ -11,6 +11,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +42,17 @@ public final class ApproveAccountScenario {
                 )
                 .exitHereIfFailed() 
                 .exec(
-                    http("request_3")
+                    http("Opal - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
                         .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_4")
+                    http("Opal - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Publishing%20Failed&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
                         .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("get_draft_accounts")
+                    http("Opal - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL
                             + "/opal-fines-service/draft-accounts"
                             + "?business_unit=73&business_unit=80&business_unit=66"
@@ -107,61 +108,70 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                 )  
                 .exec(
-                    http("request_8")
+                    http("Opal - Opal-fines-service - Draft-accounts")
                         .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
                 .exec(
-                    http("request_9")
+                    http("Opal - Opal-fines-service - Business-units")
                         .get(session -> AppConfig.UrlConfig.BASE_URL  + "/opal-fines-service/business-units/" + session.get("selectedBusinessUnitId"))
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
                 .exec(
-                    http("request_10")
+                    http("Opal - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/33369")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_11")
+                    http("Opal - Opal-fines-service - Courts")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_12")
+                    http("Opal - Opal-fines-service - Results")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/results?result_ids=FCOMP&result_ids=FVS&result_ids=FCOST&result_ids=FCPC&result_ids=FO&result_ids=FCC&result_ids=FVEBD&result_ids=FFR")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_13")
+                    http("Opal - Opal-fines-service - Major-creditors")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_14")
+                    http("Opal - Opal-fines-service - Prosecutors")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_15")
+                    http("Opal - Opal-fines-service - Local-justice-areas")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_16")
+                    http("Opal - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
                 )
-
                 .exec(session -> {
-                    String draftAccountRequestPayload = RequestBodyBuilder.BuildApproveAccountRequestBody(session);
-                    System.out.println("draftAccountRequestPayload = " + session.getString("draftAccountRequestPayload"));
-                    return session.set("draftAccountRequestPayload", draftAccountRequestPayload);
-                })
+                    boolean approve = ThreadLocalRandom.current().nextBoolean();
+
+                    if (approve) {
+                        return session
+                            .set("draftAccountRequestPayload",
+                                RequestBodyBuilder.BuildApproveAccountRequestBody(session))
+                            .set("actionType", "APPROVE");
+                    } else {
+                        return session
+                            .set("draftAccountRequestPayload",
+                                RequestBodyBuilder.BuildRejectAccountRequestBody(session))
+                            .set("actionType", "REJECT");
+                    }
+                })            
 
 
-                //Approve the selected draft account
+                //Approve or reject the selected draft account
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
@@ -192,17 +202,17 @@ public final class ApproveAccountScenario {
                 )    
                 
                 .exec(
-                http("request_3")
+                http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
                         .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("request_4")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Publishing%20Failed&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
                         .headers(Headers.getHeaders(11))
                 )
                 .exec(           
-                    http("request_8")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
