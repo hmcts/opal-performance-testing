@@ -12,6 +12,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -47,29 +48,17 @@ public final class ApproveAccountScenario {
                 )
                 .exitHereIfFailed() 
 
-                //Build draft account query parameters from business unit data in session (Submitted / Resubmitted)               
-                .exec(session -> {
-                    @SuppressWarnings("unchecked")
-                    List<String> businessUnitIds =
-                        (List<String>) session.get("businessUnitIds");
-
-                    @SuppressWarnings("unchecked")
-                    List<String> businessUnitUserIds =
-                        (List<String>) session.get("businessUnitUserIds");
-
-                    if (businessUnitIds == null || businessUnitUserIds == null) {
-                        throw new RuntimeException("Business unit data missing from session");
-                    }
-
-                    String query = DraftAccountQueryBuilder.build(
-                        businessUnitIds,
-                        businessUnitUserIds,
+                //Build draft account query parameters from business unit data in session (Submitted / Resubmitted) 
+                
+                .exec(session ->
+                    DraftAccountQueryBuilder.buildAndStore(
+                        session,
+                        "draftAccountSubmittedQueryParams",
                         List.of("Submitted", "Resubmitted"),
-                        "not_submitted_by"
-                    );
-
-                    return session.set("draftAccountSubmittedQueryParams", query);
-                })
+                        "not_submitted_by",
+                       false
+                    )
+                )
                 .exec(
                     http("Opal - Opal-fines-service - Draft-accounts")
                         .get(session ->
@@ -83,24 +72,15 @@ public final class ApproveAccountScenario {
                 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
 
-                .exec(session -> {
-                    @SuppressWarnings("unchecked")
-                    List<String> businessUnitIds =
-                        (List<String>) session.get("businessUnitIds");
-
-                    @SuppressWarnings("unchecked")
-                    List<String> businessUnitUserIds =
-                        (List<String>) session.get("businessUnitUserIds");
-
-                    String query = DraftAccountQueryBuilder.build(
-                        businessUnitIds,
-                        businessUnitUserIds,
+                .exec(session ->
+                    DraftAccountQueryBuilder.buildAndStore(
+                        session,
+                        "draftAccountFailedQueryParams",
                         List.of("Publishing Failed"),
-                        "not_submitted_by"
-                    );
-
-                    return session.set("draftAccountFailedQueryParams", query);
-                })
+                        "not_submitted_by",
+                       false
+                    )
+                )                
                 .exec(
                     http("Opal - Opal-fines-service - Draft-accounts")
                         .get(session ->
