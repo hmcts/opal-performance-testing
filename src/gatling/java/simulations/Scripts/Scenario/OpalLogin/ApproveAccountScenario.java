@@ -9,14 +9,19 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
+import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
 public final class ApproveAccountScenario {
 
@@ -41,27 +46,79 @@ public final class ApproveAccountScenario {
                         .check(status().is(200))                                         
                 )
                 .exitHereIfFailed() 
+
+                //Build draft account query parameters from business unit data in session (Submitted / Resubmitted)               
+                .exec(session -> {
+                    @SuppressWarnings("unchecked")
+                    List<String> businessUnitIds =
+                        (List<String>) session.get("businessUnitIds");
+
+                    @SuppressWarnings("unchecked")
+                    List<String> businessUnitUserIds =
+                        (List<String>) session.get("businessUnitUserIds");
+
+                    if (businessUnitIds == null || businessUnitUserIds == null) {
+                        throw new RuntimeException("Business unit data missing from session");
+                    }
+
+                    String query = DraftAccountQueryBuilder.build(
+                        businessUnitIds,
+                        businessUnitUserIds,
+                        List.of("Submitted", "Resubmitted"),
+                        "not_submitted_by"
+                    );
+
+                    return session.set("draftAccountSubmittedQueryParams", query);
+                })
                 .exec(
                     http("Opal - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
+                        )
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
                 )
+                
+                //Build draft account query parameters from business unit data in session (Publishing Failed)               
+
+                .exec(session -> {
+                    @SuppressWarnings("unchecked")
+                    List<String> businessUnitIds =
+                        (List<String>) session.get("businessUnitIds");
+
+                    @SuppressWarnings("unchecked")
+                    List<String> businessUnitUserIds =
+                        (List<String>) session.get("businessUnitUserIds");
+
+                    String query = DraftAccountQueryBuilder.build(
+                        businessUnitIds,
+                        businessUnitUserIds,
+                        List.of("Publishing Failed"),
+                        "not_submitted_by"
+                    );
+
+                    return session.set("draftAccountFailedQueryParams", query);
+                })
                 .exec(
                     http("Opal - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Publishing%20Failed&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountFailedQueryParams")
+                        )
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
                 )
+
+                //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
                     http("Opal - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL
-                            + "/opal-fines-service/draft-accounts"
-                            + "?business_unit=73&business_unit=80&business_unit=66"
-                            + "&business_unit=77&business_unit=78&business_unit=67&business_unit=65"
-                            + "&status=Submitted&status=Resubmitted"
-                            + "&not_submitted_by=L073AO&not_submitted_by=L080AO"
-                            + "&not_submitted_by=L066AO&not_submitted_by=L077AO"
-                            + "&not_submitted_by=L078AO&not_submitted_by=L067AO"
-                            + "&not_submitted_by=L065AO"
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
@@ -155,7 +212,7 @@ public final class ApproveAccountScenario {
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(session -> {
-                    boolean approve = ThreadLocalRandom.current().nextBoolean();
+                    boolean approve = ThreadLocalRandom.current().nextInt(2) == 0;
 
                     if (approve) {
                         return session
@@ -177,7 +234,7 @@ public final class ApproveAccountScenario {
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                     .headers(Headers.getHeaders(15))
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
-                    .check(status().is(201)) 
+                    .check(status().is(200)) 
                 )             
                 
                 .exec(
@@ -199,21 +256,34 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )    
-                
+                ) 
                 .exec(
-                http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
+                    http("Opal - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
+                        )
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Publishing%20Failed&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
+                    http("Opal - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountFailedQueryParams")
+                        )
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
                 )
-                .exec(           
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts?business_unit=73&business_unit=80&business_unit=66&business_unit=77&business_unit=78&business_unit=67&business_unit=65&status=Submitted&status=Resubmitted&not_submitted_by=L073AO&not_submitted_by=L080AO&not_submitted_by=L066AO&not_submitted_by=L077AO&not_submitted_by=L078AO&not_submitted_by=L067AO&not_submitted_by=L065AO")
+                .exec(
+                    http("Opal - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
+                        )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )

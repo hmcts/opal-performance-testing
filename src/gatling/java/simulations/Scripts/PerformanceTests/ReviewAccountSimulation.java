@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-public class ApproveAccountSimulation extends Simulation {   
+public class ReviewAccountSimulation extends Simulation {   
 
     public static AtomicInteger global400ErrorCounter = new AtomicInteger(0);
     private static final String OPAL_LOGIN_TEST = "Opal Manual Account Creation Test";
@@ -27,7 +27,7 @@ public class ApproveAccountSimulation extends Simulation {
 // 5 and 15 complex
 
 
-    public ApproveAccountSimulation() {
+    public ReviewAccountSimulation() {
         HttpProtocolBuilder httpProtocol = configureHttp();
         setUpScenarios(httpProtocol);
     }
