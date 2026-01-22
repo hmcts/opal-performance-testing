@@ -192,6 +192,10 @@ public class AppConfig {
         public static Duration getRampDuration() {
             return Duration.ofMinutes(RAMP_DURATION_MINUTES);
         }
+		// return simulation duration in seconds}
+        public static int getSimulationDuration() {
+            return 3600; 
+        }
     }
 
 
