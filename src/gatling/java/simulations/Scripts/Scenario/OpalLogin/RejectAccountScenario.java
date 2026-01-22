@@ -2,34 +2,25 @@ package simulations.Scripts.Scenario.OpalLogin;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
-import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
-public final class ApproveAccountScenario {
+public final class RejectAccountScenario {
 
-    private ApproveAccountScenario() {}
+    private RejectAccountScenario() {}
     private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
-    public static ChainBuilder ApproveAccountRequest() {
+    public static ChainBuilder RejectAccountRequest() {
 
         return group("OPAL Approve Account").on(
                 exec(
@@ -191,13 +182,14 @@ public final class ApproveAccountScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
                 )
-                //Approve selected draft account
-                .exec(session -> {
+                //Reject the selected draft account
+                .exec(session -> { 
                         return session
                             .set("draftAccountRequestPayload",
-                                RequestBodyBuilder.BuildApproveAccountRequestBody(session))
-                            .set("actionType", "APPROVE");                   
-                }) 
+                                RequestBodyBuilder.BuildRejectAccountRequestBody(session))
+                            .set("actionType", "REJECT");
+                    }  
+                )          
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))

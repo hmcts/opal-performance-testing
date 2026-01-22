@@ -23,9 +23,6 @@ public class ReviewAccountSimulation extends Simulation {
         System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
-// 2 and 6 simple
-// 5 and 15 complex
-
 
     public ReviewAccountSimulation() {
         HttpProtocolBuilder httpProtocol = configureHttp();

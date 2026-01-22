@@ -49,7 +49,9 @@ def simulations = [
 
     [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.LoginSimulation'],
     [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.CreateAccountSimulation'],
-    [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.ApproveAccountSimulation']
+    [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.ApproveAccountSimulation'],
+        [task: 'runUserExistsSimulation', class: 'simulations.Scripts.PerformanceTests.UserExistsSimulation']
+
 ]
 
 // Register tasks dynamically
