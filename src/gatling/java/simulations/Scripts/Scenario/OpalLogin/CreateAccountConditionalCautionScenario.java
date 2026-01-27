@@ -9,17 +9,13 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
 public final class CreateAccountConditionalCautionScenario {
 
     private CreateAccountConditionalCautionScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder CreateAccountConditionalCautionRequest() {
 

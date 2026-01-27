@@ -1,7 +1,5 @@
 package simulations.Scripts.RequestBodyBuilder;
 
-import java.util.List;
-
 import io.gatling.javaapi.core.Session;
 
 
@@ -44,20 +42,12 @@ public class RequestBodyBuilder {
         // Generate random values using DataGenerator
         String forename = DataGenerator.generateRandomFirstName();
         String surname = DataGenerator.generateRandomLastName();
-        String croNumber = DataGenerator.generateRandomCRONumber();
         String employeeRef = DataGenerator.generateRandomEmployeeReference();
-        String employerPhone = "0161" + DataGenerator.generateRandomNumber(1000000, 9999999);
         String vehicleReg = DataGenerator.generateRandomVehicleRegistration();
         String nin = DataGenerator.generateRandomNationalInsuranceNumber();
-        String pncId = DataGenerator.generateRandomPNCId();
-        String prisonNumber = DataGenerator.generateRandomPrisonNumber();
-        String businessPhone = "0207" + DataGenerator.generateRandomNumber(1000000, 9999999);
-        String homePhone = "0208" + DataGenerator.generateRandomNumber(1000000, 9999999);
         String mobilePhone = "07700" + DataGenerator.generateRandomNumber(100000, 999999);
         String fpRegNumber = DataGenerator.generateRandomFPRegistrationNumber();
         String noticeNumber = DataGenerator.generateRandomNoticeNumber();
-        String email1 = forename.toLowerCase() + "." + surname.toLowerCase() + "@example.com";
-        String email2 = forename.toLowerCase() + "." + surname.toLowerCase() + ".alt@example.com";
         long imposingCourtId = 650000000000L + (1 + new java.util.Random().nextInt(100));
         int majorCreditorId = 1 + new java.util.Random().nextInt(50);
 
@@ -66,7 +56,6 @@ public class RequestBodyBuilder {
         session.set("generatedSurname", surname);
         session.set("generatedNin", nin);
         session.set("generatedVehicleReg", vehicleReg);
-        session.set("generatedEmail1", email1);
         session.set("generatedEmployeeRef", employeeRef);
         session.set("generatedAddressLine1", DataGenerator.generateRandomAddress());
         session.set("generatedAddressLine2", DataGenerator.generateRandomCity());

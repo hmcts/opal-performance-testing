@@ -14,7 +14,7 @@ public class ReviewAccountScenarioBuild {
         return scenario(scenarioName)
             .group("OPAL Login Requests")
             .on(
-                exec(feed(Feeders.acceptorUsers())
+                exec(feed(Feeders.checkerUsers())
                     .exec(LoginScenario.LoginRequest())                    
                     .exec(ApproveAccountScenario.ApproveAccountRequest())
                 )

@@ -10,15 +10,12 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
 public final class RejectAccountScenario {
 
     private RejectAccountScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder RejectAccountRequest() {
 

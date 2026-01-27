@@ -1,10 +1,10 @@
 package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.ScenarioBuilder.LoginScenarioBuild;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -34,18 +34,7 @@ public class LoginSimulation extends Simulation {
                      rampUsers(AppConfig.PerformanceConfig.getUserCount())
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(httpProtocol))           
-                .assertions(global().responseTime().max().lt(60000),              
-                    details(
-                        "OPAL Login Requests",
-                        "OPAL Login",
-                        "OPAL - Sso - Login - /"
-                    ).responseTime().max().lt(30000)  ,              
-                    details(
-                      "OPAL Login Requests",
-                        "OPAL Login",
-                        "OPAL - Common - GetCredentialType"                    
-                    ).responseTime().max().lt(30000)                
-        );
+               .assertions(AssertionsConfig.getMac01Assertions());
     }   
 
 private HttpProtocolBuilder configureHttp() {

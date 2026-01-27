@@ -2,11 +2,8 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.ScenarioBuilder.ApproveAccountScenarioBuild;
-import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
-import simulations.Scripts.ScenarioBuilder.LoginScenarioBuild;
 import io.gatling.javaapi.core.*;
 import io.gatling.javaapi.http.*;
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;

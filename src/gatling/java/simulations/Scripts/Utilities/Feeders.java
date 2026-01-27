@@ -4,8 +4,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -22,9 +20,8 @@ import io.gatling.javaapi.core.CheckBuilder;
 public class Feeders {
 
     public static final FeederBuilder<String> Users;
-    public static final FeederBuilder<String> AcceptorUsers;
-
-
+    public static final FeederBuilder<String> CheckerUsers;
+    public static final FeederBuilder<String> InputterUsers;
 
     private static final AtomicInteger COUNTER;
     private static final Logger log = Logger.getLogger(Feeders.class.getName());
@@ -32,7 +29,8 @@ public class Feeders {
    static { 
     try {            
         Users = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.USERS_CSV).circular();
-        AcceptorUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.ACCEPTOR_USERS_CSV).circular();
+        CheckerUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.CHECKER_USERS_CSV).circular();
+        InputterUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.INPUTTER_USERS_CSV).circular();        
     } catch (Exception e) {
         System.err.println("Error loading CSV: " + e.getMessage());
         throw e;
@@ -44,9 +42,12 @@ public class Feeders {
     public static FeederBuilder<String> createUsers() {
         return Users;
     }  
-
-    public static FeederBuilder<String> acceptorUsers() {
-        return AcceptorUsers;
+    
+   public static FeederBuilder<String> inputterUsers() {
+        return InputterUsers;
+    } 
+    public static FeederBuilder<String> checkerUsers() {
+        return CheckerUsers;
     }    
 
 

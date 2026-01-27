@@ -17,7 +17,6 @@ import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 public final class CheckReviewAccountScenario {
 
     private CheckReviewAccountScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder CheckReviewAccountRequest() {
 
@@ -103,8 +102,6 @@ public final class CheckReviewAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )              
-
-
                //Select Reviewed Account tab.
                 .exec(
                     http("OPAL - Sso - Authenticated")

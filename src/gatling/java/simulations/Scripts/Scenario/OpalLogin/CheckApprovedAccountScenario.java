@@ -17,7 +17,6 @@ import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 public final class CheckApprovedAccountScenario {
 
     private CheckApprovedAccountScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder CheckApprovedAccountRequest() {
 

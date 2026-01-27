@@ -148,15 +148,19 @@ public class AppConfig {
 
         public static String getCsvPath(String filename) {
             return Paths.get(CSV_BASE_PATH, filename).toString();
-        }
-        
+        }        
+		
 
         public static class CsvFiles {
             public static final String USERS_CSV = "Users.csv";
-            public static final String ACCEPTOR_USERS_CSV = "AcceptorUsers.csv";
+            public static final String CHECKER_USERS_CSV = "AcceptorUsers.csv";
+            public static final String INPUTTER_USERS_CSV = "InputterUsers.csv";
 
             public static final String USERS_FILE_PATH = Paths.get(USERS_CSV).toString();  
-            public static final String ACCEPTOR_USERS_FILE_PATH = Paths.get(ACCEPTOR_USERS_CSV).toString();              
+            public static final String CHECKER_USERS_FILE_PATH = Paths.get(CHECKER_USERS_CSV).toString();    
+            public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();    
+
+			
 
         }
 
@@ -172,7 +176,7 @@ public class AppConfig {
             return Paths.get(CSV_BASE_PATH, filename);
         }
     }
-   // ------------------------- Performance Configuration -----------------------------
+  // ------------------------- Performance Configuration -----------------------------
     public static class PerformanceConfig {
 
         // Read values directly from system properties, with defaults
@@ -181,7 +185,7 @@ public class AppConfig {
         );
 
         public static final int RAMP_DURATION_MINUTES = Integer.parseInt(
-            System.getProperty("performance.rampup.minutes", "1")
+            System.getProperty("performance.rampup.minutes", "10")
         );
 
         // Helper methods for Gatling scripts
@@ -192,7 +196,7 @@ public class AppConfig {
         public static Duration getRampDuration() {
             return Duration.ofMinutes(RAMP_DURATION_MINUTES);
         }
-		// return simulation duration in seconds}
+        // return simulation duration in seconds}
         public static int getSimulationDuration() {
             return 3600; 
         }
@@ -208,11 +212,24 @@ public class AppConfig {
 
     public static final class TestingConfig {
 
-
-        // Default number of requests per layer (read from system property)
-        public static final int REQUESTS_PER = Integer.parseInt(
-            System.getProperty("performance.requests", "5") 
+        // Total accounts to create
+        public static final int TOTAL_ACCOUNTS = Integer.parseInt(
+            System.getProperty("performance.totalAccounts", "1000")
         );
 
+        // Percent split
+        public static final int FIXED_PERCENT = 50;
+        public static final int FINE_PERCENT = 40;
+        public static final int CONDITIONAL_PERCENT = 10;
+
+        // Derived targets
+        public static final int FIXED_TARGET =
+            TOTAL_ACCOUNTS * FIXED_PERCENT / 100;
+
+        public static final int FINE_TARGET =
+            TOTAL_ACCOUNTS * FINE_PERCENT / 100;
+
+        public static final int CONDITIONAL_TARGET =
+            TOTAL_ACCOUNTS * CONDITIONAL_PERCENT / 100;
     }
-}
+}  

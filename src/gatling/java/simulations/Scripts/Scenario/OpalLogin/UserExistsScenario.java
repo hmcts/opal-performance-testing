@@ -14,13 +14,12 @@ import org.slf4j.LoggerFactory;
 public final class UserExistsScenario {
 
     private UserExistsScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     // Loop every 110 seconds
     public static ChainBuilder UserExistsRequestLoop() {
         return asLongAs(session -> true).on(
             exec(UserExistsRequest())
-            .pause(110) // pause 110 seconds
+            .pause(10) // pause 110 seconds
         );
     }
 

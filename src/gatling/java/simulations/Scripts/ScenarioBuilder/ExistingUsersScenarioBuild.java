@@ -1,5 +1,6 @@
 package simulations.Scripts.ScenarioBuilder;
 
+
 import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
 import simulations.Scripts.Scenario.OpalLogin.UserExistsScenario;
 import simulations.Scripts.Utilities.Feeders;
@@ -7,7 +8,7 @@ import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
-public class UserExistsScenarioBuild {
+public class ExistingUsersScenarioBuild {
 
     public static ScenarioBuilder build(String scenarioName, int durationInSeconds) {
         return scenario(scenarioName)

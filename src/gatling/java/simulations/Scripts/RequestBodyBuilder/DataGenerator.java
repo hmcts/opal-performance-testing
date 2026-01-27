@@ -3,7 +3,6 @@ package simulations.Scripts.RequestBodyBuilder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Utility class for generating random test data for various fields.
