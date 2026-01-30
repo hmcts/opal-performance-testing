@@ -1,4 +1,4 @@
-package simulations.Scripts.RequestBodyBuilder;
+package simulations.Scripts.Utilities;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -198,4 +198,17 @@ public class DataGenerator {
         String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return String.valueOf(alpha.charAt(random.nextInt(alpha.length())));
     }
+
+    private final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private final Random RANDOM = new Random();
+
+    public String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = RANDOM.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+    return sb.toString();
+    }
+    
 }

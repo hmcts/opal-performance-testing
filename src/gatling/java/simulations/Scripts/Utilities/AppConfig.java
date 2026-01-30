@@ -153,7 +153,7 @@ public class AppConfig {
 
         public static class CsvFiles {
             public static final String USERS_CSV = "Users.csv";
-            public static final String CHECKER_USERS_CSV = "AcceptorUsers.csv";
+            public static final String CHECKER_USERS_CSV = "CheckersUsers.csv";
             public static final String INPUTTER_USERS_CSV = "InputterUsers.csv";
 
             public static final String USERS_FILE_PATH = Paths.get(USERS_CSV).toString();  
@@ -176,29 +176,37 @@ public class AppConfig {
             return Paths.get(CSV_BASE_PATH, filename);
         }
     }
-  // ------------------------- Performance Configuration -----------------------------
-    public static class PerformanceConfig {
+ // ------------------------- Performance Configuration -----------------------------
+        public static class PerformanceConfig {
 
-        // Read values directly from system properties, with defaults
-        public static final int USER_COUNT = Integer.parseInt(
-            System.getProperty("performance.users", "1")
+																	 
+        public static final int INPUTTER_USERS = Integer.parseInt(
+            System.getProperty("performance.inputters", "2")
+        );
+
+        public static final int CHECKER_USERS = Integer.parseInt(
+            System.getProperty("performance.checkers", "2")
+        );
+
+        public static final int EXISTING_USERS = Integer.parseInt(
+            System.getProperty("performance.existing", "2")
         );
 
         public static final int RAMP_DURATION_MINUTES = Integer.parseInt(
             System.getProperty("performance.rampup.minutes", "10")
         );
 
-        // Helper methods for Gatling scripts
-        public static int getUserCount() {
-            return USER_COUNT;
-        }
+											 
+										  
+							  
+		 
 
         public static Duration getRampDuration() {
             return Duration.ofMinutes(RAMP_DURATION_MINUTES);
         }
-        // return simulation duration in seconds}
+
         public static int getSimulationDuration() {
-            return 3600; 
+            return 300;
         }
     }
 
@@ -211,6 +219,7 @@ public class AppConfig {
     }
 
     public static final class TestingConfig {
+
 
         // Total accounts to create
         public static final int TOTAL_ACCOUNTS = Integer.parseInt(
@@ -232,4 +241,4 @@ public class AppConfig {
         public static final int CONDITIONAL_TARGET =
             TOTAL_ACCOUNTS * CONDITIONAL_PERCENT / 100;
     }
-}  
+}

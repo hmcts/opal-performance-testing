@@ -21,34 +21,34 @@ public class MAC_01aSimulation extends Simulation {
     @Override
     public void before() {
         System.out.println("Simulation starting...");
-        System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
+        System.out.println("User Count: " + AppConfig.PerformanceConfig.EXISTING_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }
 
     public MAC_01aSimulation() {
-        HttpProtocolBuilder httpProtocol = configureHttp();
-        // Use the total simulation duration to keep users alive
-        setUp(
-            // Inputter users
-            InputterUsersScenarioBuild.build(MAC_01A_TEST + " - Inputter")
-                .injectOpen(
-                    rampUsers(AppConfig.PerformanceConfig.getUserCount())
-                        .during(AppConfig.PerformanceConfig.getRampDuration())
-                ),
+    HttpProtocolBuilder httpProtocol = configureHttp();
 
-            // Checker users
-            CheckerUsersScenarioBuild.build(MAC_01A_TEST + " - Checker")
-                .injectOpen(
-                    rampUsers(AppConfig.PerformanceConfig.getUserCount())
-                        .during(AppConfig.PerformanceConfig.getRampDuration())
-                ),
+    setUp(
+        InputterUsersScenarioBuild.build(MAC_01A_TEST + " - Inputter")
+            .injectOpen(
+                rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
+                    .during(AppConfig.PerformanceConfig.getRampDuration())
+            ),
 
-            // Existing users
-            ExistingUsersScenarioBuild.build(MAC_01A_TEST + " - Exists User", AppConfig.PerformanceConfig.getSimulationDuration())
-                .injectOpen(
-                    rampUsers(AppConfig.PerformanceConfig.getUserCount())
-                        .during(AppConfig.PerformanceConfig.getRampDuration())
-                )
+        CheckerUsersScenarioBuild.build(MAC_01A_TEST + " - Checker")
+            .injectOpen(
+                rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
+                    .during(AppConfig.PerformanceConfig.getRampDuration())
+            ),
+
+        ExistingUsersScenarioBuild.build(
+                MAC_01A_TEST + " - Existing User",
+                AppConfig.PerformanceConfig.getSimulationDuration()
+            )
+            .injectOpen(
+                rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
+                    .during(AppConfig.PerformanceConfig.getRampDuration())
+            )
         )
         .protocols(httpProtocol)
         .assertions(AssertionsConfig.getMac01Assertions());

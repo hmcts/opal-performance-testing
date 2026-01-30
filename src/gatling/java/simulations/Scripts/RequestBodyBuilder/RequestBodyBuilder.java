@@ -1,8 +1,7 @@
 package simulations.Scripts.RequestBodyBuilder;
 
 import io.gatling.javaapi.core.Session;
-
-
+import simulations.Scripts.Utilities.DataGenerator;
 /**
  * Factory class for building various request bodies used in the application.
  * This class delegates to specialised builders for each type of request.
@@ -42,9 +41,15 @@ public class RequestBodyBuilder {
         // Generate random values using DataGenerator
         String forename = DataGenerator.generateRandomFirstName();
         String surname = DataGenerator.generateRandomLastName();
+        String croNumber = DataGenerator.generateRandomCRONumber();
         String employeeRef = DataGenerator.generateRandomEmployeeReference();
+        String employerPhone = "0161" + DataGenerator.generateRandomNumber(1000000, 9999999);
         String vehicleReg = DataGenerator.generateRandomVehicleRegistration();
         String nin = DataGenerator.generateRandomNationalInsuranceNumber();
+        String pncId = DataGenerator.generateRandomPNCId();
+        String prisonNumber = DataGenerator.generateRandomPrisonNumber();
+        String businessPhone = "0207" + DataGenerator.generateRandomNumber(1000000, 9999999);
+        String homePhone = "0208" + DataGenerator.generateRandomNumber(1000000, 9999999);
         String mobilePhone = "07700" + DataGenerator.generateRandomNumber(100000, 999999);
         String fpRegNumber = DataGenerator.generateRandomFPRegistrationNumber();
         String noticeNumber = DataGenerator.generateRandomNoticeNumber();
@@ -597,4 +602,53 @@ public class RequestBodyBuilder {
         );
     }
 
-}
+        public static String buildDeletedAccountRequestBody(Session session) {
+
+            String userName = session.get("Username") != null
+                ? session.get("Username").toString()
+                : "";
+
+            String statusSubmittedDate = session.get("statusDate") != null
+                ? session.get("statusDate").toString()
+                : "";
+
+            String statusDeletedDate = java.time.LocalDate.now().toString();
+
+            int businessUnitId = session.get("selectedBusinessUnitId") != null
+                ? Integer.parseInt(session.get("selectedBusinessUnitId").toString())
+                : 0;
+
+            String submittedByName = session.get("submittedByName") != null
+                ? session.get("submittedByName").toString()               : "";
+                
+            DataGenerator randomStringGenerator = new DataGenerator();
+             String reasonText = randomStringGenerator.generateRandomString(10);
+
+            return String.format(
+                "{\n" +
+                "  \"validated_by\": null,\n" +
+                "  \"account_status\": \"Deleted\",\n" +
+                "  \"validated_by_name\": null,\n" +
+                "  \"business_unit_id\": %d,\n" +
+                "  \"version\": \"0\",\n" +
+                "  \"timeline_data\": [\n" +
+                "    {\n" +
+                "      \"status\": \"Submitted\",\n" +
+                "      \"username\": \"%s\",\n" +
+                "      \"reason_text\": null,\n" +
+                "      \"status_date\": \"%s\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"username\": \"%s\",\n" +
+                "      \"status\": \"Deleted\",\n" +
+                "      \"status_date\": \"%s\",\n" +
+                "      \"reason_text\": null\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"reason_text\": \"Perf_%s\"\n" +
+                "}",
+                businessUnitId, submittedByName, statusSubmittedDate, userName, statusDeletedDate, reasonText
+            );
+        }
+    }
+

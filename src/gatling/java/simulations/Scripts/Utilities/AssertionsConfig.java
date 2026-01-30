@@ -36,14 +36,14 @@ public class AssertionsConfig {
         return new Assertion[]{
 
             // Default rule: ALL requests < 2s (p95)
-            details("*")
+            global()
                 .responseTime()
                 .percentile3()
                 .lt(2000),
 
             // Exception 1: Login request < 5s
             details(
-                "OPAL Login Requests",
+                "Inputter Workflow",
                 "OPAL Login",
                 "OPAL - Sso - Login - /"
             )
@@ -53,7 +53,7 @@ public class AssertionsConfig {
 
             // Exception 2: Credential type lookup < 5s
             details(
-                "OPAL Login Requests",
+                "Inputter Workflow",
                 "OPAL Login",
                 "OPAL - Common - GetCredentialType"
             )

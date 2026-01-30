@@ -13,7 +13,7 @@ public class UserExistsScenarioBuild {
         return scenario(scenarioName)
             .group("OPAL Login Requests")
             .on(
-                exec(feed(Feeders.checkerUsers()))
+                exec(feed(Feeders.createUsers()))
                 .exec(LoginScenario.LoginRequest())
 
                 // Keep the user alive for the duration of the simulation

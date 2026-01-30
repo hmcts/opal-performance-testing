@@ -18,7 +18,7 @@ public class LoginSimulation extends Simulation {
     @Override
     public void before() {
         System.out.println("Simulation starting...");
-        System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
+        System.out.println("User Count: " + AppConfig.PerformanceConfig.EXISTING_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
 
@@ -31,7 +31,7 @@ public class LoginSimulation extends Simulation {
         setUp(
             LoginScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
-                     rampUsers(AppConfig.PerformanceConfig.getUserCount())
+                     rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(httpProtocol))           
                .assertions(AssertionsConfig.getMac01Assertions());

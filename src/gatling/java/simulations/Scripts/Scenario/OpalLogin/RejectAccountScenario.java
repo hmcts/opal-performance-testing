@@ -48,7 +48,7 @@ public final class RejectAccountScenario {
                     )
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -70,7 +70,7 @@ public final class RejectAccountScenario {
                     )
                 )                
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -82,7 +82,7 @@ public final class RejectAccountScenario {
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -133,49 +133,49 @@ public final class RejectAccountScenario {
                         .headers(Headers.getHeaders(11))
                 )  
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Business-units")
+                    http("OPAL - Opal-fines-service - Business-units")
                         .get(session -> AppConfig.UrlConfig.BASE_URL  + "/opal-fines-service/business-units/" + session.get("selectedBusinessUnitId"))
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Offences")
+                    http("OPAL - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/33369")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Courts")
+                    http("OPAL - Opal-fines-service - Courts")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Results")
+                    http("OPAL - Opal-fines-service - Results")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/results?result_ids=FCOMP&result_ids=FVS&result_ids=FCOST&result_ids=FCPC&result_ids=FO&result_ids=FCC&result_ids=FVEBD&result_ids=FFR")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Major-creditors")
+                    http("OPAL - Opal-fines-service - Major-creditors")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Prosecutors")
+                    http("OPAL - Opal-fines-service - Prosecutors")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=" + session.get("selectedBusinessUnitId"))
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Local-justice-areas")
+                    http("OPAL - Opal-fines-service - Local-justice-areas")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Offences")
+                    http("OPAL - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
                 )
@@ -216,7 +216,7 @@ public final class RejectAccountScenario {
                     .headers(Headers.getHeaders(11))
                 ) 
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -226,7 +226,7 @@ public final class RejectAccountScenario {
                         .check(status().is(200))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -236,7 +236,7 @@ public final class RejectAccountScenario {
                         .check(status().is(200))
                 )
                 .exec(
-                    http("Opal - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +

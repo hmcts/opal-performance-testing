@@ -9,8 +9,6 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
 public final class CreateAccountConditionalCautionScenario {

@@ -13,7 +13,7 @@ public class UserExistsSimulation extends Simulation {
     @Override
     public void before() {
         System.out.println("Simulation starting...");
-        System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
+        System.out.println("User Count: " + AppConfig.PerformanceConfig.EXISTING_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
 
@@ -30,7 +30,7 @@ public class UserExistsSimulation extends Simulation {
         setUp(
             UserExistsScenarioBuild.build("User Exists Test", totalSimulationSeconds)
                 .injectOpen(
-                    rampUsers(AppConfig.PerformanceConfig.getUserCount())
+                    rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
                     .during(AppConfig.PerformanceConfig.getRampDuration())
                 )
                 .protocols(httpProtocol)

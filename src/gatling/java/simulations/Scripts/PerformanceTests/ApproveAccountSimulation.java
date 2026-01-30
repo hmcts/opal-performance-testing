@@ -17,7 +17,7 @@ public class ApproveAccountSimulation extends Simulation {
     @Override
     public void before() {
         System.out.println("Simulation starting...");
-        System.out.println("User Count: " + AppConfig.PerformanceConfig.getUserCount());
+        System.out.println("User Count: " + AppConfig.PerformanceConfig.CHECKER_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
 // 2 and 6 simple
@@ -33,7 +33,7 @@ public class ApproveAccountSimulation extends Simulation {
         setUp(
             ApproveAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
-                     rampUsers(AppConfig.PerformanceConfig.getUserCount())
+                     rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(httpProtocol))           
                 .assertions(global().responseTime().max().lt(60000),              

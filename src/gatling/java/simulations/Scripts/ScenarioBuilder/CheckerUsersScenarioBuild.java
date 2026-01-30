@@ -13,9 +13,9 @@ public class CheckerUsersScenarioBuild {
 
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
-            .group("OPAL Login Requests")
+            .group("Checker Workflow")
             .on(
-                exec(feed(Feeders.inputterUsers())
+                exec(feed(Feeders.checkerUsers())
                     .exec(LoginScenario.LoginRequest())
                                     // 50/50 split between approve and reject
                 .randomSwitch()
