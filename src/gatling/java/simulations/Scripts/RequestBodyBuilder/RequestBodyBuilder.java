@@ -1,8 +1,7 @@
 package simulations.Scripts.RequestBodyBuilder;
 
 import io.gatling.javaapi.core.Session;
-
-
+import simulations.Scripts.Utilities.DataGenerator;
 /**
  * Factory class for building various request bodies used in the application.
  * This class delegates to specialised builders for each type of request.
@@ -54,8 +53,6 @@ public class RequestBodyBuilder {
         String mobilePhone = "07700" + DataGenerator.generateRandomNumber(100000, 999999);
         String fpRegNumber = DataGenerator.generateRandomFPRegistrationNumber();
         String noticeNumber = DataGenerator.generateRandomNoticeNumber();
-        String email1 = forename.toLowerCase() + "." + surname.toLowerCase() + "@example.com";
-        String email2 = forename.toLowerCase() + "." + surname.toLowerCase() + ".alt@example.com";
         long imposingCourtId = 650000000000L + (1 + new java.util.Random().nextInt(100));
         int majorCreditorId = 1 + new java.util.Random().nextInt(50);
 
@@ -64,7 +61,6 @@ public class RequestBodyBuilder {
         session.set("generatedSurname", surname);
         session.set("generatedNin", nin);
         session.set("generatedVehicleReg", vehicleReg);
-        session.set("generatedEmail1", email1);
         session.set("generatedEmployeeRef", employeeRef);
         session.set("generatedAddressLine1", DataGenerator.generateRandomAddress());
         session.set("generatedAddressLine2", DataGenerator.generateRandomCity());
@@ -498,45 +494,161 @@ public class RequestBodyBuilder {
         userName, accountNoteText, accountNoteText, addressLine1, employeeRef, employerAddressLine1, employerCompanyName, email1, vehicleMake, vehicleReg, email1, forename, nin, surname, prosecutorCaseRef, userName, userName);
     }
 
-    public static String BuildApproveAccountRequestBody(Session session) {
+   public static String BuildApproveAccountRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
-        
-        // Retrieve business unit ID and validation info from session
-        Object selectedBusinessUnitId = session.get("selectedBusinessUnitId");
-        String businessUnitId = selectedBusinessUnitId != null ? selectedBusinessUnitId.toString() : "65";
-        
-        // Get validated by user info
-        String validatedByCode = "L" + businessUnitId + "AO";
-        String validatedByName = userName;
-        
-        // Get current date for timeline
-        java.time.LocalDate today = java.time.LocalDate.now();
-        String statusDate = today.toString();
+        // Gatling username
+        String userName = session.get("Username") != null
+            ? session.get("Username").toString()
+            : "";
+
+        // Business unit ID
+        String businessUnitId = session.get("selectedBusinessUnitId") != null
+            ? session.get("selectedBusinessUnitId").toString()
+            : "65";
+
+        // Extracted from draft summaries
+        String validatedByCode = session.get("submittedBy") != null
+            ? session.get("submittedBy").toString()
+            : "";
+
+        String validatedByName = session.get("submittedByName") != null
+            ? session.get("submittedByName").toString()
+            : "";
+
+        // Current date
+        String statusDate = java.time.LocalDate.now().toString();
 
         return String.format(
-        "{\n" +
-        "    \"account_status\": \"Publishing Pending\",\n" +
-        "    \"business_unit_id\": %s,\n" +
-        "    \"reason_text\": null,\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"2026-01-09\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        },\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Publishing Pending\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
-        "    \"validated_by\": \"%s\",\n" +
-        "    \"validated_by_name\": \"%s\",\n" +
-        "    \"version\": \"\\\"0\\\"\"\n" +
-        "}",
-        businessUnitId, userName, statusDate, userName, validatedByCode, validatedByName);
-    }   
-}
+            "{\n" +
+            "  \"account_status\": \"Publishing Pending\",\n" +
+            "  \"business_unit_id\": %s,\n" +
+            "  \"reason_text\": null,\n" +
+            "  \"timeline_data\": [\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Submitted\",\n" +
+            "      \"status_date\": \"2026-01-09\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Publishing Pending\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"validated_by\": \"%s\",\n" +
+            "  \"validated_by_name\": \"%s\",\n" +
+            "  \"version\": \"\\\"0\\\"\"\n" +
+            "}",
+            businessUnitId, userName, statusDate, userName, validatedByCode, validatedByName
+        );
+    }
+
+    public static String BuildRejectAccountRequestBody(Session session) {
+
+        // Gatling username
+        String userName = session.get("Username") != null
+            ? session.get("Username").toString()
+            : "";
+
+        // Business unit ID
+        String businessUnitId = session.get("selectedBusinessUnitId") != null
+            ? session.get("selectedBusinessUnitId").toString()
+            : "65";
+
+        // Random rejection reason text
+        String[] rejectionReasons = {
+            "Incomplete documentation",
+            "Invalid personal details",
+            "Insufficient evidence",
+            "Duplicate account detected",
+            "Failed verification process",
+            "Information does not match records",
+            "Required documents missing",
+            "Account data inconsistency",
+            "Unable to verify identity",
+            "Incorrect business unit assignment"
+        };
+        String reasonText = rejectionReasons[new java.util.Random().nextInt(rejectionReasons.length)];
+
+        // Current date
+        String statusDate = java.time.LocalDate.now().toString();
+
+        return String.format(
+            "{\n" +
+            "  \"account_status\": \"Rejected\",\n" +
+            "  \"business_unit_id\": %s,\n" +
+            "  \"reason_text\": \"%s\",\n" +
+            "  \"timeline_data\": [\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Submitted\",\n" +
+            "      \"status_date\": \"2026-01-09\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"reason_text\": \"%s\",\n" +
+            "      \"status\": \"Rejected\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"validated_by\": null,\n" +
+            "  \"validated_by_name\": null,\n" +
+            "  \"version\": \"\\\"0\\\"\"\n" +
+            "}",
+            businessUnitId, reasonText, userName, reasonText, statusDate, userName
+        );
+    }
+
+        public static String buildDeletedAccountRequestBody(Session session) {
+
+            String userName = session.get("Username") != null
+                ? session.get("Username").toString()
+                : "";
+
+            String statusSubmittedDate = session.get("statusDate") != null
+                ? session.get("statusDate").toString()
+                : "";
+
+            String statusDeletedDate = java.time.LocalDate.now().toString();
+
+            int businessUnitId = session.get("selectedBusinessUnitId") != null
+                ? Integer.parseInt(session.get("selectedBusinessUnitId").toString())
+                : 0;
+
+            String submittedByName = session.get("submittedByName") != null
+                ? session.get("submittedByName").toString()               : "";
+                
+            DataGenerator randomStringGenerator = new DataGenerator();
+             String reasonText = randomStringGenerator.generateRandomString(10);
+
+            return String.format(
+                "{\n" +
+                "  \"validated_by\": null,\n" +
+                "  \"account_status\": \"Deleted\",\n" +
+                "  \"validated_by_name\": null,\n" +
+                "  \"business_unit_id\": %d,\n" +
+                "  \"version\": \"0\",\n" +
+                "  \"timeline_data\": [\n" +
+                "    {\n" +
+                "      \"status\": \"Submitted\",\n" +
+                "      \"username\": \"%s\",\n" +
+                "      \"reason_text\": null,\n" +
+                "      \"status_date\": \"%s\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"username\": \"%s\",\n" +
+                "      \"status\": \"Deleted\",\n" +
+                "      \"status_date\": \"%s\",\n" +
+                "      \"reason_text\": null\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"reason_text\": \"Perf_%s\"\n" +
+                "}",
+                businessUnitId, submittedByName, statusSubmittedDate, userName, statusDeletedDate, reasonText
+            );
+        }
+    }
+

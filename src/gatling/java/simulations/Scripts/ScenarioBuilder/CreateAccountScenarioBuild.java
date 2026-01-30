@@ -16,7 +16,7 @@ public class CreateAccountScenarioBuild {
         return scenario(scenarioName)
             .group("OPAL Login Requests")
             .on(
-                exec(feed(Feeders.createUsers())
+                exec(feed(Feeders.inputterUsers())
                     .exec(LoginScenario.LoginRequest())
                     .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
                     .exec(CreateAccountFineScenario.CreateAccountFineRequest())

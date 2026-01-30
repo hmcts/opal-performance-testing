@@ -9,17 +9,13 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
 public final class LoginScenario {
 
     private LoginScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder LoginRequest() {
 
@@ -142,12 +138,21 @@ public final class LoginScenario {
               http("OPAL - Opal-User-Service - Users - 0 - state")
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
+                .check(
+                    jsonPath("$.business_unit_users[*].business_unit_id")
+                        .findAll()
+                        .saveAs("businessUnitIds"),
+
+                    jsonPath("$.business_unit_users[*].business_unit_user_id")
+                        .findAll()
+                        .saveAs("businessUnitUserIds")
+                )
             )
             .exec(
               http("OPAL - Opal-User-Service - Users - 0 - state")
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
-          )
+           )
         );            
     }
 }
