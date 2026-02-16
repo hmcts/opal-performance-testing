@@ -2,13 +2,12 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
+import simulations.Scripts.Utilities.HttpProtocolConfig;
 import simulations.Scripts.ScenarioBuilder.LoginScenarioBuild;
 import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class LoginSimulation extends Simulation {   
 
@@ -23,28 +22,12 @@ public class LoginSimulation extends Simulation {
     }    
 
     public LoginSimulation() {
-        HttpProtocolBuilder httpProtocol = configureHttp();
-        setUpScenarios(httpProtocol);
-    }
-
-    private void setUpScenarios(HttpProtocolBuilder httpProtocol) {
         setUp(
             LoginScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(httpProtocol))           
+                .protocols(HttpProtocolConfig.build()))           
                .assertions(AssertionsConfig.getMac01Assertions());
-    }   
-
-private HttpProtocolBuilder configureHttp() {
-    return http
-        .proxy(Proxy(AppConfig.ProxyConfig.HOST, AppConfig.ProxyConfig.PORT))
-        .baseUrl(AppConfig.UrlConfig.AUTH_URL)
-        .disableCaching()
-   //     .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-        .acceptEncodingHeader("gzip, deflate, br")
-        .acceptLanguageHeader("en-US,en;q=0.9");        
-   //     .userAgentHeader("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36");
     } 
 }

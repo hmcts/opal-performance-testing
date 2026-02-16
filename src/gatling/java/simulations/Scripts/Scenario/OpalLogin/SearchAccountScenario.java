@@ -2,24 +2,26 @@ package simulations.Scripts.Scenario.OpalLogin;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
-import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
-public final class RejectAccountScenario {
+public final class SearchAccountScenario {
 
-    private RejectAccountScenario() {}
+    private SearchAccountScenario() {}
+    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
-    public static ChainBuilder RejectAccountRequest() {
+    public static ChainBuilder DeleteAccountRequest() {
 
-        return group("OPAL Approve Account").on(
+        return group("OPAL Delete Account").on(
                 exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -136,6 +138,8 @@ public final class RejectAccountScenario {
                         .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(jsonPath("$.timeline_data[*].status_date").findAll().saveAs("statusDate"))
+                        .check(jsonPath("$.submitted_by_name").findAll().saveAs("submittedByName"))
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
@@ -178,21 +182,34 @@ public final class RejectAccountScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
                 )
-                //Reject the selected draft account
-                .exec(session -> { 
+                //Delete selected draft account
+                .exec(
+                http("OPAL - Opal-User-Service - Users - 0 - state")
+                .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    .headers(Headers.getHeaders(7))
+                )
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                )  
+                .exec(session -> {
                         return session
-                            .set("draftAccountRequestPayload",
-                                RequestBodyBuilder.BuildRejectAccountRequestBody(session))
-                            .set("actionType", "REJECT");
-                    }  
-                )          
+                            .set("deleteAccountRequestPayload",
+                                RequestBodyBuilder.buildDeletedAccountRequestBody(session));                   
+                }) 
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                     .headers(Headers.getHeaders(15))
-                    .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
+                    .body(StringBody(session -> session.get("deleteAccountRequestPayload"))).asJson()
                     .check(status().is(200)) 
-                )             
+                )   
+                .exec(
+                    http("OPAL - Opal-User-Service - Users - 0 - state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                        .headers(Headers.getHeaders(7))
+                )          
                 
                 .exec(
                     http("OPAL - Sso - Authenticated")
@@ -208,12 +225,8 @@ public final class RejectAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                )                
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                ) 
+                )               
+                
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->

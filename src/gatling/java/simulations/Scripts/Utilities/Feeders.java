@@ -2,19 +2,20 @@ package simulations.Scripts.Utilities;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
-
-import static io.gatling.javaapi.core.CoreDsl.regex;
-
 import java.sql.Connection;
 
 import io.gatling.javaapi.core.CoreDsl;
 import io.gatling.javaapi.core.FeederBuilder;
 import io.gatling.javaapi.jdbc.JdbcDsl;
 import io.gatling.javaapi.core.CheckBuilder;
+import java.util.*;
+import static io.gatling.javaapi.core.CoreDsl.*;
 
 
 public class Feeders {
@@ -139,8 +140,4 @@ public class Feeders {
     
         return feeder;
     } 
-
-    public static void resetCounter() {
-        COUNTER.set(0);
-    }
 }

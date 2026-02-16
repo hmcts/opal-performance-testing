@@ -15,16 +15,24 @@ public class InputterUsersScenarioBuild {
         return scenario(scenarioName)
             .group("Inputter Workflow")
             .on(
+                // Login user once
                 feed(Feeders.inputterUsers())
                 .exec(LoginScenario.LoginRequest())
-                .doIf(session -> session.getString("Account").equals("FIXED")).then(
-                    exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
-                )
-                .doIf(session -> session.getString("Account").equals("FINE")).then(
-                    exec(CreateAccountFineScenario.CreateAccountFineRequest())
-                )
-                .doIf(session -> session.getString("Account").equals("CONDITIONAL")).then(
-                    exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+
+                // Create 10 accounts per user
+                .repeat(10).on(
+                    // Pull NEXT row from SAME CSV
+                    feed(Feeders.inputterUsers())
+
+                    .doIf(session -> "FIXED".equals(session.getString("Account"))).then(
+                        exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
+                    )
+                    .doIf(session -> "FINE".equals(session.getString("Account"))).then(
+                        exec(CreateAccountFineScenario.CreateAccountFineRequest())
+                    )
+                    .doIf(session -> "CONDITIONAL".equals(session.getString("Account"))).then(
+                        exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+                    )
                 )
             );
     }

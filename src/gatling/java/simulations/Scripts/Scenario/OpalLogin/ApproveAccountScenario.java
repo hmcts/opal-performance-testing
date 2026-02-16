@@ -28,9 +28,7 @@ public final class ApproveAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                
+                )                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

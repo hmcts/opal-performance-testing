@@ -22,9 +22,7 @@ public final class CreateAccountFixedScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                
+                )                
                 .exec(http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
@@ -40,7 +38,7 @@ public final class CreateAccountFixedScenario {
 
                 )               
                 .exitHereIfFailed()                       
-           
+                .pause(3,5)
                 //Select Business Unit
 
                 .exec(
@@ -94,7 +92,9 @@ public final class CreateAccountFixedScenario {
                     .headers(Headers.getHeaders(12))
                 )
 
-                /// NEXT STEP? 
+                /// NEXT STEP
+                .pause(3,5)
+
                 .exec(session -> {
                     String draftAccountRequestPayload = RequestBodyBuilder.BuildDraftAccountRequestBody(session);
                     System.out.println("draftAccountRequestPayload = " + session.getString("draftAccountRequestPayload"));

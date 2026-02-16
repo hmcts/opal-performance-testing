@@ -2,13 +2,12 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
+import simulations.Scripts.Utilities.HttpProtocolConfig;
 import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
 import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class CreateAccountSimulation extends Simulation {   
 
@@ -26,24 +25,12 @@ public class CreateAccountSimulation extends Simulation {
 
 
     public CreateAccountSimulation() {
-        HttpProtocolBuilder httpProtocol = configureHttp();
-        setUpScenarios(httpProtocol);
-    }
-
-    private void setUpScenarios(HttpProtocolBuilder httpProtocol) {
         setUp(
             CreateAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(httpProtocol))           
+                .protocols(HttpProtocolConfig.build()))           
                 .assertions(AssertionsConfig.getCreateAccountAssertions());
-    }   
-
-private HttpProtocolBuilder configureHttp() {
-    return http
-        .proxy(Proxy(AppConfig.ProxyConfig.HOST, AppConfig.ProxyConfig.PORT))
-        .baseUrl(AppConfig.UrlConfig.AUTH_URL)
-        .inferHtmlResources();        
     } 
 }

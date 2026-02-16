@@ -30,7 +30,6 @@ public final class UserExistsScenario {
                 .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(12))
             )
-            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-user-service - Users - 0 - State"))
 
             .exec(
                 http("OPAL - Sso - Authenticated")

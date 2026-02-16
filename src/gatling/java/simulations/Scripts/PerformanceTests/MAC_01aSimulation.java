@@ -2,16 +2,15 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
+import simulations.Scripts.Utilities.HttpProtocolConfig;
 import simulations.Scripts.ScenarioBuilder.CheckerUsersScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.ExistingUsersScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.InputterUsersScenarioBuild;
 import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class MAC_01aSimulation extends Simulation {
 
@@ -26,40 +25,29 @@ public class MAC_01aSimulation extends Simulation {
     }
 
     public MAC_01aSimulation() {
-    HttpProtocolBuilder httpProtocol = configureHttp();
+        setUp(
+            InputterUsersScenarioBuild.build(MAC_01A_TEST + " - Inputter")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                ),
 
-    setUp(
-        InputterUsersScenarioBuild.build(MAC_01A_TEST + " - Inputter")
-            .injectOpen(
-                rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
-                    .during(AppConfig.PerformanceConfig.getRampDuration())
-            ),
+            CheckerUsersScenarioBuild.build(MAC_01A_TEST + " - Checker")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                ),
 
-        CheckerUsersScenarioBuild.build(MAC_01A_TEST + " - Checker")
-            .injectOpen(
-                rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
-                    .during(AppConfig.PerformanceConfig.getRampDuration())
-            ),
-
-        ExistingUsersScenarioBuild.build(
-                MAC_01A_TEST + " - Existing User",
-                AppConfig.PerformanceConfig.getSimulationDuration()
+            ExistingUsersScenarioBuild.build(
+                    MAC_01A_TEST + " - Existing User",
+                    AppConfig.PerformanceConfig.getSimulationDuration()
+                )
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                )
             )
-            .injectOpen(
-                rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
-                    .during(AppConfig.PerformanceConfig.getRampDuration())
-            )
-        )
-        .protocols(httpProtocol)
-        .assertions(AssertionsConfig.getMac01Assertions());
-    }
-
-    private HttpProtocolBuilder configureHttp() {
-        return http
-            .proxy(Proxy(AppConfig.ProxyConfig.HOST, AppConfig.ProxyConfig.PORT))
-            .baseUrl(AppConfig.UrlConfig.AUTH_URL)
-            .disableCaching()
-            .acceptEncodingHeader("gzip, deflate, br")
-            .acceptLanguageHeader("en-US,en;q=0.9");
+            .protocols(HttpProtocolConfig.build())
+            .assertions(AssertionsConfig.getMac01Assertions());
     }
 }

@@ -2,14 +2,13 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
+import simulations.Scripts.Utilities.HttpProtocolConfig;
 import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.DeleteAccountScenarioBuild;
 import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class DeleteAccountSimulation extends Simulation {   
 
@@ -27,24 +26,12 @@ public class DeleteAccountSimulation extends Simulation {
 
 
     public DeleteAccountSimulation() {
-        HttpProtocolBuilder httpProtocol = configureHttp();
-        setUpScenarios(httpProtocol);
-    }
-
-    private void setUpScenarios(HttpProtocolBuilder httpProtocol) {
         setUp(
             DeleteAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(httpProtocol))           
-                .assertions(AssertionsConfig.getCreateAccountAssertions());
-    }   
-
-private HttpProtocolBuilder configureHttp() {
-    return http
-        .proxy(Proxy(AppConfig.ProxyConfig.HOST, AppConfig.ProxyConfig.PORT))
-        .baseUrl(AppConfig.UrlConfig.AUTH_URL)
-        .inferHtmlResources();        
+                .protocols(HttpProtocolConfig.build()));     
+            //    .assertions(AssertionsConfig.getCreateAccountAssertions());
     } 
 }

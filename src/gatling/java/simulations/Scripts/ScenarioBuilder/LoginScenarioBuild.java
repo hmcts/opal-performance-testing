@@ -2,6 +2,7 @@ package simulations.Scripts.ScenarioBuilder;
 
 
 import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
+import simulations.Scripts.Scenario.OpalLogin.LoginScenarioCreate;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
 
@@ -14,7 +15,9 @@ public class LoginScenarioBuild {
             .group("OPAL Login Requests")
             .on(
                 exec(feed(Feeders.createUsers())
-                    .exec(LoginScenario.LoginRequest())
+                    .exec(LoginScenarioCreate.LoginRequest())
+
+                    //.exec(LoginScenario.LoginRequest())
                 )
             );
     }
