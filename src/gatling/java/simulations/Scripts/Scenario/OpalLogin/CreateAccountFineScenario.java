@@ -9,17 +9,11 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
 public final class CreateAccountFineScenario {
 
     private CreateAccountFineScenario() {}
-    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder CreateAccountFineRequest() {
 
@@ -29,7 +23,6 @@ public final class CreateAccountFineScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 
                 .exec(http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -48,6 +41,7 @@ public final class CreateAccountFineScenario {
                 .exitHereIfFailed()                       
            
                 //Select Business Unit
+                .pause(3,5)
 
                 .exec(
                     http("OPAL - Sso - Authenticated")

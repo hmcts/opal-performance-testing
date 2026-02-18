@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
-public class ApproveAccountSimulation extends Simulation {   
+public class ReviewAccountSimulation extends Simulation {   
 
     public static AtomicInteger global400ErrorCounter = new AtomicInteger(0);
     private static final String OPAL_LOGIN_TEST = "Opal Manual Account Creation Test";
@@ -19,11 +19,8 @@ public class ApproveAccountSimulation extends Simulation {
         System.out.println("User Count: " + AppConfig.PerformanceConfig.CHECKER_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
-// 2 and 6 simple
-// 5 and 15 complex
 
-
-    public ApproveAccountSimulation() {
+    public ReviewAccountSimulation() {
         setUp(
             ApproveAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(

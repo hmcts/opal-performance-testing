@@ -30,13 +30,38 @@ public class AssertionsConfig {
         };
     }
 
-    /**
-     * Gets assertions for Login scenario testing.
-     * @return Array of assertions to be used in setUp()
-     */
-    public static Assertion[] getLoginAssertions() {
+    
+    // Gets assertions for Login scenario testing.
+    public static Assertion[] getMac01Assertions() {
         return new Assertion[]{
-            global().responseTime().max().lt(10000),
+
+            // Default rule: ALL requests < 2s (p95)
+            global()
+                .responseTime()
+                .percentile3()
+                .lt(2000),
+
+            // Exception 1: Login request < 5s
+            details(
+                "Inputter Workflow",
+                "OPAL Login",
+                "OPAL - Sso - Login - /"
+            )
+            .responseTime()
+            .percentile3()
+            .lt(5000),
+
+            // Exception 2: Credential type lookup < 5s
+            details(
+                "Inputter Workflow",
+                "OPAL Login",
+                "OPAL - Common - GetCredentialType"
+            )
+            .responseTime()
+            .percentile3()
+            .lt(5000),
+
+            // Optional but recommended
             global().failedRequests().count().is(0L)
         };
     }
@@ -62,4 +87,6 @@ public class AssertionsConfig {
             details("OPAL - Approval-service - Accounts").responseTime().percentile(90).lt(3000)
         };
     }
+
+    
 }
