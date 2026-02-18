@@ -10,18 +10,19 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 
 public class ExistingUsersScenarioBuild {
 
-    public static ScenarioBuilder build(String scenarioName, int durationInSeconds) {
+    public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
             .group("Existing User Workflow")
             .on(
                 exec(feed(Feeders.createUsers()))
                 .exec(LoginScenario.LoginRequest())
 
-                // Keep the user alive for the duration of the simulation
-                .during(durationInSeconds).on(
+                // Loop forever until the simulation stops
+                .forever().on(
                     exec(UserExistsScenario.UserExistsRequest())
-                    .pause(110) // pause between each keep-alive request
+                    .pause(110)
                 )
             );
     }
 }
+
