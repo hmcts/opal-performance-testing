@@ -2,7 +2,7 @@ package simulations.Scripts.PerformanceTests;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
-import simulations.Scripts.ScenarioBuilder.UserExistsScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.ExistingUsersScenarioBuild;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -17,11 +17,9 @@ public class UserExistsSimulation extends Simulation {
     }    
 
     public UserExistsSimulation() {
-        // Use the total simulation duration to keep users alive
-        int totalSimulationSeconds = AppConfig.PerformanceConfig.getSimulationDuration();
 
         setUp(
-            UserExistsScenarioBuild.build("User Exists Test", totalSimulationSeconds)
+            ExistingUsersScenarioBuild.build("User Exists Test")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
                     .during(AppConfig.PerformanceConfig.getRampDuration())
