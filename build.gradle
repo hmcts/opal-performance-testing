@@ -52,7 +52,8 @@ def simulations = [
     [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.ApproveAccountSimulation'],
     [task: 'runUserExistsSimulation', class: 'simulations.Scripts.PerformanceTests.UserExistsSimulation'],
     [task: 'runDeleteAccountSimulation', class: 'simulations.Scripts.PerformanceTests.DeleteAccountSimulation'],
-    [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation']        
+    [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation']
+       
 
 ]
 
