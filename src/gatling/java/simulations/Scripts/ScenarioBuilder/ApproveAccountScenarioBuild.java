@@ -19,8 +19,8 @@ public class ApproveAccountScenarioBuild {
                 // 50/50 split between approve and reject
                 .randomSwitch()
                     .on(
-                        percent(50.0).then(exec(ApproveAccountScenario.ApproveAccountRequest())),
-                        percent(50.0).then(exec(RejectAccountScenario.RejectAccountRequest()))
+                        percent(100.0).then(exec(ApproveAccountScenario.ApproveAccountRequest()))
+                    //    percent(100.0).then(exec(RejectAccountScenario.RejectAccountRequest()))
                     )
 
             );

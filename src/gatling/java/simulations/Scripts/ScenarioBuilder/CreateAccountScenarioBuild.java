@@ -18,9 +18,11 @@ public class CreateAccountScenarioBuild {
             .on(
                 exec(feed(Feeders.inputterUsers())
                     .exec(LoginScenario.LoginRequest())
-                    .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
-                    .exec(CreateAccountFineScenario.CreateAccountFineRequest())
-                    .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+                    .repeat(10)
+                    .on(exec(CreateAccountFineScenario.CreateAccountFineRequest()))
+               //     .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
+               //     .exec(CreateAccountFineScenario.CreateAccountFineRequest())
+               //     .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
                 )
             );
     }

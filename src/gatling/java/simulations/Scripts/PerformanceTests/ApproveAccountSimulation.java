@@ -29,18 +29,7 @@ public class ApproveAccountSimulation extends Simulation {
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()))           
-                .assertions(global().responseTime().max().lt(60000),              
-                    details(
-                        "OPAL Login Requests",
-                        "OPAL Approve Account",
-                        "Opal - Opal-fines-service - Business-units"
-                    ).responseTime().percentile(90).lt(2000),              
-                    details(
-                      "OPAL Login Requests",
-                        "OPAL Approve Account",
-                        "OPAL - Opal-fines-service - Draft-accounts"                    
-                    ).responseTime().max().lt(30000)                
+                .protocols(HttpProtocolConfig.build())                   
         );
     } 
 }

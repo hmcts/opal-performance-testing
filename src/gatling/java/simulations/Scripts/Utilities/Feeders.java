@@ -85,6 +85,17 @@ public class Feeders {
     public static CheckBuilder.Final saveBusinessUnitId() {
         return CoreDsl.jsonPath("$.refData[*].business_unit_id").findRandom().saveAs("getBusinessUnitId");
     }
+    public static CheckBuilder.Final saveCourtId() {
+        return CoreDsl.jsonPath("$.refData[*].court_id").findRandom().saveAs("getCourtId");
+    }
+    public static CheckBuilder.Final saveProsecutorId() {
+        return CoreDsl.jsonPath("$.ref_data[*].prosecutor_id").findRandom().saveAs("getProsecutorId");
+    }
+    
+    
+
+
+
 
     public static FeederBuilder<Object> listFeeder(String key, List<Object> items) {
         return CoreDsl.listFeeder(items.stream()

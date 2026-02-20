@@ -36,7 +36,15 @@ public class RequestBodyBuilder {
 
     public static String BuildDraftAccountRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
+        String userName = session.get("getUserName") != null ? session.get("getUserName").toString() : "";
+        String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
+        String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
+        String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
+        String prosecutorId = session.get("getProsecutorId") != null ? session.get("getProsecutorId").toString() : ""; 
+
+        
+
+        
         
         // Generate random values using DataGenerator
         String forename = DataGenerator.generateRandomFirstName();
@@ -141,7 +149,7 @@ public class RequestBodyBuilder {
         "            \"title\": \"Mr\"\n" +
         "        },\n" +
         "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
-        "        \"enforcement_court_id\": 650000000004,\n" +
+        "        \"enforcement_court_id\": %s,\n" +
         "        \"fp_ticket_detail\": {\n" +
         "            \"date_of_issue\": \"2026-01-07\",\n" +
         "            \"fp_driving_licence_number\": \"ABCDE123456AA1B1\",\n" +
@@ -154,12 +162,12 @@ public class RequestBodyBuilder {
         "        \"offences\": [\n" +
         "            {\n" +
         "                \"date_of_sentence\": \"2026-01-07\",\n" +
-        "                \"imposing_court_id\": %d,\n" +
+        "                \"imposing_court_id\": null,\n" +
         "                \"impositions\": [\n" +
         "                    {\n" +
         "                        \"amount_imposed\": 800,\n" +
         "                        \"amount_paid\": 0,\n" +
-        "                        \"major_creditor_id\": %d,\n" +
+        "                        \"major_creditor_id\": null,\n" +
         "                        \"minor_creditor\": null,\n" +
         "                        \"result_id\": \"FO\"\n" +
         "                    }\n" +
@@ -167,8 +175,9 @@ public class RequestBodyBuilder {
         "                \"offence_id\": 33369\n" +
         "            }\n" +
         "        ],\n" +
-        "        \"originator_id\": 23,\n" +
+        "        \"originator_id\": %s,\n" +
         "        \"originator_name\": \"undefined\",\n" +
+        "        \"originator_type\": \"FP\",\n" +
         "        \"payment_card_request\": null,\n" +
         "        \"payment_terms\": {\n" +
         "            \"default_days_in_jail\": null,\n" +
@@ -187,10 +196,10 @@ public class RequestBodyBuilder {
         "    \"account_status_date\": null,\n" +
         "    \"account_status_message\": null,\n" +
         "    \"account_type\": \"Fixed Penalty\",\n" +
-        "    \"business_unit_id\": 65,\n" +
+        "    \"business_unit_id\": %s,\n" +
         "    \"created_at\": null,\n" +
         "    \"draft_account_id\": null,\n" +
-        "    \"submitted_by\": \"L065JG\",\n" +
+        "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
         "    \"timeline_data\": [\n" +
         "        {\n" +
@@ -202,13 +211,19 @@ public class RequestBodyBuilder {
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
-        forename, surname, fpRegNumber, noticeNumber,
-        imposingCourtId, majorCreditorId, userName, userName);
+        forename, surname, courtId, fpRegNumber, noticeNumber,
+        prosecutorId, businessUnitId, businessUnitUserIds, userName, userName);
     }
 
     public static String BuildDraftAccountFineRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
+        String userName = session.get("getUserName") != null ? session.get("getUserName").toString() : "";
+        String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
+        String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
+        String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
+        String prosecutorId = session.get("getProsecutorId") != null ? session.get("getProsecutorId").toString() : ""; 
+
+        
         
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
         String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
@@ -232,16 +247,16 @@ public class RequestBodyBuilder {
         "    \"created_at\": null,\n" +
         "    \"account_snapshot\": null,\n" +
         "    \"account_status_date\": null,\n" +
-        "    \"business_unit_id\": 77,\n" +
-        "    \"submitted_by\": \"L077JG\",\n" +
+        "    \"business_unit_id\": %s,\n" +
+        "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
         "    \"account\": {\n" +
         "        \"account_type\": \"Fine\",\n" +
         "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
         "        \"originator_name\": \"Aberdeen JP Court\",\n" +
-        "        \"originator_id\": 9251,\n" +
+        "        \"originator_id\": %s,\n" +
         "        \"prosecutor_case_reference\": \"%s\",\n" +
-        "        \"enforcement_court_id\": 770000000042,\n" +
+        "        \"enforcement_court_id\": %s,\n" +
         "        \"collection_order_made\": null,\n" +
         "        \"collection_order_made_today\": null,\n" +
         "        \"collection_order_date\": null,\n" +
@@ -339,7 +354,10 @@ public class RequestBodyBuilder {
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
-        userName, prosecutorCaseRef, surname, forename, addressLine1, addressLine2, email1, nin, vehicleMake, vehicleReg, employeeRef, employerCompanyName, employerAddressLine1, employerAddressLine2, accountNoteText, userName);
+        businessUnitId, businessUnitUserIds, userName, courtId, prosecutorId, prosecutorCaseRef, surname, forename, addressLine1,
+        addressLine2, email1, nin, vehicleMake, vehicleReg, 
+        employeeRef, employerCompanyName, employerAddressLine1, 
+        employerAddressLine2, accountNoteText, userName);
     }
 
     public static String BuildDraftAccountConditionalCautionRequestBody(Session session) {

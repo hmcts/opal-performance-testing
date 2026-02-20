@@ -9,6 +9,8 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
+import java.util.List;
+
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
 public final class CreateAccountFixedScenario {
@@ -29,6 +31,19 @@ public final class CreateAccountFixedScenario {
                         .check(status().is(200))                                         
                 )
                 .exitHereIfFailed() 
+
+                .exec(session -> {
+                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
+                    List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
+
+                    // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+
+                    return session
+                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
+                        .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
+                })
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -48,13 +63,16 @@ public final class CreateAccountFixedScenario {
                 )  
                 .exec(          
                     http("OPAL - Opal-fines-service - Prosecutors")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{getBusinessUnitId}")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{selectedBusinessUnitId}")
                         .headers(Headers.getHeaders(12))
+                        .check(Feeders.saveProsecutorId())                        
+
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{getBusinessUnitId}")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
                         .headers(Headers.getHeaders(12))
+                        .check(Feeders.saveCourtId())                        
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Local-justice-areas")
@@ -88,16 +106,17 @@ public final class CreateAccountFixedScenario {
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Major-creditors")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{getBusinessUnitId}")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
                 )
 
                 /// NEXT STEP
                 .pause(3,5)
 
+
                 .exec(session -> {
                     String draftAccountRequestPayload = RequestBodyBuilder.BuildDraftAccountRequestBody(session);
-                    System.out.println("draftAccountRequestPayload = " + session.getString("draftAccountRequestPayload"));
+                //    System.out.println("draftAccountRequestPayload = " + session.getString("draftAccountRequestPayload"));
                     return session.set("draftAccountRequestPayload", draftAccountRequestPayload);
                 })
                 .exec(

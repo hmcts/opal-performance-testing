@@ -113,8 +113,10 @@ public final class ApproveAccountScenario {
                         return session.markAsFailed();
                     }
 
-                    int index = 0; // or random
-
+                  // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+                        
                     return session
                         .set("selectedDraftAccountId", draftAccountIds.get(index))
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))

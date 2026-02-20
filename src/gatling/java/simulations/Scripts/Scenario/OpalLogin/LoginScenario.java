@@ -144,7 +144,9 @@ public final class LoginScenario {
 
                     jsonPath("$.business_unit_users[*].business_unit_user_id")
                         .findAll()
-                        .saveAs("businessUnitUserIds")
+                        .saveAs("businessUnitUserIds"),
+                    jsonPath("$.name")
+                        .saveAs("getUserName")                    
                 )
             )
             .exec(
