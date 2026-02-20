@@ -217,7 +217,13 @@ public class RequestBodyBuilder {
 
     public static String BuildDraftAccountFineRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
+        String userName = session.get("getUserName") != null ? session.get("getUserName").toString() : "";
+        String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
+        String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
+        String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
+        String prosecutorId = session.get("getProsecutorId") != null ? session.get("getProsecutorId").toString() : ""; 
+
+        
         
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
         String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
@@ -241,16 +247,16 @@ public class RequestBodyBuilder {
         "    \"created_at\": null,\n" +
         "    \"account_snapshot\": null,\n" +
         "    \"account_status_date\": null,\n" +
-        "    \"business_unit_id\": 77,\n" +
-        "    \"submitted_by\": \"L077JG\",\n" +
+        "    \"business_unit_id\": %s,\n" +
+        "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
         "    \"account\": {\n" +
         "        \"account_type\": \"Fine\",\n" +
         "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
         "        \"originator_name\": \"Aberdeen JP Court\",\n" +
-        "        \"originator_id\": 9251,\n" +
+        "        \"originator_id\": %s,\n" +
         "        \"prosecutor_case_reference\": \"%s\",\n" +
-        "        \"enforcement_court_id\": 770000000042,\n" +
+        "        \"enforcement_court_id\": %s,\n" +
         "        \"collection_order_made\": null,\n" +
         "        \"collection_order_made_today\": null,\n" +
         "        \"collection_order_date\": null,\n" +
@@ -348,7 +354,10 @@ public class RequestBodyBuilder {
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
-        userName, prosecutorCaseRef, surname, forename, addressLine1, addressLine2, email1, nin, vehicleMake, vehicleReg, employeeRef, employerCompanyName, employerAddressLine1, employerAddressLine2, accountNoteText, userName);
+        businessUnitId, businessUnitUserIds, userName, courtId, prosecutorId, prosecutorCaseRef, surname, forename, addressLine1,
+        addressLine2, email1, nin, vehicleMake, vehicleReg, 
+        employeeRef, employerCompanyName, employerAddressLine1, 
+        employerAddressLine2, accountNoteText, userName);
     }
 
     public static String BuildDraftAccountConditionalCautionRequestBody(Session session) {
