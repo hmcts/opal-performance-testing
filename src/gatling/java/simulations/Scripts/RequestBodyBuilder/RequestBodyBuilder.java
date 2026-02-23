@@ -666,28 +666,47 @@ public class RequestBodyBuilder {
 
             return String.format(
                 "{\n" +
-                "  \"validated_by\": null,\n" +
-                "  \"account_status\": \"Deleted\",\n" +
-                "  \"validated_by_name\": null,\n" +
-                "  \"business_unit_id\": %d,\n" +
-                "  \"version\": \"0\",\n" +
-                "  \"timeline_data\": [\n" +
-                "    {\n" +
-                "      \"status\": \"Submitted\",\n" +
-                "      \"username\": \"%s\",\n" +
-                "      \"reason_text\": null,\n" +
-                "      \"status_date\": \"%s\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"username\": \"%s\",\n" +
-                "      \"status\": \"Deleted\",\n" +
-                "      \"status_date\": \"%s\",\n" +
-                "      \"reason_text\": null\n" +
-                "    }\n" +
+                "  \"active_accounts_only\": true,\n" +               
+                "  \"business_unit_ids\": [\n" +                
                 "  ],\n" +
                 "  \"reason_text\": \"Perf_%s\"\n" +
                 "}",
                 businessUnitId, submittedByName, statusSubmittedDate, userName, statusDeletedDate, reasonText
+            );
+        }
+
+       public static String buildSearchAccountRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("getListBusinessUnitId") != null
+                    ? session.get("getListBusinessUnitId").toString()
+                    : "[]";
+
+            String forenames = "s";
+            String surname = "s";
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": true,\n" +
+                "  \"business_unit_ids\": %s,\n" +  
+                "  \"defendant\": {\n" +
+                "    \"address_line_1\": null,\n" +
+                "    \"birth_date\": null,\n" +
+                "    \"exact_match_forenames\": false,\n" +
+                "    \"exact_match_organisation_name\": null,\n" +
+                "    \"exact_match_surname\": false,\n" +
+                "    \"forenames\": \"%s\",\n" +
+                "    \"include_aliases\": false,\n" +
+                "    \"national_insurance_number\": null,\n" +
+                "    \"organisation\": false,\n" +
+                "    \"organisation_name\": null,\n" +
+                "    \"postcode\": null,\n" +
+                "    \"surname\": \"%s\"\n" +
+                "  },\n" +
+                "  \"reference_number\": null\n" +
+                "}",
+                businessUnitIdsJson,
+                forenames,
+                surname
             );
         }
     }

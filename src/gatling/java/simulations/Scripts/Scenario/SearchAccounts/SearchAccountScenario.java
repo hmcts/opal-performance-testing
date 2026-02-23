@@ -19,9 +19,9 @@ public final class SearchAccountScenario {
     private SearchAccountScenario() {}
     private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
-    public static ChainBuilder DeleteAccountRequest() {
+    public static ChainBuilder SearchAccountRequest() {
 
-        return group("OPAL Delete Account").on(
+        return group("OPAL Search Account").on(
                 exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -35,228 +35,50 @@ public final class SearchAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
                 )
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                )
                 .exitHereIfFailed() 
 
-                //Build draft account query parameters from business unit data in session (Submitted / Resubmitted) 
-                
-                .exec(session ->
-                    DraftAccountQueryBuilder.buildAndStore(
-                        session,
-                        "draftAccountSubmittedQueryParams",
-                        List.of("Submitted", "Resubmitted"),
-                        "not_submitted_by",
-                       false
-                    )
-                )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
-                
-                //Build draft account query parameters from business unit data in session (Publishing Failed)               
-
-                .exec(session ->
-                    DraftAccountQueryBuilder.buildAndStore(
-                        session,
-                        "draftAccountFailedQueryParams",
-                        List.of("Publishing Failed"),
-                        "not_submitted_by",
-                       false
-                    )
-                )                
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountFailedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
-
-                //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
+                    http("OPAL - Opal-fines-service - Business-units")
+                        .get(session -> AppConfig.UrlConfig.BASE_URL  + "/opal-fines-service/business-units")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                         .check(
-                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
-                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
-                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
-                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
-                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
-                            )
-
-                        )
-                
-                .exec(session -> {
-
-                    List<Integer> draftAccountIds = session.getList("draftAccountIds");
-                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
-                    List<String> accountStatuses = session.getList("accountStatuses");
-                    List<String> submittedBys = session.getList("submittedBys");
-                    List<String> submittedByNames = session.getList("submittedByNames");
-
-                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
-                        return session.markAsFailed();
-                    }
-
-                    int index = 0; // or random
-
-                    return session
-                        .set("selectedDraftAccountId", draftAccountIds.get(index))
-                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
-                        .set("accountStatus", accountStatuses.get(index))
-                        .set("submittedBy", submittedBys.get(index))
-                        .set("submittedByName", submittedByNames.get(index));
-                    }
+                        jsonPath("$.refData[?(@.opal_domain == 'Fines')].business_unit_id").findAll().saveAs("getListBusinessUnitId"))
                 )
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                )  
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                )  
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                        .check(jsonPath("$.timeline_data[*].status_date").findAll().saveAs("statusDate"))
-                        .check(jsonPath("$.submitted_by_name").findAll().saveAs("submittedByName"))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Business-units")
-                        .get(session -> AppConfig.UrlConfig.BASE_URL  + "/opal-fines-service/business-units/" + session.get("selectedBusinessUnitId"))
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/33369")
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Courts")
-                    .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=" + session.get("selectedBusinessUnitId"))
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Results")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/results?result_ids=FCOMP&result_ids=FVS&result_ids=FCOST&result_ids=FCPC&result_ids=FO&result_ids=FCC&result_ids=FVEBD&result_ids=FFR")
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Major-creditors")
-                    .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=" + session.get("selectedBusinessUnitId"))
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Prosecutors")
-                    .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=" + session.get("selectedBusinessUnitId"))
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Local-justice-areas")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
-                    .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
-                    .headers(Headers.getHeaders(11))
-                )
-                //Delete selected draft account
-                .exec(
-                http("OPAL - Opal-User-Service - Users - 0 - state")
-                .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
-                    .headers(Headers.getHeaders(7))
-                )
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                )  
-                .exec(session -> {
-                        return session
-                            .set("deleteAccountRequestPayload",
-                                RequestBodyBuilder.buildDeletedAccountRequestBody(session));                   
-                }) 
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                    .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
-                    .headers(Headers.getHeaders(15))
-                    .body(StringBody(session -> session.get("deleteAccountRequestPayload"))).asJson()
-                    .check(status().is(200)) 
-                )   
-                .exec(
-                    http("OPAL - Opal-User-Service - Users - 0 - state")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
-                        .headers(Headers.getHeaders(7))
-                )          
+                .pause(2, 5)
                 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                )                
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                )
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
                 )               
                 
+                .exec(session -> {
+                    System.out.println("BU LIST = " + session.get("getListBusinessUnitId"));
+                    return session;
+                })
+                //Search for accounts query parameters 
+                .exec(session -> {
+                    String searchAccountRequestPayload =
+                        RequestBodyBuilder.buildSearchAccountRequestBody(session);
+                    return session.set("searchAccountRequestPayload", searchAccountRequestPayload);
+                })   
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
+                    http("OPAL - Opal-fines-service - Defendant-accounts - Search")
+                    .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/search")
+                    .headers(Headers.getHeaders(14)) 
+                    .body(StringBody(session -> session.get("searchAccountRequestPayload"))).asJson()
+                    .check(status().is(200)) 
+
                 )
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountFailedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
+               
         );            
     }
 }
