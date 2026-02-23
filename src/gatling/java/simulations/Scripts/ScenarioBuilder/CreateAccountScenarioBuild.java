@@ -1,10 +1,11 @@
 package simulations.Scripts.ScenarioBuilder;
 
 
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountConditionalCautionScenario;
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountFineScenario;
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountFixedScenario;
-import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
+
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountConditionalCautionScenario;
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountFineScenario;
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountFixedScenario;
+import simulations.Scripts.Scenario.Login.LoginScenario;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
 
@@ -19,10 +20,14 @@ public class CreateAccountScenarioBuild {
                 exec(feed(Feeders.inputterUsers())
                     .exec(LoginScenario.LoginRequest())
                     .repeat(10)
-                    .on(exec(CreateAccountFineScenario.CreateAccountFineRequest()))
-               //     .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
-               //     .exec(CreateAccountFineScenario.CreateAccountFineRequest())
-               //     .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+                    .on(exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
+                    .exec(CreateAccountFineScenario.CreateAccountFineRequest())
+                    .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+                
+                    )
+                    // .exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
+                    // .exec(CreateAccountFineScenario.CreateAccountFineRequest())
+                    // .exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
                 )
             );
     }

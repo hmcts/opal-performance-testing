@@ -1,9 +1,10 @@
 package simulations.Scripts.ScenarioBuilder;
 
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountConditionalCautionScenario;
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountFineScenario;
-import simulations.Scripts.Scenario.OpalLogin.CreateAccountFixedScenario;
-import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
+
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountConditionalCautionScenario;
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountFineScenario;
+import simulations.Scripts.Scenario.CreateAccounts.CreateAccountFixedScenario;
+import simulations.Scripts.Scenario.Login.LoginScenario;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.ScenarioBuilder;
 
@@ -33,6 +34,10 @@ public class InputterUsersScenarioBuild {
                     .doIf(session -> "CONDITIONAL".equals(session.getString("Account"))).then(
                         exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
                     )
+
+
+
+
                 )
             );
     }

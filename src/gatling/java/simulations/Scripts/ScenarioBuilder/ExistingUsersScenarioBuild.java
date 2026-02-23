@@ -1,8 +1,8 @@
 package simulations.Scripts.ScenarioBuilder;
 
 
-import simulations.Scripts.Scenario.OpalLogin.LoginScenario;
-import simulations.Scripts.Scenario.OpalLogin.UserExistsScenario;
+import simulations.Scripts.Scenario.Login.LoginScenario;
+import simulations.Scripts.Scenario.Login.UserExistsScenario;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
 

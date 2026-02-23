@@ -89,11 +89,15 @@ public class Feeders {
         return CoreDsl.jsonPath("$.refData[*].court_id").findRandom().saveAs("getCourtId");
     }
     public static CheckBuilder.Final saveProsecutorId() {
-        return CoreDsl.jsonPath("$.ref_data[*].prosecutor_id").findRandom().saveAs("getProsecutorId");
+        return CoreDsl.jsonPath("$.ref_data[*].prosecutor_id").findAll().saveAs("getProsecutorId");
+    }
+    public static CheckBuilder.Final saveProsecutorName() {
+        return CoreDsl.jsonPath("$.ref_data[*].name").findAll().saveAs("getProsecutorName");
     }
     
-    
-
+    public static CheckBuilder.Final saveProsecutors() {
+        return CoreDsl.jsonPath("$.ref_data[*]").findAll().saveAs("prosecutors");
+    }
 
 
 

@@ -1,8 +1,7 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.SearchAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
-import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -15,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
-public final class DeleteAccountScenario {
+public final class SearchAccountScenario {
 
-    private DeleteAccountScenario() {}
+    private SearchAccountScenario() {}
     private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
     public static ChainBuilder DeleteAccountRequest() {

@@ -1,4 +1,4 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
@@ -10,6 +10,8 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
@@ -65,9 +67,15 @@ public final class CreateAccountFixedScenario {
                     http("OPAL - Opal-fines-service - Prosecutors")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{selectedBusinessUnitId}")
                         .headers(Headers.getHeaders(12))
-                        .check(Feeders.saveProsecutorId())                        
+                 //   .check(Feeders.saveProsecutorId())  
+                //    .check(Feeders.saveProsecutors()) 
+                        .check(
+                        jsonPath("$.ref_data[*].prosecutor_id").findAll().saveAs("prosecutorIds"),
+                        jsonPath("$.ref_data[*].name").findAll().saveAs("prosecutorNames")
+                    )
 
-                )
+                ) 
+
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
@@ -112,7 +120,33 @@ public final class CreateAccountFixedScenario {
 
                 /// NEXT STEP
                 .pause(3,5)
+                .exec(session -> {
+                    List<Integer> prosecutorIds = session.getList("prosecutorIds");
+                    List<String> prosecutorNames = session.getList("prosecutorNames");
 
+                    if (prosecutorIds == null || prosecutorIds.isEmpty()) {
+                        System.out.println("No prosecutors found!");
+                        return session;
+                    }
+
+                    int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
+
+                    return session
+                        .set("selectedProsecutorId", prosecutorIds.get(index))
+                        .set("selectedProsecutorName", prosecutorNames.get(index));
+                })
+                .exec(session -> {
+                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
+                    List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
+
+                    // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+
+                    return session
+                        .set("selectedProsecutorId", businessUnitIds.get(index))
+                        .set("selectedProsecutorName", businessUnitUserIds.get(index));
+                })
 
                 .exec(session -> {
                     String draftAccountRequestPayload = RequestBodyBuilder.BuildDraftAccountRequestBody(session);

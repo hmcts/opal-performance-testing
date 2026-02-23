@@ -47,11 +47,11 @@ def registerSimulationTask(taskName, simulationClassName) {
 // List of simulations with their task names and simulation class names
 def simulations = [
 
-    [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.LoginSimulation'],
-    [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.CreateAccountSimulation'],
-    [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.ApproveAccountSimulation'],
-    [task: 'runUserExistsSimulation', class: 'simulations.Scripts.PerformanceTests.UserExistsSimulation'],
-    [task: 'runDeleteAccountSimulation', class: 'simulations.Scripts.PerformanceTests.DeleteAccountSimulation'],
+    [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.LoginSimulation'],
+    [task: 'runCreateAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.CreateAccountSimulation'],
+    [task: 'runApproveAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ApproveAccountSimulation'],
+    [task: 'runUserExistsSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.UserExistsSimulation'],
+    [task: 'runDeleteAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.DeleteAccountSimulation'],
     [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation']
        
 
