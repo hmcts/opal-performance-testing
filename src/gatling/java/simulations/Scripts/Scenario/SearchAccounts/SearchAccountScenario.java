@@ -60,10 +60,11 @@ public final class SearchAccountScenario {
                         .check(status().is(200))                                         
                 )               
                 
-                .exec(session -> {
-                    System.out.println("BU LIST = " + session.get("getListBusinessUnitId"));
-                    return session;
-                })
+                // .exec(session -> {
+                //     System.out.println("BU LIST = " + session.get("getListBusinessUnitId"));
+                //     return session;
+                // })
+                
                 //Search for accounts query parameters 
                 .exec(session -> {
                     String searchAccountRequestPayload =

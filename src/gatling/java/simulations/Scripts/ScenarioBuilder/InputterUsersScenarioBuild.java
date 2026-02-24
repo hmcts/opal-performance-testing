@@ -21,7 +21,7 @@ public class InputterUsersScenarioBuild {
                 .exec(LoginScenario.LoginRequest())
 
                 // Create 10 accounts per user
-                .repeat(10).on(
+                .forever().on(
                     // Pull NEXT row from SAME CSV
                     feed(Feeders.inputterUsers())
 

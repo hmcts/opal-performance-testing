@@ -55,7 +55,7 @@ public final class CreateAccountFixedScenario {
 
                 )               
                 .exitHereIfFailed()                       
-                .pause(3,5)
+                .pause(5,20)
                 //Select Business Unit
 
                 .exec(
@@ -119,7 +119,7 @@ public final class CreateAccountFixedScenario {
                 )
 
                 /// NEXT STEP
-                .pause(3,5)
+                .pause(20,60)
                 .exec(session -> {
                     List<Integer> prosecutorIds = session.getList("prosecutorIds");
                     List<String> prosecutorNames = session.getList("prosecutorNames");
