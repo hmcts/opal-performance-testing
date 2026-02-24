@@ -1,4 +1,4 @@
-package simulations.Scripts.PerformanceTests;
+package simulations.Scripts.PerformanceTests.PlayTest;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;

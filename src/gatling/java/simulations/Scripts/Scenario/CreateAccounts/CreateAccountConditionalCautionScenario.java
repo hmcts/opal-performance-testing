@@ -1,4 +1,4 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
@@ -8,6 +8,9 @@ import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
@@ -29,6 +32,19 @@ public final class CreateAccountConditionalCautionScenario {
                         .check(status().is(200))                                         
                 )
                 .exitHereIfFailed() 
+
+                .exec(session -> {
+                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
+                    List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
+
+                    // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+
+                    return session
+                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
+                        .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
+                })
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -48,7 +64,7 @@ public final class CreateAccountConditionalCautionScenario {
                 ) 
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{getBusinessUnitId}")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
                         .headers(Headers.getHeaders(12))
                 )
                 .exec(
@@ -88,7 +104,7 @@ public final class CreateAccountConditionalCautionScenario {
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Major-creditors")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{getBusinessUnitId}")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
                 )
                 .pause(3,5)
@@ -117,7 +133,7 @@ public final class CreateAccountConditionalCautionScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
                 ) 
-                                .exec(
+                .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
@@ -129,9 +145,29 @@ public final class CreateAccountConditionalCautionScenario {
                 ) 
                 .exec(
                     http("OPAL - Opal-fines-service - Major-creditors")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{getBusinessUnitId}")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
+                    .check(
+                        jsonPath("$.ref_data[*].prosecutor_id").findAll().saveAs("prosecutorIds"),
+                        jsonPath("$.ref_data[*].name").findAll().saveAs("prosecutorNames")
+                    )
+
                 ) 
+                 .exec(session -> {
+                    List<Integer> prosecutorIds = session.getList("prosecutorIds");
+                    List<String> prosecutorNames = session.getList("prosecutorNames");
+
+                    if (prosecutorIds == null || prosecutorIds.isEmpty()) {
+                        System.out.println("No prosecutors found!");
+                        return session;
+                    }
+
+                    int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
+
+                    return session
+                        .set("selectedProsecutorId", prosecutorIds.get(index))
+                        .set("selectedProsecutorName", prosecutorNames.get(index));
+                })
                 .exec(session -> {
                     String draftAccountRequestPayload =
                         RequestBodyBuilder.BuildDraftAccountConditionalCautionRequestBody(session);

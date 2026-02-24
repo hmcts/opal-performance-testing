@@ -1,4 +1,4 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.Login;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;

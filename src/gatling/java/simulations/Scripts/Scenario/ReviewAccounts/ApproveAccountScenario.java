@@ -1,4 +1,4 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.ReviewAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
@@ -9,15 +9,18 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
-public final class RejectAccountScenario {
+public final class ApproveAccountScenario {
 
-    private RejectAccountScenario() {}
+    private ApproveAccountScenario() {}
+    private static final Logger logger = LoggerFactory.getLogger("OPAL");
 
-    public static ChainBuilder RejectAccountRequest() {
+    public static ChainBuilder ApproveAccountRequest() {
 
         return group("OPAL Approve Account").on(
                 exec(
@@ -25,8 +28,7 @@ public final class RejectAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )
-                
+                )                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -111,8 +113,10 @@ public final class RejectAccountScenario {
                         return session.markAsFailed();
                     }
 
-                    int index = 0; // or random
-
+                  // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+                        
                     return session
                         .set("selectedDraftAccountId", draftAccountIds.get(index))
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
@@ -178,14 +182,13 @@ public final class RejectAccountScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
                 )
-                //Reject the selected draft account
-                .exec(session -> { 
+                //Approve selected draft account
+                .exec(session -> {
                         return session
                             .set("draftAccountRequestPayload",
-                                RequestBodyBuilder.BuildRejectAccountRequestBody(session))
-                            .set("actionType", "REJECT");
-                    }  
-                )          
+                                RequestBodyBuilder.BuildApproveAccountRequestBody(session))
+                            .set("actionType", "APPROVE");                   
+                }) 
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))

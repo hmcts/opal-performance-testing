@@ -1,4 +1,4 @@
-package simulations.Scripts.Scenario.OpalLogin;
+package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
@@ -10,6 +10,8 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 
@@ -151,9 +153,29 @@ public final class CreateAccountFineScenario {
                     http("OPAL - Opal-fines-service - Major-creditors")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/prosecutors?business_unit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
-                    .check(Feeders.saveProsecutorId())                        
+                    // .check(Feeders.saveProsecutorId())  
+                    // .check(Feeders.saveProsecutors()) 
+                    .check(
+                        jsonPath("$.ref_data[*].prosecutor_id").findAll().saveAs("prosecutorIds"),
+                        jsonPath("$.ref_data[*].name").findAll().saveAs("prosecutorNames")
+                    )
 
                 ) 
+                 .exec(session -> {
+                    List<Integer> prosecutorIds = session.getList("prosecutorIds");
+                    List<String> prosecutorNames = session.getList("prosecutorNames");
+
+                    if (prosecutorIds == null || prosecutorIds.isEmpty()) {
+                        System.out.println("No prosecutors found!");
+                        return session;
+                    }
+
+                    int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
+
+                    return session
+                        .set("selectedProsecutorId", prosecutorIds.get(index))
+                        .set("selectedProsecutorName", prosecutorNames.get(index));
+                })
                 .exec(session -> {
                         String draftAccountRequestPayload =
                             RequestBodyBuilder.BuildDraftAccountFineRequestBody(session);

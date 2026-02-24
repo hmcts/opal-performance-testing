@@ -1,5 +1,8 @@
 package simulations.Scripts.RequestBodyBuilder;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import io.gatling.javaapi.core.Session;
 import simulations.Scripts.Utilities.DataGenerator;
 /**
@@ -40,11 +43,10 @@ public class RequestBodyBuilder {
         String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
         String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
-        String prosecutorId = session.get("getProsecutorId") != null ? session.get("getProsecutorId").toString() : ""; 
+        String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
+        String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String todaydate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-        
-
-        
         
         // Generate random values using DataGenerator
         String forename = DataGenerator.generateRandomFirstName();
@@ -61,8 +63,7 @@ public class RequestBodyBuilder {
         String mobilePhone = "07700" + DataGenerator.generateRandomNumber(100000, 999999);
         String fpRegNumber = DataGenerator.generateRandomFPRegistrationNumber();
         String noticeNumber = DataGenerator.generateRandomNoticeNumber();
-        long imposingCourtId = 650000000000L + (1 + new java.util.Random().nextInt(100));
-        int majorCreditorId = 1 + new java.util.Random().nextInt(50);
+
 
         // Store generated data in session for reuse in other methods
         session.set("generatedForename", forename);
@@ -176,7 +177,7 @@ public class RequestBodyBuilder {
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
-        "        \"originator_name\": \"undefined\",\n" +
+        "        \"originator_name\": \"%s\",\n" +
         "        \"originator_type\": \"FP\",\n" +
         "        \"payment_card_request\": null,\n" +
         "        \"payment_terms\": {\n" +
@@ -205,14 +206,14 @@ public class RequestBodyBuilder {
         "        {\n" +
         "            \"reason_text\": null,\n" +
         "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"2026-01-09\",\n" +
+        "            \"status_date\": \"%s\",\n" +
         "            \"username\": \"%s\"\n" +
         "        }\n" +
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         forename, surname, courtId, fpRegNumber, noticeNumber,
-        prosecutorId, businessUnitId, businessUnitUserIds, userName, userName);
+        prosecutorId, prosecutorName, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
     public static String BuildDraftAccountFineRequestBody(Session session) {
@@ -221,10 +222,11 @@ public class RequestBodyBuilder {
         String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
         String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
-        String prosecutorId = session.get("getProsecutorId") != null ? session.get("getProsecutorId").toString() : ""; 
+        String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
+        String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String todaydate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-        
-        
+
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
         String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
         String surname = session.get("generatedSurname") != null ? session.get("generatedSurname").toString() : DataGenerator.generateRandomLastName();
@@ -243,126 +245,149 @@ public class RequestBodyBuilder {
 
         return String.format(
         "{\n" +
-        "    \"draft_account_id\": null,\n" +
-        "    \"created_at\": null,\n" +
-        "    \"account_snapshot\": null,\n" +
-        "    \"account_status_date\": null,\n" +
-        "    \"business_unit_id\": %s,\n" +
-        "    \"submitted_by\": \"%s\",\n" +
-        "    \"submitted_by_name\": \"%s\",\n" +
         "    \"account\": {\n" +
+        "            \"account_notes\": [\n" +
+        "             {\n" +
+        "                \"account_note_serial\": 3,\n" +
+        "                \"account_note_text\": \"%s\",\n" +
+        "                \"note_type\": \"AC\"\n" +
+        "              },\n" +
+        "              {\n" +
+        "                \"account_note_serial\": 2,\n" +
+        "                \"account_note_text\": \"%s\",\n" +
+        "                \"note_type\": \"AA\"\n" +
+        "              }\n" +
+        "            ],\n" +
+        "        \"account_sentence_date\": \"2026-01-14\",\n" + 
         "        \"account_type\": \"Fine\",\n" +
-        "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
-        "        \"originator_name\": \"Aberdeen JP Court\",\n" +
-        "        \"originator_id\": %s,\n" +
-        "        \"prosecutor_case_reference\": \"%s\",\n" +
-        "        \"enforcement_court_id\": %s,\n" +
+        "        \"collection_order_date\": null,\n" +
         "        \"collection_order_made\": null,\n" +
         "        \"collection_order_made_today\": null,\n" +
-        "        \"collection_order_date\": null,\n" +
-        "        \"suspended_committal_date\": null,\n" +
-        "        \"payment_card_request\": null,\n" +
-        "        \"account_sentence_date\": \"2026-01-14\",\n" +
         "        \"defendant\": {\n" +
-        "            \"company_flag\": false,\n" +
-        "            \"title\": \"Mr\",\n" +
-        "            \"surname\": \"%s\",\n" +
-        "            \"forenames\": \"%s\",\n" +
-        "            \"company_name\": null,\n" +
-        "            \"dob\": \"2013-01-02\",\n" +
         "            \"address_line_1\": \"%s\",\n" +
         "            \"address_line_2\": \"%s\",\n" +
         "            \"address_line_3\": null,\n" +
         "            \"address_line_4\": null,\n" +
         "            \"address_line_5\": null,\n" +
-        "            \"post_code\": null,\n" +
-        "            \"telephone_number_home\": null,\n" +
-        "            \"telephone_number_business\": null,\n" +
-        "            \"telephone_number_mobile\": null,\n" +
-        "            \"email_address_1\": \"%s\",\n" +
-        "            \"email_address_2\": null,\n" +
-        "            \"national_insurance_number\": \"%s\",\n" +
-        "            \"driving_licence_number\": null,\n" +
-        "            \"pnc_id\": null,\n" +
-        "            \"nationality_1\": null,\n" +
-        "            \"nationality_2\": null,\n" +
-        "            \"ethnicity_self_defined\": null,\n" +
-        "            \"ethnicity_observed\": null,\n" +
+        "            \"company_flag\": false,\n" +
+        "            \"company_name\": null,\n" +
         "            \"cro_number\": null,\n" +
-        "            \"occupation\": null,\n" +
-        "            \"gender\": null,\n" +
         "            \"custody_status\": null,\n" +
-        "            \"prison_number\": null,\n" +
-        "            \"interpreter_lang\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                \"vehicle_make\": \"%s\",\n" +
-        "                \"vehicle_registration_mark\": \"%s\",\n" +
+        "                \"aliases\": null,\n" +
         "                \"document_language\": null,\n" +
-        "                \"hearing_language\": null,\n" +
         "                \"employee_reference\": \"%s\",\n" +
-        "                \"employer_company_name\": \"%s\",\n" +
         "                \"employer_address_line_1\": \"%s\",\n" +
         "                \"employer_address_line_2\": \"%s\",\n" +
         "                \"employer_address_line_3\": null,\n" +
         "                \"employer_address_line_4\": null,\n" +
         "                \"employer_address_line_5\": null,\n" +
+        "                \"employer_company_name\": \"%s\",\n" +
+        "                \"employer_email_address\": null,\n" +
         "                \"employer_post_code\": null,\n" +
         "                \"employer_telephone_number\": null,\n" +
-        "                \"employer_email_address\": null,\n" +
-        "                \"aliases\": null\n" +
+        "                \"hearing_language\": null,\n" +
+        "                \"vehicle_make\": \"%s\",\n" +
+        "                \"vehicle_registration_mark\": \"%s\"\n" +
         "            },\n" +
-        "            \"parent_guardian\": null\n" +
+        "            \"dob\": \"2013-01-02\",\n" +
+        "            \"driving_licence_number\": null,\n" +
+        "            \"email_address_1\": \"%s\",\n" +
+        "            \"email_address_2\": null,\n" +  
+        "            \"ethnicity_observed\": null,\n" +
+        "            \"ethnicity_self_defined\": null,\n" +
+        "            \"forenames\": \"%s\",\n" +
+        "            \"gender\": null,\n" +
+        "            \"interpreter_lang\": null,\n" +
+        "            \"national_insurance_number\": null,\n" +
+        "            \"nationality_1\": null,\n" +
+        "            \"nationality_2\": null,\n" + 
+        "            \"occupation\": null,\n" +
+        "            \"parent_guardian\": null,\n" +
+        "            \"pnc_id\": null,\n" +
+        "            \"post_code\": null,\n" +
+        "            \"prison_number\": null,\n" +
+        "            \"surname\": \"%s\",\n" +
+        "            \"telephone_number_business\": null,\n" +
+        "            \"telephone_number_home\": null,\n" +
+        "            \"telephone_number_mobile\": null,\n" +
+        "            \"title\": \"Mr\"\n" +
         "        },\n" +
+        "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
+        "        \"enforcement_court_id\": %s,\n" +
+        "        \"fp_ticket_detail\": null,\n" +
         "        \"offences\": [\n" +
         "            {\n" +
         "                \"date_of_sentence\": \"2026-01-14\",\n" +
         "                \"imposing_court_id\": null,\n" +
-        "                \"offence_id\": 33369,\n" +
         "                \"impositions\": [\n" +
         "                    {\n" +
-        "                        \"result_id\": \"FCOMP\",\n" +
         "                        \"amount_imposed\": 500,\n" +
         "                        \"amount_paid\": 200,\n" +
-        "                        \"major_creditor_id\": 770000000041,\n" +
-        "                        \"minor_creditor\": null\n" +
+        "                        \"major_creditor_id\": null,\n" +
+        "                        \"minor_creditor\": null,\n" +
+        "                        \"result_id\": \"FVS\"\n" +
         "                    }\n" +
-        "                ]\n" +
+        "                ],\n" +
+        "                \"offence_id\": 33369\n" +
         "            }\n" +
         "        ],\n" +
-        "        \"fp_ticket_detail\": null,\n" +
+        "        \"originator_id\": %s,\n" +
+        "        \"originator_name\": \"%s\",\n" +
+        "        \"originator_type\": \"NEW\",\n" +
+        "        \"payment_card_request\": null,\n" +
         "        \"payment_terms\": {\n" +
-        "            \"payment_terms_type_code\": \"B\",\n" +
+        "            \"default_days_in_jail\": null,\n" +
         "            \"effective_date\": \"2026-01-14\",\n" +
+        "            \"enforcements\": null,\n" +
+        "            \"instalment_amount\": null,\n" +
         "            \"instalment_period\": null,\n" +
         "            \"lump_sum_amount\": null,\n" +
-        "            \"instalment_amount\": null,\n" +
-        "            \"default_days_in_jail\": null,\n" +
-        "            \"enforcements\": null\n" +
+        "            \"payment_terms_type_code\": \"B\"\n" +
         "        },\n" +
-        "        \"account_notes\": [{\"account_note_serial\": 1, \"account_note_text\": \"%s\", \"note_type\": \"AC\"}]\n" +
-        "    },\n" +
-        "    \"account_type\": \"Fine\",\n" +
+        "        \"prosecutor_case_reference\": \"%s\",\n" +
+        "        \"suspended_committal_date\": null\n" +
+        "    },\n" +    
+        "    \"account_snapshot\": null,\n" +
         "    \"account_status\": \"Submitted\",\n" +
+        "    \"account_status_date\": null,\n" +
         "    \"account_status_message\": null,\n" +
+        "    \"account_type\": \"Fine\",\n" +
+        "    \"business_unit_id\": %s,\n" +
+        "    \"created_at\": null,\n" +
+        "    \"draft_account_id\": null,\n" +
+        "    \"submitted_by\": \"%s\",\n" +
+        "    \"submitted_by_name\": \"%s\",\n" +       
         "    \"timeline_data\": [\n" +
         "        {\n" +
-        "            \"username\": \"%s\",\n" +
+        "            \"reason_text\": null,\n" +
         "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"2026-01-14\",\n" +
-        "            \"reason_text\": null\n" +
+        "            \"status_date\": \"%s\",\n" +
+        "            \"username\": \"%s\"\n" +
         "        }\n" +
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
-        businessUnitId, businessUnitUserIds, userName, courtId, prosecutorId, prosecutorCaseRef, surname, forename, addressLine1,
-        addressLine2, email1, nin, vehicleMake, vehicleReg, 
-        employeeRef, employerCompanyName, employerAddressLine1, 
-        employerAddressLine2, accountNoteText, userName);
+        accountNoteText, accountNoteText, 
+        addressLine1, addressLine2, employeeRef, employerAddressLine1, 
+        employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
+        email1, forename, surname,        
+        courtId, prosecutorId, prosecutorName, prosecutorCaseRef, 
+        businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
+    
 
     public static String BuildDraftAccountConditionalCautionRequestBody(Session session) {
 
-        String userName = session.get("Username") != null ? session.get("Username").toString() : "";
+        String userName = session.get("getUserName") != null ? session.get("getUserName").toString() : "";
+        String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
+        String businessUnitUserIds = session.get("selectedbusinessUnitUserIds") != null ? session.get("selectedbusinessUnitUserIds").toString() : ""; 
+        String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
+        String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
+        String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String todaydate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+        
         
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
         String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
@@ -380,13 +405,6 @@ public class RequestBodyBuilder {
 
         return String.format(
         "{\n" +
-        "    \"draft_account_id\": null,\n" +
-        "    \"created_at\": null,\n" +
-        "    \"account_snapshot\": null,\n" +
-        "    \"account_status_date\": null,\n" +
-        "    \"business_unit_id\": 77,\n" +
-        "    \"submitted_by\": \"L077JG\",\n" +
-        "    \"submitted_by_name\": \"%s\",\n" +
         "    \"account\": {\n" +
         "        \"account_notes\": [\n" +
         "            {\n" +
@@ -441,7 +459,7 @@ public class RequestBodyBuilder {
         "            \"forenames\": \"%s\",\n" +
         "            \"gender\": null,\n" +
         "            \"interpreter_lang\": null,\n" +
-        "            \"national_insurance_number\": \"%s\",\n" +
+        "            \"national_insurance_number\": null,\n" +
         "            \"nationality_1\": null,\n" +
         "            \"nationality_2\": null,\n" +
         "            \"occupation\": null,\n" +
@@ -456,7 +474,7 @@ public class RequestBodyBuilder {
         "            \"title\": \"Mr\"\n" +
         "        },\n" +
         "        \"defendant_type\": \"adultOrYouthOnly\",\n" +
-        "        \"enforcement_court_id\": 770000000021,\n" +
+        "        \"enforcement_court_id\": %s,\n" +
         "        \"fp_ticket_detail\": null,\n" +
         "        \"offences\": [\n" +
         "            {\n" +
@@ -474,8 +492,9 @@ public class RequestBodyBuilder {
         "                \"offence_id\": 33369\n" +
         "            }\n" +
         "        ],\n" +
-        "        \"originator_id\": 9251,\n" +
-        "        \"originator_name\": \"Aberdeen JP Court\",\n" +
+        "        \"originator_id\": %s,\n" +
+        "        \"originator_name\": \"%s\",\n" +
+        "        \"originator_type\": \"NEW\",\n" +
         "        \"payment_card_request\": null,\n" +
         "        \"payment_terms\": {\n" +
         "            \"default_days_in_jail\": null,\n" +
@@ -494,22 +513,25 @@ public class RequestBodyBuilder {
         "    \"account_status_date\": null,\n" +
         "    \"account_status_message\": null,\n" +
         "    \"account_type\": \"Conditional Caution\",\n" +
-        "    \"business_unit_id\": 77,\n" +
+        "    \"business_unit_id\": %s,\n" +
         "    \"created_at\": null,\n" +
         "    \"draft_account_id\": null,\n" +
-        "    \"submitted_by\": \"L077JG\",\n" +
+        "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
         "    \"timeline_data\": [\n" +
         "        {\n" +
         "            \"reason_text\": null,\n" +
         "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"2026-01-15\",\n" +
+        "            \"status_date\": \"%s\",\n" +
         "            \"username\": \"%s\"\n" +
         "        }\n" +
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
-        userName, accountNoteText, accountNoteText, addressLine1, employeeRef, employerAddressLine1, employerCompanyName, email1, vehicleMake, vehicleReg, email1, forename, nin, surname, prosecutorCaseRef, userName, userName);
+        accountNoteText, accountNoteText, addressLine1, 
+        employeeRef, employerAddressLine1, employerCompanyName, 
+        email1, vehicleMake, vehicleReg, email1, forename,
+        surname, courtId, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
    public static String BuildApproveAccountRequestBody(Session session) {
@@ -644,28 +666,47 @@ public class RequestBodyBuilder {
 
             return String.format(
                 "{\n" +
-                "  \"validated_by\": null,\n" +
-                "  \"account_status\": \"Deleted\",\n" +
-                "  \"validated_by_name\": null,\n" +
-                "  \"business_unit_id\": %d,\n" +
-                "  \"version\": \"0\",\n" +
-                "  \"timeline_data\": [\n" +
-                "    {\n" +
-                "      \"status\": \"Submitted\",\n" +
-                "      \"username\": \"%s\",\n" +
-                "      \"reason_text\": null,\n" +
-                "      \"status_date\": \"%s\"\n" +
-                "    },\n" +
-                "    {\n" +
-                "      \"username\": \"%s\",\n" +
-                "      \"status\": \"Deleted\",\n" +
-                "      \"status_date\": \"%s\",\n" +
-                "      \"reason_text\": null\n" +
-                "    }\n" +
+                "  \"active_accounts_only\": true,\n" +               
+                "  \"business_unit_ids\": [\n" +                
                 "  ],\n" +
                 "  \"reason_text\": \"Perf_%s\"\n" +
                 "}",
                 businessUnitId, submittedByName, statusSubmittedDate, userName, statusDeletedDate, reasonText
+            );
+        }
+
+       public static String buildSearchAccountRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("getListBusinessUnitId") != null
+                    ? session.get("getListBusinessUnitId").toString()
+                    : "[]";
+
+            String forenames = "s";
+            String surname = "s";
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": true,\n" +
+                "  \"business_unit_ids\": %s,\n" +  
+                "  \"defendant\": {\n" +
+                "    \"address_line_1\": null,\n" +
+                "    \"birth_date\": null,\n" +
+                "    \"exact_match_forenames\": false,\n" +
+                "    \"exact_match_organisation_name\": null,\n" +
+                "    \"exact_match_surname\": false,\n" +
+                "    \"forenames\": \"%s\",\n" +
+                "    \"include_aliases\": false,\n" +
+                "    \"national_insurance_number\": null,\n" +
+                "    \"organisation\": false,\n" +
+                "    \"organisation_name\": null,\n" +
+                "    \"postcode\": null,\n" +
+                "    \"surname\": \"%s\"\n" +
+                "  },\n" +
+                "  \"reference_number\": null\n" +
+                "}",
+                businessUnitIdsJson,
+                forenames,
+                surname
             );
         }
     }
