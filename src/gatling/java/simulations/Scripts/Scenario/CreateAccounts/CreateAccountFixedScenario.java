@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
@@ -22,6 +23,9 @@ public final class CreateAccountFixedScenario {
     public static ChainBuilder CreateAccountFixedRequest() {
 
         return group("OPAL Create Manual Account").on(
+
+
+            //Selecting Manual create account
                 exec(http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
@@ -46,6 +50,15 @@ public final class CreateAccountFixedScenario {
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
                         .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
                 })
+
+                //Selecting Create new account
+                .pause(5,20)
+
+                .exec(http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                )
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -54,10 +67,10 @@ public final class CreateAccountFixedScenario {
                         .check(Feeders.saveBusinessUnitId())
 
                 )               
-                .exitHereIfFailed()                       
-                .pause(5,20)
-                //Select Business Unit
+                .exitHereIfFailed()  
 
+                //Selecting Business Unit and Fixed Penalty                     
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -88,12 +101,18 @@ public final class CreateAccountFixedScenario {
                         .headers(Headers.getHeaders(12))
                 )
                     
-            //NEXT STEP?
-                    
-                .pause(3,5)
+                //Entering Fixed Penalty details                    
+                .pause(5,20)
+
+                .exec(session -> {
+                    String offence = DataGenerator.generateRandomOFFENCE();
+                    return session.set("offenceCode", offence);
+                })
+
+                //This is added once entered a offence.
                 .exec(
                     http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")
                     .headers(Headers.getHeaders(12))
                 )
 
@@ -118,24 +137,27 @@ public final class CreateAccountFixedScenario {
                     .headers(Headers.getHeaders(12))
                 )
 
-                /// NEXT STEP
+                /// Checking fixed penalty account details - Selecting Submit for Review
                 .pause(20,60)
+
                 .exec(session -> {
+                    // Retrieve lists of prosecutor IDs and names from the Gatling session
                     List<Integer> prosecutorIds = session.getList("prosecutorIds");
                     List<String> prosecutorNames = session.getList("prosecutorNames");
-
+                    //log it and return the session unchanged to avoid runtime errors
                     if (prosecutorIds == null || prosecutorIds.isEmpty()) {
                         System.out.println("No prosecutors found!");
                         return session;
                     }
-
+                    // Generate a random index based on the size of the prosecutor list
                     int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
-
+                    // Store the randomly selected prosecutor ID and name back into the session for use in later requests
                     return session
                         .set("selectedProsecutorId", prosecutorIds.get(index))
                         .set("selectedProsecutorName", prosecutorNames.get(index));
                 })
                 .exec(session -> {
+                    // Retrieve business unit IDs and corresponding user IDs from the session
                     List<Integer> businessUnitIds = session.getList("businessUnitIds");
                     List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
 
@@ -146,9 +168,10 @@ public final class CreateAccountFixedScenario {
                     return session
                         .set("selectedProsecutorId", businessUnitIds.get(index))
                         .set("selectedProsecutorName", businessUnitUserIds.get(index));
-                })
+                })                                        
 
                 .exec(session -> {
+                     // Store the generated payload in the session
                     String draftAccountRequestPayload = RequestBodyBuilder.BuildDraftAccountRequestBody(session);
                 //    System.out.println("draftAccountRequestPayload = " + session.getString("draftAccountRequestPayload"));
                     return session.set("draftAccountRequestPayload", draftAccountRequestPayload);

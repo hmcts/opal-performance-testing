@@ -12,7 +12,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
-import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
 public final class SearchAccountScenario {
 
@@ -64,7 +63,7 @@ public final class SearchAccountScenario {
                 //     System.out.println("BU LIST = " + session.get("getListBusinessUnitId"));
                 //     return session;
                 // })
-                
+
                 //Search for accounts query parameters 
                 .exec(session -> {
                     String searchAccountRequestPayload =

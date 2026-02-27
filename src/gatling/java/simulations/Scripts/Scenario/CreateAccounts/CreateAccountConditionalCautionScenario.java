@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
@@ -21,6 +22,8 @@ public final class CreateAccountConditionalCautionScenario {
     public static ChainBuilder CreateAccountConditionalCautionRequest() {
 
         return group("OPAL Create Manual Account").on(
+               
+            //Selecting Manual create account
                 exec(http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
@@ -32,7 +35,7 @@ public final class CreateAccountConditionalCautionScenario {
                         .check(status().is(200))                                         
                 )
                 .exitHereIfFailed() 
-
+                
                 .exec(session -> {
                     List<Integer> businessUnitIds = session.getList("businessUnitIds");
                     List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
@@ -45,6 +48,9 @@ public final class CreateAccountConditionalCautionScenario {
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
                         .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
                 })
+
+                //Selecting Create account
+                .pause(5,20)
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -55,13 +61,16 @@ public final class CreateAccountConditionalCautionScenario {
                 )               
                 .exitHereIfFailed()                       
            
-                //Select Business Unit
-
+                //Select Continue
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                 ) 
+
+                //Select Court details
+                .pause(5,20)
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
@@ -72,6 +81,9 @@ public final class CreateAccountConditionalCautionScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
                         .headers(Headers.getHeaders(12))
                 ) 
+
+                //Select Personal details
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -82,16 +94,25 @@ public final class CreateAccountConditionalCautionScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                     .headers(Headers.getHeaders(12))
                 )
+
+                //Select Defendant contact details
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )            
+                ) 
+
+                //Select Employer details
+                .pause(5,20)        
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )                                 
+                )     
+
+                //Selecting Add an offence      
+                .pause(5,20)                      
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -107,10 +128,17 @@ public final class CreateAccountConditionalCautionScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
                 )
-                .pause(3,5)
+
+                .pause(3,5)                
+                .exec(session -> {
+                    String offence = DataGenerator.generateRandomOFFENCE();
+                    return session.set("offenceCode", offence);
+                })
+
+                //This is added once entered a offence.
                 .exec(
                     http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")
                     .headers(Headers.getHeaders(12))
                 )
                 .exec(
@@ -118,11 +146,17 @@ public final class CreateAccountConditionalCautionScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                     .headers(Headers.getHeaders(12))
                 )
+
+                //Selecting Review offence        
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )            
+                )  
+
+                //Selecting Add Payment terms  
+                .pause(5,20)     
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -133,6 +167,9 @@ public final class CreateAccountConditionalCautionScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
                 ) 
+
+                //Selecting Account comments and notes
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -151,12 +188,12 @@ public final class CreateAccountConditionalCautionScenario {
                         jsonPath("$.ref_data[*].prosecutor_id").findAll().saveAs("prosecutorIds"),
                         jsonPath("$.ref_data[*].name").findAll().saveAs("prosecutorNames")
                     )
-
                 ) 
                  .exec(session -> {
+                    // Retrieve lists of prosecutor IDs and names from the Gatling session
                     List<Integer> prosecutorIds = session.getList("prosecutorIds");
                     List<String> prosecutorNames = session.getList("prosecutorNames");
-
+                    //log it and return the session unchanged to avoid runtime errors
                     if (prosecutorIds == null || prosecutorIds.isEmpty()) {
                         System.out.println("No prosecutors found!");
                         return session;
@@ -168,7 +205,11 @@ public final class CreateAccountConditionalCautionScenario {
                         .set("selectedProsecutorId", prosecutorIds.get(index))
                         .set("selectedProsecutorName", prosecutorNames.get(index));
                 })
+
+                //Selecting Submit for review
+                .pause(20,60)
                 .exec(session -> {
+                    // Store the generated payload in the session
                     String draftAccountRequestPayload =
                         RequestBodyBuilder.BuildDraftAccountConditionalCautionRequestBody(session);
                   //  System.out.println("draftAccountRequestPayload (Conditional Caution) = " + draftAccountRequestPayload);

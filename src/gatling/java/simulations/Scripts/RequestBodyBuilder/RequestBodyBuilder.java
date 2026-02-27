@@ -63,7 +63,15 @@ public class RequestBodyBuilder {
         String mobilePhone = "07700" + DataGenerator.generateRandomNumber(100000, 999999);
         String fpRegNumber = DataGenerator.generateRandomFPRegistrationNumber();
         String noticeNumber = DataGenerator.generateRandomNoticeNumber();
-
+        String email1 = session.get("generatedEmail1") != null ? session.get("generatedEmail1").toString() : (forename.toLowerCase() + "." + surname.toLowerCase() + "@example.com");
+        String employerCompanyName = session.get("generatedEmployerCompanyName") != null ? session.get("generatedEmployerCompanyName").toString() : DataGenerator.generateRandomEmployerName();
+        String addressLine1 = session.get("generatedAddressLine1") != null ? session.get("generatedAddressLine1").toString() : DataGenerator.generateRandomAddress();
+        String addressLine2 = session.get("generatedAddressLine2") != null ? session.get("generatedAddressLine2").toString() : DataGenerator.generateRandomCity();
+        String vehicleMake = session.get("generatedVehicleMake") != null ? session.get("generatedVehicleMake").toString() : DataGenerator.generateRandomVehicleMake();
+        String prosecutorCaseRef = session.get("generatedProsecutorCaseRef") != null ? session.get("generatedProsecutorCaseRef").toString() : ("CASE" + DataGenerator.generateRandomNumber(100000, 999999));
+        String employerAddressLine1 = session.get("generatedEmployerAddressLine1") != null ? session.get("generatedEmployerAddressLine1").toString() : DataGenerator.generateRandomAddress();
+        String employerAddressLine2 = session.get("generatedEmployerAddressLine2") != null ? session.get("generatedEmployerAddressLine2").toString() : DataGenerator.generateRandomCity();
+        String accountNoteText = "Account review for " + forename + " " + surname;
 
         // Store generated data in session for reuse in other methods
         session.set("generatedForename", forename);
@@ -85,12 +93,12 @@ public class RequestBodyBuilder {
         "        \"account_notes\": [\n" +
         "            {\n" +
         "                \"account_note_serial\": 3,\n" +
-        "                \"account_note_text\": \"Account under review\",\n" +
+        "                \"account_note_text\": \"%s\",\n" +
         "                \"note_type\": \"AC\"\n" +
         "            },\n" +
         "            {\n" +
         "                \"account_note_serial\": 2,\n" +
-        "                \"account_note_text\": \"Payment arrangement proposed\\n\",\n" +
+        "                \"account_note_text\": \"%s\",\n" +
         "                \"note_type\": \"AA\"\n" +
         "            }\n" +
         "        ],\n" +
@@ -100,8 +108,8 @@ public class RequestBodyBuilder {
         "        \"collection_order_made\": null,\n" +
         "        \"collection_order_made_today\": null,\n" +
         "        \"defendant\": {\n" +
-        "            \"address_line_1\": \"123 Main Street\",\n" +
-        "            \"address_line_2\": \"London\",\n" +
+        "            \"address_line_1\": \"%s\",\n" +
+        "            \"address_line_2\": \"%s\",\n" +
         "            \"address_line_3\": \"United Kingdom\",\n" +
         "            \"address_line_4\": null,\n" +
         "            \"address_line_5\": null,\n" +
@@ -177,7 +185,7 @@ public class RequestBodyBuilder {
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
-        "        \"originator_name\": \"%s\",\n" +
+        "        \"originator_name\": \"undefined\",\n" +
         "        \"originator_type\": \"FP\",\n" +
         "        \"payment_card_request\": null,\n" +
         "        \"payment_terms\": {\n" +
@@ -189,7 +197,7 @@ public class RequestBodyBuilder {
         "            \"lump_sum_amount\": null,\n" +
         "            \"payment_terms_type_code\": \"B\"\n" +
         "        },\n" +
-        "        \"prosecutor_case_reference\": null,\n" +
+        "        \"prosecutor_case_reference\": \"%s\",\n" +
         "        \"suspended_committal_date\": null\n" +
         "    },\n" +
         "    \"account_snapshot\": null,\n" +
@@ -212,8 +220,9 @@ public class RequestBodyBuilder {
         "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
+        accountNoteText, accountNoteText, addressLine1, addressLine1,         
         forename, surname, courtId, fpRegNumber, noticeNumber,
-        prosecutorId, prosecutorName, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
+        prosecutorId, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
     public static String BuildDraftAccountFineRequestBody(Session session) {
@@ -648,32 +657,47 @@ public class RequestBodyBuilder {
                 ? session.get("Username").toString()
                 : "";
 
-            String statusSubmittedDate = session.get("statusDate") != null
-                ? session.get("statusDate").toString()
-                : "";
-
             String statusDeletedDate = java.time.LocalDate.now().toString();
 
             int businessUnitId = session.get("selectedBusinessUnitId") != null
                 ? Integer.parseInt(session.get("selectedBusinessUnitId").toString())
                 : 0;
 
-            String submittedByName = session.get("submittedByName") != null
-                ? session.get("submittedByName").toString()               : "";
-                
+            String submittedByName = session.getString("submittedByName").toString();
+
+            String accountStatusDate = session.get("accountStatusDate") != null
+                ? session.get("accountStatusDate").toString()
+                : "";
+
             DataGenerator randomStringGenerator = new DataGenerator();
              String reasonText = randomStringGenerator.generateRandomString(10);
 
-            return String.format(
-                "{\n" +
-                "  \"active_accounts_only\": true,\n" +               
-                "  \"business_unit_ids\": [\n" +                
-                "  ],\n" +
-                "  \"reason_text\": \"Perf_%s\"\n" +
-                "}",
-                businessUnitId, submittedByName, statusSubmittedDate, userName, statusDeletedDate, reasonText
-            );
-        }
+        return String.format(
+            "{\n" +
+            "  \"account_status\": \"Deleted\",\n" +
+            "  \"business_unit_id\": %s,\n" +
+            "  \"reason_text\": \"Perf_%s\",\n" +
+            "  \"timeline_data\": [\n" +
+            "    {\n" +
+            "      \"reason_text\": null,\n" +
+            "      \"status\": \"Submitted\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"reason_text\": \"%s\",\n" +
+            "      \"status\": \"Deleted\",\n" +
+            "      \"status_date\": \"%s\",\n" +
+            "      \"username\": \"%s\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"validated_by\": null,\n" +
+            "  \"validated_by_name\": null,\n" +
+            "  \"version\": \"\\\"0\\\"\"\n" +
+            "}",
+            businessUnitId, reasonText, accountStatusDate, submittedByName, reasonText, statusDeletedDate, userName
+        );
+    }
 
        public static String buildSearchAccountRequestBody(Session session) {
 
