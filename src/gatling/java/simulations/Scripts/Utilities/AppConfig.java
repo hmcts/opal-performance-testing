@@ -1,5 +1,7 @@
 package simulations.Scripts.Utilities;
 
+import static io.gatling.javaapi.core.CoreDsl.tsv;
+											  
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -107,6 +109,8 @@ public class AppConfig {
         public static final String SCOPE = getConfigProperty("tenant.scope", "test1");
         public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "test1");
         public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "test1");
+
+	   
     }
 
     // ------------------------- Test Configuration -----------------------------
@@ -160,8 +164,6 @@ public class AppConfig {
             public static final String CHECKER_USERS_FILE_PATH = Paths.get(CHECKER_USERS_CSV).toString();    
             public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();    
 
-			
-
         }
 
         public static class DocumentFiles {
@@ -196,17 +198,16 @@ public class AppConfig {
             System.getProperty("performance.rampup.minutes", "10")
         );
 
-											 
-										  
-							  
-		 
+        public static final int SIMULATION_DURATION_MINUTES = Integer.parseInt(
+            System.getProperty("performance.duration.minutes", "60")
+        );	
 
         public static Duration getRampDuration() {
             return Duration.ofMinutes(RAMP_DURATION_MINUTES);
         }
 
-        public static int getSimulationDuration() {
-            return 300;
+        public static Duration getSimulationDuration() {
+            return Duration.ofMinutes(SIMULATION_DURATION_MINUTES);
         }
     }
 
@@ -216,29 +217,30 @@ public class AppConfig {
     public static class ProxyConfig {
         public static final String HOST = getConfigProperty("proxy.host", "127.0.0.1");
         public static final int PORT = getConfigPropertyAsInt("proxy.port", 8888);
+        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", true);
     }
 
     public static final class TestingConfig {
 
-
-        // Total accounts to create
-        public static final int TOTAL_ACCOUNTS = Integer.parseInt(
-            System.getProperty("performance.totalAccounts", "1000")
+        // Account type distribution (must sum to TOTAL_ACCOUNTS)
+        // For 1,000 accounts: 500 FIXED, 400 FINE, 100 CONDITIONAL
+        public static final int FIXED_ACCOUNTS = Integer.parseInt(
+            System.getProperty("performance.createFixedAccounts", "500")
         );
 
-        // Percent split
-        public static final int FIXED_PERCENT = 50;
-        public static final int FINE_PERCENT = 40;
-        public static final int CONDITIONAL_PERCENT = 10;
+								   
+        public static final int FINE_ACCOUNTS = Integer.parseInt(
+            System.getProperty("performance.createFineAccounts", "400")
+        );
 
-        // Derived targets
-        public static final int FIXED_TARGET =
-            TOTAL_ACCOUNTS * FIXED_PERCENT / 100;
+						
+        public static final int CONDITIONAL_ACCOUNTS = Integer.parseInt(
+            System.getProperty("performance.createConditionalAccounts", "100")
+        );
 
-        public static final int FINE_TARGET =
-            TOTAL_ACCOUNTS * FINE_PERCENT / 100;
+        // Total (derived from above)
+        public static final int TOTAL_ACCOUNTS = 
+            FIXED_ACCOUNTS + FINE_ACCOUNTS + CONDITIONAL_ACCOUNTS;
 
-        public static final int CONDITIONAL_TARGET =
-            TOTAL_ACCOUNTS * CONDITIONAL_PERCENT / 100;
     }
 }
