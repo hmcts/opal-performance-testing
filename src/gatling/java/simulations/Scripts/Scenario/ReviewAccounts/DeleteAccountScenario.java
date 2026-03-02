@@ -58,7 +58,11 @@ public final class DeleteAccountScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(status().saveAs("loginStatus")) 
                 )
+
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
+                .exitHereIfFailed() 
                 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
 
@@ -100,8 +104,6 @@ public final class DeleteAccountScenario {
                                 jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames"),
                                 jsonPath("$.summaries[*].account_status_date").findAll().saveAs("accountStatusDate"),
                                 jsonPath("$.summaries[*].account_status_date").findAll().saveAs("accountStatusDate")
-
-
                             )
 
                         )
@@ -217,7 +219,7 @@ public final class DeleteAccountScenario {
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
                 .exitHereIfFailed()  
-                 
+
                 .exec(
                     http("OPAL - Opal-User-Service - Users - 0 - state")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")

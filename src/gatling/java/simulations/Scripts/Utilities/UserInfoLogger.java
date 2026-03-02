@@ -23,10 +23,10 @@ public class UserInfoLogger {
                     : "N/A";
 
             if (isSuccess) {
-                LOGGER.info("Request '{}' was successful. User: User Name={}. Status: {}",
+                LOGGER.info("Request '{}' was successful. User: {}. Status: {}",
                         requestName, userName, reqStatus);
             } else {
-                LOGGER.error("Request '{}' FAILED. User: User Name={}. Status: {}",
+                LOGGER.error("Request '{}' FAILED. User: {}. Status: {}",
                         requestName, userName, reqStatus);
             }
 
