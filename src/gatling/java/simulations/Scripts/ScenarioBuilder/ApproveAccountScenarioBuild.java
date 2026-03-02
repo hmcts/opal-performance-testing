@@ -16,7 +16,7 @@ public class ApproveAccountScenarioBuild {
                 exec(feed(Feeders.checkerUsers()))
                 .exec(LoginScenario.LoginRequest())
 
-                // 50/50 split between approve and reject
+                // // 50/50 split between approve and reject
                 .randomSwitch()
                     .on(
                         percent(100.0).then(exec(ApproveAccountScenario.ApproveAccountRequest()))

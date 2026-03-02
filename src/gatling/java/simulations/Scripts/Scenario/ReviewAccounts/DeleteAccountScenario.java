@@ -98,7 +98,9 @@ public final class DeleteAccountScenario {
                                 jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
                                 jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
                                 jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames"),
+                                jsonPath("$.summaries[*].account_status_date").findAll().saveAs("accountStatusDate"),
                                 jsonPath("$.summaries[*].account_status_date").findAll().saveAs("accountStatusDate")
+
 
                             )
 
@@ -109,7 +111,7 @@ public final class DeleteAccountScenario {
                     List<Integer> draftAccountIds = session.getList("draftAccountIds");
                     List<Integer> businessUnitIds = session.getList("businessUnitIds");
                     List<String> accountStatuses = session.getList("accountStatuses");
-                    List<String> submittedBys = session.getList("submittedBys");
+                    List<String> submittedBys = session.getList("submittedBys");              
                     List<String> submittedByNames = session.getList("submittedByNames");
                     List<String> accountStatusDate = session.getList("accountStatusDate");
 
@@ -127,7 +129,6 @@ public final class DeleteAccountScenario {
                         .set("submittedBy", submittedBys.get(index))
                         .set("submittedByName", submittedByNames.get(index))
                         .set("accountStatusDate", accountStatusDate.get(index));
-
                     }
                 )
                 .exec(
@@ -211,7 +212,12 @@ public final class DeleteAccountScenario {
                     .headers(Headers.getHeaders(15))
                     .body(StringBody(session -> session.get("deleteAccountRequestPayload"))).asJson()
                     .check(status().is(200)) 
-                )   
+                    .check(status().saveAs("loginStatus")) 
+                )  
+
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
+                .exitHereIfFailed()  
+                 
                 .exec(
                     http("OPAL - Opal-User-Service - Users - 0 - state")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")

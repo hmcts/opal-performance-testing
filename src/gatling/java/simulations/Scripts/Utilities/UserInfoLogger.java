@@ -7,25 +7,32 @@ import org.slf4j.LoggerFactory;
 
 public class UserInfoLogger {
 
-private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoLogger.class);
 
-    public static ChainBuilder logDetailedErrorMessage(String requestName, String statusKey) {
+        public static ChainBuilder logDetailedErrorMessage(String requestName, String statusKey) {
         return exec(session -> {
-            String reqStatus = session.contains(statusKey) ? session.getString(statusKey) : "N/A";
-            boolean isSuccess = "200".equals(reqStatus) || "302".equals(reqStatus);
 
-            String userName = session.contains("Username") ? session.getString("Username") : "N/A";
+            int reqStatus = session.contains(statusKey)
+                    ? session.getInt(statusKey)
+                    : -1;
+
+            boolean isSuccess = reqStatus == 200 || reqStatus == 302;
+
+            String userName = session.contains("Username")
+                    ? session.getString("Username")
+                    : "N/A";
 
             if (isSuccess) {
-                LOGGER.info("Request '{}' was successful. User: User Name={}. Status: {}", requestName, userName, reqStatus);
+                LOGGER.info("Request '{}' was successful. User: User Name={}. Status: {}",
+                        requestName, userName, reqStatus);
             } else {
-                LOGGER.error("Request '{}' FAILED. User: User Name={}. Status: {}", requestName, userName, reqStatus);
+                LOGGER.error("Request '{}' FAILED. User: User Name={}. Status: {}",
+                        requestName, userName, reqStatus);
             }
 
             return session;
         });
     }
-
    
 
     // public static ChainBuilder logDetailedErrorMessage(String requestName, String trmId) {
