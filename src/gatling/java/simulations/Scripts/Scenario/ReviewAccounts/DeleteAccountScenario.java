@@ -97,7 +97,9 @@ public final class DeleteAccountScenario {
                                 jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
                                 jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
                                 jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
-                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
+                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames"),
+                                jsonPath("$.summaries[*].account_status_date").findAll().saveAs("accountStatusDate")
+
                             )
 
                         )
@@ -109,6 +111,8 @@ public final class DeleteAccountScenario {
                     List<String> accountStatuses = session.getList("accountStatuses");
                     List<String> submittedBys = session.getList("submittedBys");
                     List<String> submittedByNames = session.getList("submittedByNames");
+                    List<String> accountStatusDate = session.getList("accountStatusDate");
+
 
                     if (draftAccountIds == null || draftAccountIds.isEmpty()) {
                         return session.markAsFailed();
@@ -121,7 +125,9 @@ public final class DeleteAccountScenario {
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
                         .set("accountStatus", accountStatuses.get(index))
                         .set("submittedBy", submittedBys.get(index))
-                        .set("submittedByName", submittedByNames.get(index));
+                        .set("submittedByName", submittedByNames.get(index))
+                        .set("accountStatusDate", accountStatusDate.get(index));
+
                     }
                 )
                 .exec(

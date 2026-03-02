@@ -10,7 +10,6 @@ import simulations.Scripts.ScenarioBuilder.ExistingUsersScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.InputterUsersScenarioBuild;
 import io.gatling.javaapi.core.*;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;

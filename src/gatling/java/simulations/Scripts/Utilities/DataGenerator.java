@@ -23,6 +23,8 @@ public class DataGenerator {
     private static final String[] OCCUPATIONS = {"Engineer", "Doctor", "Teacher", "Accountant", "Manager", "Developer", "Nurse", "Technician"};
     private static final String[] NATIONALITIES = {"British", "Irish", "French", "German", "Spanish", "Italian", "Polish", "Chinese"};
     private static final String[] TITLES = {"Mr", "Mrs", "Miss", "Ms", "Dr", "Prof"};
+    private static final String[] OFFENCES = {"AN09009", "AS03503", "BG73015", "AA97006", "TM38008", "TH68019B", "GM31034", "FI68046", "AA06021", "WC81313", "MA55040", "RA93005", "TR10028", "CD20008", "HS21025", "SS86034", "MD68030", "FI68142", "CD98029", "EI09001"};    
+    
     
     public static String generateRandomFirstName() {
         return FIRST_NAMES[random.nextInt(FIRST_NAMES.length)];
@@ -127,7 +129,11 @@ public class DataGenerator {
         return NATIONALITIES[random.nextInt(NATIONALITIES.length)];
     }
     
-    public static String generateRandomTitle() {
+    public static String generateRandomOFFENCE() {
+        return OFFENCES[random.nextInt(OFFENCES.length)];
+    }
+
+        public static String generateRandomTitle() {
         return TITLES[random.nextInt(TITLES.length)];
     }
     

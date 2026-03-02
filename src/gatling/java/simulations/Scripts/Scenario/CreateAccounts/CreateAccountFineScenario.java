@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
@@ -22,6 +23,8 @@ public final class CreateAccountFineScenario {
     public static ChainBuilder CreateAccountFineRequest() {
 
         return group("OPAL Create Manual Account").on(
+
+                //Selecting Manual create account
                 exec(http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
@@ -36,10 +39,11 @@ public final class CreateAccountFineScenario {
                 .exitHereIfFailed() 
 
                 .exec(session -> {
+                    // Retrieve business unit IDs and corresponding user IDs from the session
                     List<Integer> businessUnitIds = session.getList("businessUnitIds");
                     List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
 
-                    // Generate a random index
+                    // Generate a random index based on the size of the business unit list
                     int index = java.util.concurrent.ThreadLocalRandom.current()
                         .nextInt(businessUnitIds.size());
 
@@ -47,7 +51,7 @@ public final class CreateAccountFineScenario {
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
                         .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
                 })
-
+                
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -58,14 +62,17 @@ public final class CreateAccountFineScenario {
                 )               
                 .exitHereIfFailed()                       
            
-                //Select Business Unit
-                .pause(3,5)
+                //Selecting Create new account
+                .pause(5,20)
 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                 ) 
+                
+                //Selecting Court details
+                .pause(5,20) 
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
@@ -78,6 +85,9 @@ public final class CreateAccountFineScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
                         .headers(Headers.getHeaders(12))
                 ) 
+
+                //Selecting Add Personal details
+                .pause(5,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -92,17 +102,26 @@ public final class CreateAccountFineScenario {
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )            
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                )                                 
+                ) 
+
+                //Selecting Add Defendant contact details
+                .pause(5,20) 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
                 ) 
+
+                //Selecting Add Employer details 
+                .pause(5,20)                       
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                    .headers(Headers.getHeaders(11))
+                )
+
+                //Selecting Add an offence 
+                .pause(5,20)        
                 .exec(
                     http("OPAL - Opal-fines-service - Results")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/results?result_ids=FCOMP&result_ids=FVS&result_ids=FCOST&result_ids=FCPC&result_ids=FO&result_ids=FCC&result_ids=FVEBD&result_ids=FFR")
@@ -113,27 +132,45 @@ public final class CreateAccountFineScenario {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/major-creditors?businessUnit=#{selectedBusinessUnitId}")
                     .headers(Headers.getHeaders(12))
                 )
-                .pause(3,5)
+                .pause(5,20)
+                .exec(session -> {
+                    String offence = DataGenerator.generateRandomOFFENCE();
+                    return session.set("offenceCode", offence);
+                })
+
+                //This is added once entered a offence.
                 .exec(
                     http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")
                     .headers(Headers.getHeaders(12))
                 )
+
+                 //Selecting Review offence        
+                .pause(5,20) 
                 .exec(
                     http("OPAL - Opal-user-service - Users - 0 - State")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                     .headers(Headers.getHeaders(12))
                 )
+
+                //Selecting Add Payment terms  
+                .pause(5,20)    
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
                 )            
+
+                //Selecting Account comments and notes
+                .pause(5,20) 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                     .headers(Headers.getHeaders(11))
-                )                                 
+                )   
+                                
+                //Selecting Review account
+                .pause(5,20) 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -162,9 +199,10 @@ public final class CreateAccountFineScenario {
 
                 ) 
                  .exec(session -> {
+                    // Retrieve lists of prosecutor IDs and names from the Gatling session
                     List<Integer> prosecutorIds = session.getList("prosecutorIds");
                     List<String> prosecutorNames = session.getList("prosecutorNames");
-
+                    //log it and return the session unchanged to avoid runtime errors
                     if (prosecutorIds == null || prosecutorIds.isEmpty()) {
                         System.out.println("No prosecutors found!");
                         return session;
@@ -177,12 +215,16 @@ public final class CreateAccountFineScenario {
                         .set("selectedProsecutorName", prosecutorNames.get(index));
                 })
                 .exec(session -> {
+                        // Store the generated payload in the session
                         String draftAccountRequestPayload =
                             RequestBodyBuilder.BuildDraftAccountFineRequestBody(session);
                         //System.out.println("draftAccountRequestPayload (Fine) = " + draftAccountRequestPayload);
                         return session.set("draftAccountRequestPayload", draftAccountRequestPayload);
                     }
-                )                
+                )  
+                
+                //Selecting Submit for review
+                .pause(20,60)
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts")

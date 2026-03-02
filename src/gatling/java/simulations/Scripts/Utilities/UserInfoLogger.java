@@ -14,13 +14,12 @@ private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoLogger.clas
             String reqStatus = session.contains(statusKey) ? session.getString(statusKey) : "N/A";
             boolean isSuccess = "200".equals(reqStatus) || "302".equals(reqStatus);
 
-            String email = session.contains("Email") ? session.getString("Email") : "N/A";
-            String userName = session.contains("user_name") ? session.getString("user_name") : "N/A";
+            String userName = session.contains("Username") ? session.getString("Username") : "N/A";
 
             if (isSuccess) {
-                LOGGER.info("Request '{}' was successful. User: Email={}, User Name={}. Status: {}", requestName, email, userName, reqStatus);
+                LOGGER.info("Request '{}' was successful. User: User Name={}. Status: {}", requestName, userName, reqStatus);
             } else {
-                LOGGER.error("Request '{}' FAILED. User: Email={}, User Name={}. Status: {}", requestName, email, userName, reqStatus);
+                LOGGER.error("Request '{}' FAILED. User: User Name={}. Status: {}", requestName, userName, reqStatus);
             }
 
             return session;
