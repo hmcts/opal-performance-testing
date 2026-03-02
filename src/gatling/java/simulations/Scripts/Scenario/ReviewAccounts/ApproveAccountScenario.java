@@ -57,8 +57,12 @@ public final class ApproveAccountScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(status().saveAs("loginStatus"))
+
                 )
-                
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
+                .exitHereIfFailed()
+
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
 
                 .exec(session ->
@@ -80,6 +84,7 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
+                .exitHereIfFailed() 
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
@@ -194,8 +199,12 @@ public final class ApproveAccountScenario {
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                     .headers(Headers.getHeaders(15))
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
-                    .check(status().is(200)) 
-                )             
+                    .check(status().is(200))
+                    .check(status().saveAs("loginStatus")) 
+                )  
+
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
+                .exitHereIfFailed()      
                 
                 .exec(
                     http("OPAL - Sso - Authenticated")

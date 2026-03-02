@@ -182,8 +182,12 @@ public final class CreateAccountFixedScenario {
                     .headers(Headers.getHeaders(14))
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
                     .check(status().is(201)) 
+                    .check(status().saveAs("loginStatus")) 
+                )  
 
-                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
+                .exitHereIfFailed() 
+                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
