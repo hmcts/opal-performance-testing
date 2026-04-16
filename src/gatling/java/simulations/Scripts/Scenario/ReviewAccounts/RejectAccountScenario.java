@@ -179,6 +179,7 @@ public final class RejectAccountScenario {
                     .headers(Headers.getHeaders(11))
                 )
                 //Reject the selected draft account
+                .pause(60,300)
                 .exec(session -> { 
                         return session
                             .set("draftAccountRequestPayload",
