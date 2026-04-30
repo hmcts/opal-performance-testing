@@ -18,8 +18,8 @@ public final class RejectAccountScenario {
     private RejectAccountScenario() {}
 
     public static ChainBuilder RejectAccountRequest() {
-
-        return group("OPAL Approve Account").on(
+//changing the group name so it does turn up differently in the report
+        return group("OPAL Reject Account").on(
                 exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

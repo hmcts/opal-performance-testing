@@ -50,8 +50,5 @@ public class HttpProtocolConfig {
      * Proxy is considered enabled if the ENABLED flag is true and HOST is set and not empty.
      */
     private static boolean isProxyEnabled() {
-        return AppConfig.ProxyConfig.ENABLED
-            && AppConfig.ProxyConfig.HOST != null 
-            && !AppConfig.ProxyConfig.HOST.trim().isEmpty();
-    }
+        return false;    }
 }

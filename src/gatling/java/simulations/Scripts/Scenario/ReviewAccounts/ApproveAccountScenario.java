@@ -135,6 +135,8 @@ public final class ApproveAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                 )  
+                //added
+                .pause(20,60)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -247,6 +249,7 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
+                .pause(20,60)
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session ->

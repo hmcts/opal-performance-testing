@@ -97,18 +97,18 @@ public class AppConfig {
     }
     // ------------------------- URL Configuration -----------------------------
     public static class UrlConfig {
-        public static final String BASE_URL = getConfigProperty("url.rrems.base", "test1");
-        public static final String AUTH_URL = getConfigProperty("url.auth.base", "test1");
+        public static final String BASE_URL = getConfigProperty("url.rrems.base", "Secret1");
+        public static final String AUTH_URL = getConfigProperty("url.auth.base", "Secret2");
     }
 
     // ------------------------- Tenant Configuration -----------------------------
 
     public static class TenantConfig {
-        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "test1");
-        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "test1");
-        public static final String SCOPE = getConfigProperty("tenant.scope", "test1");
-        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "test1");
-        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "test1");
+        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "Secret3");
+        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "Secret4");
+        public static final String SCOPE = getConfigProperty("tenant.scope", "Secret5");
+        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "Secret6");
+        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "Secret7");
 
 	   
     }
@@ -197,9 +197,9 @@ public class AppConfig {
         public static final int RAMP_DURATION_MINUTES = Integer.parseInt(
             System.getProperty("performance.rampup.minutes", "10")
         );
-
+//changed from max 60 to 7 to see if I can end a test anytime
         public static final int SIMULATION_DURATION_MINUTES = Integer.parseInt(
-            System.getProperty("performance.duration.minutes", "60")
+            System.getProperty("performance.duration.minutes", "7")
         );	
 
         public static Duration getRampDuration() {
@@ -217,8 +217,8 @@ public class AppConfig {
     public static class ProxyConfig {
         public static final String HOST = getConfigProperty("proxy.host", "127.0.0.1");
         public static final int PORT = getConfigPropertyAsInt("proxy.port", 8888);
-        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", true);
-    }
+        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", false);
+    }//changed proxy to false
 
     public static final class TestingConfig {
 

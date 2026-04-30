@@ -10,7 +10,6 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 
 public class CheckerUsersScenarioBuild {
-
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
             .group("Checker Workflow")
@@ -18,13 +17,16 @@ public class CheckerUsersScenarioBuild {
                 exec(feed(Feeders.checkerUsers())
                     .exec(LoginScenario.LoginRequest())
                                     // 50/50 split between approve and reject
-                .randomSwitch()
+                                    //adjusting to 90/10 split per advise from David W
+                                    //adding the repeat as well since the first test I did only did 5 at all. 
+                .repeat(30).on(                  
+                randomSwitch()
+                
                     .on(
-                        percent(50.0).then(exec(ApproveAccountScenario.ApproveAccountRequest())),
-                        percent(50.0).then(exec(RejectAccountScenario.RejectAccountRequest()))
+                        percent(90).then(exec(ApproveAccountScenario.ApproveAccountRequest())),
+                        percent(10).then(exec(RejectAccountScenario.RejectAccountRequest()))
                     )
-                    
-                )
-            );
+                ))
+                );
     }
 }
