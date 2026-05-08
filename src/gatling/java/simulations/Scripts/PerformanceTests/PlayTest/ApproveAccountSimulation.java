@@ -22,7 +22,7 @@ public class ApproveAccountSimulation extends Simulation {
 // 2 and 6 simple
 // 5 and 15 complex
 
-
+//Added the MaxDuration
     public ApproveAccountSimulation() {
         setUp(
             ApproveAccountScenarioBuild.build(OPAL_LOGIN_TEST)
@@ -30,6 +30,6 @@ public class ApproveAccountSimulation extends Simulation {
                      rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(HttpProtocolConfig.build())                   
-        );
+        ).maxDuration(AppConfig.PerformanceConfig.getSimulationDuration());
     } 
 }

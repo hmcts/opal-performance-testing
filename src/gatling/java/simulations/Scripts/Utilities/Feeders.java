@@ -23,6 +23,8 @@ public class Feeders {
     public static final FeederBuilder<String> Users;
     public static final FeederBuilder<String> CheckerUsers;
     public static final FeederBuilder<String> InputterUsers;
+    //MH adding R1b things
+    public static final FeederBuilder<String> SearchViewUsers;
 
     private static final AtomicInteger COUNTER;
     private static final Logger log = Logger.getLogger(Feeders.class.getName());
@@ -31,7 +33,8 @@ public class Feeders {
     try {            
         Users = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.USERS_CSV).circular();
         CheckerUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.CHECKER_USERS_CSV).circular();
-        InputterUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.INPUTTER_USERS_CSV).circular();        
+        InputterUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.INPUTTER_USERS_CSV).circular();
+        SearchViewUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.SEARCHVIEW_USERS_CSV).circular(); //MH added this as well for R1b
     } catch (Exception e) {
         System.err.println("Error loading CSV: " + e.getMessage());
         throw e;
@@ -50,6 +53,11 @@ public class Feeders {
     public static FeederBuilder<String> checkerUsers() {
         return CheckerUsers;
     }    
+    //MH AND HAD TO ADD IT HERE
+    public static FeederBuilder<String> searchViewUsers() {
+        return SearchViewUsers;
+    }
+
 
 
     public static CheckBuilder.Final saveTokenCode() {

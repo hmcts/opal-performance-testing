@@ -20,13 +20,15 @@ public class ReviewAccountSimulation extends Simulation {
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
 
+//added the MaxDuration
     public ReviewAccountSimulation() {
         setUp(
             ApproveAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()))           
+                .protocols(HttpProtocolConfig.build()))     
+                .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())      
                 .assertions(global().responseTime().max().lt(60000),              
                     details(
                         "OPAL Login Requests",

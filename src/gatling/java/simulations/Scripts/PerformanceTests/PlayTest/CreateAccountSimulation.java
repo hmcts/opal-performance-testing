@@ -23,14 +23,15 @@ public class CreateAccountSimulation extends Simulation {
 // 2 and 6 simple
 // 5 and 15 complex
 
-
+//added the MaxDuration
     public CreateAccountSimulation() {
         setUp(
             CreateAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()))           
+                .protocols(HttpProtocolConfig.build()))  
+                .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())         
                 .assertions(AssertionsConfig.getCreateAccountAssertions());
     } 
 }
