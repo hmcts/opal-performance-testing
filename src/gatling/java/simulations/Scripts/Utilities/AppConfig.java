@@ -95,23 +95,21 @@ public class AppConfig {
             return NORMAL;
         }
     }
-    // ------------------------- URL Configuration -----------------------------
+ // ------------------------- URL Configuration -----------------------------
     public static class UrlConfig {
         public static final String BASE_URL = getConfigProperty("url.rrems.base", "Secret1");
         public static final String AUTH_URL = getConfigProperty("url.auth.base", "Secret2");
     }
-
     // ------------------------- Tenant Configuration -----------------------------
-
     public static class TenantConfig {
         public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "Secret3");
         public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "Secret4");
         public static final String SCOPE = getConfigProperty("tenant.scope", "Secret5");
         public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "Secret6");
         public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "Secret7");
-
-	   
+       
     }
+
 
     // ------------------------- Test Configuration -----------------------------
 
@@ -159,10 +157,14 @@ public class AppConfig {
             public static final String USERS_CSV = "Users.csv";
             public static final String CHECKER_USERS_CSV = "CheckersUsers.csv";
             public static final String INPUTTER_USERS_CSV = "InputterUsers.csv";
+            //MH Adding some R1b stuff here
+            public static final String SEARCHVIEW_USERS_CSV = "R1bAllUsers.csv"; //MH will want to change this once we break down the user file
 
             public static final String USERS_FILE_PATH = Paths.get(USERS_CSV).toString();  
             public static final String CHECKER_USERS_FILE_PATH = Paths.get(CHECKER_USERS_CSV).toString();    
-            public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();    
+            public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();  
+            //MH and here
+            public static final String SEARCHVIEW_USERS_FILE_PATH = Paths.get(SEARCHVIEW_USERS_CSV).toString();  
 
         }
 

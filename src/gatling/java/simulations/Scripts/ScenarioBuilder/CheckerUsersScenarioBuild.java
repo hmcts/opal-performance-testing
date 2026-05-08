@@ -17,9 +17,12 @@ public class CheckerUsersScenarioBuild {
                 exec(feed(Feeders.checkerUsers())
                     .exec(LoginScenario.LoginRequest())
                                     // 50/50 split between approve and reject
-                                    //adjusting to 90/10 split per advise from David W
+                                    //MH adjusting to 90/10 split per advice from David W
                                     //adding the repeat as well since the first test I did only did 5 at all. 
-                .repeat(30).on(                  
+                                    //MH changing the repeat to a forever because I understand the assignment now
+                                    //I don't underdtand the assignment, it didn't work, going to up the repeat to 50 to see if that gets me to 20 min
+                .repeat(100).on(  
+                //.forever().on(                
                 randomSwitch()
                 
                     .on(
