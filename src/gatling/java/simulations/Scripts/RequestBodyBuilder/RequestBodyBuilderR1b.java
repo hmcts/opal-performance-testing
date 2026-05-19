@@ -9,6 +9,7 @@ import static io.gatling.javaapi.http.HttpDsl.status;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.Session;
@@ -17,7 +18,7 @@ import simulations.Scripts.Utilities.DataGenerator;
  * Factory class for building various request bodies used in R1b functinality because MH was afraid that otherwise the RequestBodyBuilder would just be massive and uneditable.
  * This class delegates to specialised builders for each type of request.
  */
-public final class RequestBodyBuilderR1b {
+public class RequestBodyBuilderR1b {
 
 public static final class DefendantAccountSearch {
     //to call this elsewhere use .exec(RequestBodyBuilderR1b.DefendantAccountSearch.searchDefendantAccounts())
@@ -65,23 +66,15 @@ public static final class DefendantAccountSearch {
     public static ChainBuilder searchDefendantAccounts() {
         return exec(
             http("Search defendant accounts")
-                .post("/opal-fines-service/defendant-accounts/search")
+                .post("https://opal-frontend.test.apps.hmcts.net/opal-fines-service/defendant-accounts/search")
                 .header("Content-Type", "application/json")
-                .body(StringBody(session -> buildSearchAccountRequestBody(session))).asJson()
+                .body(StringBody(session -> buildDefendantSearchAccountRequestBody(session))).asJson() //MH change here because it wasn't working, I've had a number of the named wrong
                 .check(status().is(200))
                 .check(jsonPath("$.count").saveAs("search_count"))
-                .check(jsonPath("$.defendant_accounts[*].defendant_account_id").findAll().saveAs("defendant_account_ids"))
-        )
-        .exec(session -> {
-            @SuppressWarnings("unchecked")
-            final List<String> defendantAccountIds = (List<String>) session.get("defendant_account_ids");
-
-            if (defendantAccountIds == null || defendantAccountIds.isEmpty()) {
-                return session.markAsFailed();
-            }
-
-            return session.set("defendant_account_id", defendantAccountIds.get(0));
-        });
+                //.check(jsonPath("$.defendant_accounts[*].defendant_account_id").findAll().saveAs("defendant_account_ids"))
+                .check(jsonPath("$.defendant_accounts[0].defendant_account_id").exists())
+                .check(jsonPath("$.defendant_accounts[0].defendant_account_id").saveAs("defendant_account_id"))     
+    );
     }
 }
 

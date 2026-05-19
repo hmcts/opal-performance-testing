@@ -1,9 +1,13 @@
 package simulations.Scripts.PerformanceTests.PlayTest;
 
-import io.gatling.javaapi.core.Simulation;
-import simulations.Scripts.ScenarioBuilder.R1bSearchAndViewDefendantScenarioBuild;
+
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
+import simulations.Scripts.ScenarioBuilder.R1bSearchAndViewDefendantScenarioBuild;
+import io.gatling.javaapi.core.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 

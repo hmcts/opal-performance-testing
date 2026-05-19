@@ -45,6 +45,7 @@ def registerSimulationTask(taskName, simulationClassName) {
     }
 }
 // List of simulations with their task names and simulation class names
+//MH wish I had known this existed before I spent 20min bashing my head against the wall trying to figure out how to run the R1b simulation.
 def simulations = [
 
     [task: 'runLoginSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.LoginSimulation'],
@@ -53,8 +54,8 @@ def simulations = [
     [task: 'runUserExistsSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.UserExistsSimulation'],
     [task: 'runDeleteAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.DeleteAccountSimulation'],
     [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation'],
-    [task: 'runSearchAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.SearchAccountSimulation']
-
+    [task: 'runSearchAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.SearchAccountSimulation'], //MH this comma is really important 
+    [task: 'runR1bSearchAndViewDefendantSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchAndViewDefendantSimulation']
 
 ]
 

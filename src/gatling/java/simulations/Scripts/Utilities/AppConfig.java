@@ -95,7 +95,7 @@ public class AppConfig {
             return NORMAL;
         }
     }
- // ------------------------- URL Configuration -----------------------------
+  // ------------------------- URL Configuration -----------------------------
     public static class UrlConfig {
         public static final String BASE_URL = getConfigProperty("url.rrems.base", "Secret1");
         public static final String AUTH_URL = getConfigProperty("url.auth.base", "Secret2");
