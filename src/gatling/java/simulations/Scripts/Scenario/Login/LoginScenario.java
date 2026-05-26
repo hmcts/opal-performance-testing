@@ -146,14 +146,22 @@ public final class LoginScenario {
                         .findAll()
                         .saveAs("businessUnitUserIds"),
                     jsonPath("$.name")
-                        .saveAs("getUserName")                    
-                )
+                        .saveAs("getUserName"),                                            
+                    jsonPath("$.detail").optional().saveAs("getDetail"))
+
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
+            .exitHereIfFailed() 
+            
             .exec(
               http("OPAL - Opal-User-Service - Users - 0 - state")
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
-           )
+                .check(jsonPath("$.detail").optional().saveAs("getDetail"))
+
+            )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
+            .exitHereIfFailed() 
         );            
     }
 }

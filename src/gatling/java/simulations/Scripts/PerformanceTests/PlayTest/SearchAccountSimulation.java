@@ -17,15 +17,15 @@ public class SearchAccountSimulation extends Simulation {
     }    
 
     public SearchAccountSimulation() {
-
+//Added the MaxDuration
         setUp(
             SearchAccountScenarioBuild.build("Search Account Test")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
-                    .during(AppConfig.PerformanceConfig.getRampDuration())
-                )
+                    .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(HttpProtocolConfig.build())
         )
+        .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())
         .assertions(
             global().responseTime().max().lt(60000)
         );

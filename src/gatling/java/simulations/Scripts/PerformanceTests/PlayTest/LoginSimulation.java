@@ -21,13 +21,15 @@ public class LoginSimulation extends Simulation {
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }    
 
+    //added the MaxDuration
     public LoginSimulation() {
         setUp(
             LoginScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.EXISTING_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()))           
+                .protocols(HttpProtocolConfig.build()))  
+                .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())         
                .assertions(AssertionsConfig.getMac01Assertions());
     } 
 }

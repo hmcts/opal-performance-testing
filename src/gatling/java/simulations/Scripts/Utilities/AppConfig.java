@@ -95,23 +95,21 @@ public class AppConfig {
             return NORMAL;
         }
     }
-    // ------------------------- URL Configuration -----------------------------
+   // ------------------------- URL Configuration -----------------------------
     public static class UrlConfig {
-        public static final String BASE_URL = getConfigProperty("url.rrems.base", "test1");
-        public static final String AUTH_URL = getConfigProperty("url.auth.base", "test1");
+        public static final String BASE_URL = getConfigProperty("url.rrems.base", "https://opal-frontend.test.apps.hmcts.net");
+        public static final String AUTH_URL = getConfigProperty("url.auth.base", "https://login.microsoftonline.com/");
     }
-
     // ------------------------- Tenant Configuration -----------------------------
-
     public static class TenantConfig {
-        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "test1");
-        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "test1");
-        public static final String SCOPE = getConfigProperty("tenant.scope", "test1");
-        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "test1");
-        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "test1");
+        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "85258805-10e5-4cbd-a38e-61fc4e62627a");
+        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "7fa0e61d-a88e-487e-8047-d489889d97ea");
+        public static final String SCOPE = getConfigProperty("tenant.scope", "user.read%20openid%20profile%20offline_access");
+        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "https%3A%2F%2Fopal-frontend.test.apps.hmcts.net%2Fsso%2Flogin-callback");
+        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "e575f663-b30a-4786-89ad-319842dfe853");
+        }
 
-	   
-    }
+
 
     // ------------------------- Test Configuration -----------------------------
 
@@ -159,10 +157,14 @@ public class AppConfig {
             public static final String USERS_CSV = "Users.csv";
             public static final String CHECKER_USERS_CSV = "CheckersUsers.csv";
             public static final String INPUTTER_USERS_CSV = "InputterUsers.csv";
+            //MH Adding some R1b stuff here
+            public static final String SEARCHVIEW_USERS_CSV = "R1bAllUsers.csv"; //MH will want to change this once we break down the user file
 
             public static final String USERS_FILE_PATH = Paths.get(USERS_CSV).toString();  
             public static final String CHECKER_USERS_FILE_PATH = Paths.get(CHECKER_USERS_CSV).toString();    
-            public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();    
+            public static final String INPUTTER_USERS_FILE_PATH = Paths.get(INPUTTER_USERS_CSV).toString();  
+            //MH and here
+            public static final String SEARCHVIEW_USERS_FILE_PATH = Paths.get(SEARCHVIEW_USERS_CSV).toString();  
 
         }
 
@@ -197,9 +199,9 @@ public class AppConfig {
         public static final int RAMP_DURATION_MINUTES = Integer.parseInt(
             System.getProperty("performance.rampup.minutes", "10")
         );
-
+//changed from max 60 to 7 to see if I can end a test anytime
         public static final int SIMULATION_DURATION_MINUTES = Integer.parseInt(
-            System.getProperty("performance.duration.minutes", "60")
+            System.getProperty("performance.duration.minutes", "7")
         );	
 
         public static Duration getRampDuration() {
@@ -217,8 +219,8 @@ public class AppConfig {
     public static class ProxyConfig {
         public static final String HOST = getConfigProperty("proxy.host", "127.0.0.1");
         public static final int PORT = getConfigPropertyAsInt("proxy.port", 8888);
-        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", true);
-    }
+        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", false);
+    }//changed proxy to false
 
     public static final class TestingConfig {
 

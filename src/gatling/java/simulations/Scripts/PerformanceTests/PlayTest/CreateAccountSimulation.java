@@ -3,6 +3,7 @@ package simulations.Scripts.PerformanceTests.PlayTest;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
+import simulations.Scripts.ScenarioBuilder.SearchAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.CreateAccountScenarioBuild;
 import io.gatling.javaapi.core.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,14 +24,15 @@ public class CreateAccountSimulation extends Simulation {
 // 2 and 6 simple
 // 5 and 15 complex
 
-
+//added the MaxDuration
     public CreateAccountSimulation() {
         setUp(
             CreateAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.INPUTTER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()))           
+                .protocols(HttpProtocolConfig.build()))
+                .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())         
                 .assertions(AssertionsConfig.getCreateAccountAssertions());
     } 
 }

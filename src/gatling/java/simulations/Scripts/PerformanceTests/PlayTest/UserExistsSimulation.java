@@ -26,8 +26,10 @@ public class UserExistsSimulation extends Simulation {
                 )
                 .protocols(HttpProtocolConfig.build())
         )
+        .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration())
         .assertions(
             global().responseTime().max().lt(60000)
         );
     } 
 }
+//added the MaxDuration

@@ -24,14 +24,15 @@ public class DeleteAccountSimulation extends Simulation {
 // 2 and 6 simple
 // 5 and 15 complex
 
-
+//added the MaxDuration
     public DeleteAccountSimulation() {
         setUp(
             DeleteAccountScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
-                .protocols(HttpProtocolConfig.build()));     
+                .protocols(HttpProtocolConfig.build()))
+                .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration());     
             //    .assertions(AssertionsConfig.getCreateAccountAssertions());
     } 
 }

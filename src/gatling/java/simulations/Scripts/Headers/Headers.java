@@ -58,7 +58,7 @@ public final class Headers {
             headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
-            headers.put("Referer","https://opal-frontend.test.platform.hmcts.net/");
+            headers.put("Referer","https://opal-frontend.test.apps.hmcts.net/");
             headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36");
 
 
@@ -151,7 +151,7 @@ public final class Headers {
             headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36");
             headers.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
             headers.put("Accept-Language", "en-US,en;q=0.9");
-            headers.put("Referer","https://opal-frontend.test.platform.hmcts.net/");
+            headers.put("Referer","https://opal-frontend.test.apps.hmcts.net/");
             headers.put("Sec-Fetch-Site", "cross-site");
             headers.put("Sec-Fetch-Mode", "navigate");
             headers.put("Sec-Fetch-Dest", "document");
@@ -222,9 +222,10 @@ public final class Headers {
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
         //    headers.put("traceparent", "00-a46d288395244ba59db15adbcdc068df-461dc629d7ec41f2-01");
+        break; //MH I've added this break, don't know if you actually wanted it missing
 
             case TEST_14:
-            headers.put("Origin", "https://opal-frontend.test.platform.hmcts.net");
+            headers.put("Origin", "https://opal-frontend.test.apps.hmcts.net");
             headers.put("Sec-Fetch-Dest", "empty");
             headers.put("Sec-Fetch-Mode", "cors");
             headers.put("Sec-Fetch-Site", "same-origin");
@@ -235,7 +236,7 @@ public final class Headers {
             break; 
 
             case TEST_15:
-            headers.put("Origin", "https://opal-frontend.test.platform.hmcts.net");
+            headers.put("Origin", "https://opal-frontend.test.apps.hmcts.net");
             headers.put("Sec-Fetch-Dest", "empty");
             headers.put("Sec-Fetch-Mode", "cors");
             headers.put("Sec-Fetch-Site", "same-origin");
@@ -247,6 +248,47 @@ public final class Headers {
             headers.put("if-match", "0");
             default:
             break; 
+
+            //MH adding new header for R1b, don't know that this will fix my issue
+            case TEST_16:
+            headers.put("Accept", "application/json, text/plain, */*");
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("Referer", "https://opal-frontend.test.apps.hmcts.net/");
+            headers.put(
+                "User-Agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+                "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/148.0.0.0 Safari/537.36 Edg/148.0.0.0"
+                        );
+            headers.put(
+                "sec-ch-ua",
+                "\"Chromium\";v=\"148\", " +
+                "\"Microsoft Edge\";v=\"148\", " +
+                "\"Not/A)Brand\";v=\"99\""
+                        );
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "\"Windows\"");
+            headers.put("Accept-Language", "en-US,en;q=0.9,en-GB;q=0.8");
+    // MH this one has request IDs
+            headers.put("request-id", "#{requestId}");
+            headers.put("traceparent", "#{traceparent}");
+            break;
+
+            case TEST_17:
+            headers.put("Accept", "application/json, text/plain, */*");
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("User-Agent", "Mozilla/5.0 ... Edg/148.0.0.0");
+            headers.put("sec-ch-ua", "\"Chromium\";v=\"148\", \"Microsoft Edge\";v=\"148\", \"Not/A)Brand\";v=\"99\"");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "\"Windows\"");
+            headers.put("Accept-Language", "en-US,en;q=0.9,en-GB;q=0.8");
+            headers.put("request-id", "#{requestId}");
+            headers.put("traceparent", "#{traceparent}");
+    break;
         }
 
         

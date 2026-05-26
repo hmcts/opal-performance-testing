@@ -28,6 +28,9 @@ public class HttpProtocolConfig {
     public static HttpProtocolBuilder build() {
         HttpProtocolBuilder builder = http
             .baseUrl(AppConfig.UrlConfig.AUTH_URL)
+            //MH needing to play with BASE_URL, might break other things. 
+            //MH Nope. Breaks other things. 
+            //.baseUrl(AppConfig.UrlConfig.BASE_URL)
             .disableCaching()
             .acceptEncodingHeader("gzip, deflate, br")
             .acceptLanguageHeader("en-US,en;q=0.9");
@@ -50,8 +53,5 @@ public class HttpProtocolConfig {
      * Proxy is considered enabled if the ENABLED flag is true and HOST is set and not empty.
      */
     private static boolean isProxyEnabled() {
-        return AppConfig.ProxyConfig.ENABLED
-            && AppConfig.ProxyConfig.HOST != null 
-            && !AppConfig.ProxyConfig.HOST.trim().isEmpty();
-    }
+        return false;    }
 }
