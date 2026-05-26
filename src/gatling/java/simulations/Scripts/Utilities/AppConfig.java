@@ -95,20 +95,20 @@ public class AppConfig {
             return NORMAL;
         }
     }
-  // ------------------------- URL Configuration -----------------------------
+   // ------------------------- URL Configuration -----------------------------
     public static class UrlConfig {
-        public static final String BASE_URL = getConfigProperty("url.rrems.base", "Secret1");
-        public static final String AUTH_URL = getConfigProperty("url.auth.base", "Secret2");
+        public static final String BASE_URL = getConfigProperty("url.rrems.base", "https://opal-frontend.test.apps.hmcts.net");
+        public static final String AUTH_URL = getConfigProperty("url.auth.base", "https://login.microsoftonline.com/");
     }
     // ------------------------- Tenant Configuration -----------------------------
     public static class TenantConfig {
-        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "Secret3");
-        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "Secret4");
-        public static final String SCOPE = getConfigProperty("tenant.scope", "Secret5");
-        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "Secret6");
-        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "Secret7");
-       
-    }
+        public static final String CLIENT_ID = getConfigProperty("tenant.client.id", "85258805-10e5-4cbd-a38e-61fc4e62627a");
+        public static final String CLIENT_REQUEST_ID = getConfigProperty("tenant.client.request.id", "7fa0e61d-a88e-487e-8047-d489889d97ea");
+        public static final String SCOPE = getConfigProperty("tenant.scope", "user.read%20openid%20profile%20offline_access");
+        public static final String REDIRECT_URL = getConfigProperty("tenant.redirect.url", "https%3A%2F%2Fopal-frontend.test.apps.hmcts.net%2Fsso%2Flogin-callback");
+        public static final String AAD_TENANT_ID = getConfigProperty("tenant.aad.tenant.id", "e575f663-b30a-4786-89ad-319842dfe853");
+        }
+
 
 
     // ------------------------- Test Configuration -----------------------------

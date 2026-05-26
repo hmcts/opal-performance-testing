@@ -13,7 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
-import simulations.Scripts.RequestBodyBuilderR1b.RequestBodyBuilderR1b; //MH this is not the file path. this is a class path, this is strange. I do not like it.
+import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b; //MH this is not the file path. this is a class path, this is strange. I do not like it.
 
 public final class R1bDefendantViewScenario {
 

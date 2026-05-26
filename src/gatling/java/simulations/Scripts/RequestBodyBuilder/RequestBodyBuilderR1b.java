@@ -1,4 +1,4 @@
-package simulations.Scripts.RequestBodyBuilderR1b;
+package simulations.Scripts.RequestBodyBuilder;
 
 
 import static io.gatling.javaapi.core.CoreDsl.StringBody;

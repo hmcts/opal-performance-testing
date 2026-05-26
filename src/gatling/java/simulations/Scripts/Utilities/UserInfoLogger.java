@@ -1,86 +1,134 @@
 package simulations.Scripts.Utilities;
 
 import io.gatling.javaapi.core.ChainBuilder;
+
 import static io.gatling.javaapi.core.CoreDsl.exec;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserInfoLogger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoLogger.class);
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(UserInfoLogger.class);
 
-        public static ChainBuilder logDetailedErrorMessage(String requestName, String statusKey) {
+    /**
+     * Overload with no status key required
+     */
+    public static ChainBuilder logDetailedErrorMessage(String requestName) {
+    return logDetailedErrorMessage(requestName, null);
+    }
+
+    /**
+     * Main logging method
+     */
+    public static ChainBuilder logDetailedErrorMessage(
+            String requestName,
+            String statusKey
+    ) {
+
         return exec(session -> {
 
-            int reqStatus = session.contains(statusKey)
-                    ? session.getInt(statusKey)
-                    : -1;
+            int reqStatus = -1;
+
+            if (statusKey != null
+                    && !statusKey.isBlank()
+                    && session.contains(statusKey)) {
+
+                reqStatus = session.getInt(statusKey);
+            }
 
             boolean isSuccess = reqStatus == 200 || reqStatus == 302;
 
-            String userName = session.contains("Username")
-                    ? session.getString("Username")
-                    : "N/A";
+            String userName =
+                    session.contains("Username")
+                            ? session.getString("Username")
+                            : "N/A";
+
+            String email =
+                    session.contains("Email")
+                            ? session.getString("Email")
+                            : "N/A";
+
+            // ✅ NEW: capture API error detail if it exists
+            String detail =
+                    session.contains("getDetail")
+                            ? session.getString("getDetail")
+                            : "N/A";
 
             if (isSuccess) {
-                LOGGER.info("Request '{}' was successful. User: {}. Status: {}",
-                        requestName, userName, reqStatus);
+
+                LOGGER.info(
+                        "Request '{}' was successful. User: {}. Email: {}. Status: {}",
+                        requestName,
+                        userName,
+                        email,
+                        reqStatus == -1 ? "N/A" : reqStatus
+                );
+
             } else {
-                LOGGER.error("Request '{}' FAILED. User: {}. Status: {}",
-                        requestName, userName, reqStatus);
+
+                LOGGER.error(
+                        "Request '{}' FAILED. User: {}. Email: {}. Status: {}. Detail: {}",
+                        requestName,
+                        userName,
+                        email,
+                        reqStatus == -1 ? "N/A" : reqStatus,
+                        detail
+                );
             }
 
             return session;
         });
     }
-   
 
-    // public static ChainBuilder logDetailedErrorMessage(String requestName, String trmId) {
-    //     return exec(session -> {
-    //         String statusCode = session.contains("status") ? session.getString("status") : "N/A";
-    //         String errorType = session.contains("errorType") ? session.getString("errorType") : "N/A";
-    //         String errorTitle = session.contains("errorTitle") ? session.getString("errorTitle") : "N/A";
-    //         String errorStatus = session.contains("errorStatus") ? session.getString("errorStatus") : "N/A";
-            
-    //         String email = session.contains("Email") ? session.getString("Email") : "N/A";
-    //         String password = session.contains("Password") ? session.getString("Password") : "N/A";
-    //         String userName = session.contains("user_name") ? session.getString("user_name") : "N/A";
+    /**
+     * Regex failure logger
+     */
+    public static ChainBuilder logDetailedErrorMessage(
+            String requestName,
+            String regexName,
+            String expectedPattern
+    ) {
 
-    //         // Log the status of the request
-    //         if ("N/A".equals(statusCode)) {
-    //             LOGGER.info("Request '{}' was successful. User Details: Email={}, User Name={}.", requestName, email, userName);
-    //         } else if (!"N/A".equals(errorType) || !"N/A".equals(errorTitle)) {
-    //             String errorMessage = String.format(
-    //                 "Request '%s' encountered an issue with status code: %s. "
-    //                 + "Error Type: %s, Error Title: %s, Error Status: %s. "
-    //                 + "Failed on trm_id: %s. "
-    //                 + "User Details: Email=%s, Password=%s, User Name=%s.",
-    //                 requestName, statusCode, errorType, errorTitle, errorStatus, trmId, email, password, userName
-    //             );
-    //             LOGGER.error(errorMessage);
-    //         }
-    //         return session;
-    //     });
-    // }
-    
-    public static ChainBuilder logDetailedErrorMessage(String requestName, String regexName, String expectedPattern) {
         return exec(session -> {
-            String email = session.contains("Email") ? session.getString("Email") : "N/A";
-            String password = session.contains("Password") ? session.getString("Password") : "N/A";
-            String userName = session.contains("user_name") ? session.getString("user_name") : "N/A";
 
-            // Assuming we want to log if regex didn't match the expected pattern
-            boolean regexFailed = session.contains("regexFailed") && session.getBoolean("regexFailed");
+            String email =
+                    session.contains("Email")
+                            ? session.getString("Email")
+                            : "N/A";
+
+            String password =
+                    session.contains("Password")
+                            ? session.getString("Password")
+                            : "N/A";
+
+            String userName =
+                    session.contains("user_name")
+                            ? session.getString("user_name")
+                            : "N/A";
+
+            boolean regexFailed =
+                    session.contains("regexFailed")
+                            && session.getBoolean("regexFailed");
 
             if (regexFailed) {
+
                 String errorMessage = String.format(
-                    "Request '%s' encountered a regex issue for user: Email=%s, Password=%s, User Name=%s. "
-                    + "Failed to match the regex '%s' with pattern '%s'. The pattern did not find any matches. "
-                    + "Please check if the response contains the expected format and verify the regex pattern.",
-                    requestName, email, password, userName, regexName, expectedPattern
+                        "Request '%s' encountered a regex issue for user: " +
+                        "Email=%s, Password=%s, User Name=%s. " +
+                        "Failed to match regex '%s' with pattern '%s'.",
+                        requestName,
+                        email,
+                        password,
+                        userName,
+                        regexName,
+                        expectedPattern
                 );
+
                 LOGGER.error(errorMessage);
             }
+
             return session;
         });
     }
