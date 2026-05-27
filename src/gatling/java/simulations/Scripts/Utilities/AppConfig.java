@@ -219,8 +219,8 @@ public class AppConfig {
     public static class ProxyConfig {
         public static final String HOST = getConfigProperty("proxy.host", "127.0.0.1");
         public static final int PORT = getConfigPropertyAsInt("proxy.port", 8888);
-        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", false);
-    }//changed proxy to false
+        public static final boolean ENABLED = getConfigPropertyAsBoolean("proxy.enabled", true);
+    }//changed proxy to false/true for fiddler values
 
     public static final class TestingConfig {
 
