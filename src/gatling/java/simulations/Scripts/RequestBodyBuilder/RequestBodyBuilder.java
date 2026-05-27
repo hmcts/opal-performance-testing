@@ -210,14 +210,14 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, addressLine1,         
@@ -367,14 +367,14 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +       
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, 
@@ -527,14 +527,14 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, 
@@ -572,20 +572,20 @@ public class RequestBodyBuilder {
             "  \"account_status\": \"Publishing Pending\",\n" +
             "  \"business_unit_id\": %s,\n" +
             "  \"reason_text\": null,\n" +
-            "  \"timeline_data\": [\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Submitted\",\n" +
-            "      \"status_date\": \"2026-01-09\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Publishing Pending\",\n" +
-            "      \"status_date\": \"%s\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    }\n" +
-            "  ],\n" +
+            // "  \"timeline_data\": [\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Submitted\",\n" +
+            // "      \"status_date\": \"2026-01-09\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    },\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Publishing Pending\",\n" +
+            // "      \"status_date\": \"%s\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    }\n" +
+            // "  ],\n" +
             "  \"validated_by\": \"%s\",\n" +
             "  \"validated_by_name\": \"%s\",\n" +
             "  \"version\": \"\\\"0\\\"\"\n" +
@@ -629,20 +629,20 @@ public class RequestBodyBuilder {
             "  \"account_status\": \"Rejected\",\n" +
             "  \"business_unit_id\": %s,\n" +
             "  \"reason_text\": \"%s\",\n" +
-            "  \"timeline_data\": [\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Submitted\",\n" +
-            "      \"status_date\": \"2026-01-09\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"reason_text\": \"%s\",\n" +
-            "      \"status\": \"Rejected\",\n" +
-            "      \"status_date\": \"%s\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    }\n" +
-            "  ],\n" +
+            // "  \"timeline_data\": [\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Submitted\",\n" +
+            // "      \"status_date\": \"2026-01-09\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    },\n" +
+            // "    {\n" +
+            // "      \"reason_text\": \"%s\",\n" +
+            // "      \"status\": \"Rejected\",\n" +
+            // "      \"status_date\": \"%s\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    }\n" +
+            // "  ],\n" +
             "  \"validated_by\": null,\n" +
             "  \"validated_by_name\": null,\n" +
             "  \"version\": \"\\\"0\\\"\"\n" +

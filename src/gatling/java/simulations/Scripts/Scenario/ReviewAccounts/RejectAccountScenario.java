@@ -56,7 +56,11 @@ public final class RejectAccountScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
-                )
+                    .check(Feeders.saveErrorDetails())
+                )  
+
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                //.exitHereIfFailed()   
                 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
 
@@ -78,7 +82,11 @@ public final class RejectAccountScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
-                )
+                        .check(Feeders.saveErrorDetails())
+                )  
+
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                //.exitHereIfFailed() 
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
