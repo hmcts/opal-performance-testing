@@ -1,26 +1,27 @@
 package simulations.Scripts.ScenarioBuilder;
 
 import io.gatling.javaapi.core.ChainBuilder;
+import simulations.Scripts.Scenario.Login.LoginScenario;
+import simulations.Scripts.Scenario.SearchAccounts.R1bMajorCreditorSearchScenario;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class R1bMajorCreditorSearchBuild {
 
-    public static ChainBuilder build() {
-        return exec(
-            http("Get major creditors for business unit")
-                .get("/opal-fines-service/major-creditors")
-                .queryParam("businessUnit", "#{businessUnit}")
-                .check(status().is(200))
-                .check(jsonPath("$.refData[0].major_creditor_id").saveAs("major_creditor_id"))
-                .check(jsonPath("$.refData[0].name").saveAs("major_creditor_name"))
-        )
-        .pause(1)
-        .exec(
-            http("Open major creditor defendant view")
-                .get("/fines/account/#{major_creditor_id}/defendant")
-                .check(status().is(200))
-        );
+    public static ScenarioBuilder build(String scenarioName) {
+        return scenario(scenarioName)
+            .group("Major Creditor Search and View")
+             .on(
+                //MH Change this for the R1b users when they are set up! Should not be checkerUsers when run in anger!
+                exec(exec(feed(Feeders.checkerUsers()))
+                .exec(LoginScenario.LoginRequest())
+                .forever().on(
+                .exec(R1bMajorCreditorSearchScenario.build())
+            .pause(40,120))
+
+            ));
     }
+
+    
 }
