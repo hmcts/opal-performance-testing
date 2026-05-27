@@ -50,7 +50,7 @@ public class UserInfoLogger {
                             ? session.getString("Email")
                             : "N/A";
 
-            // ✅ NEW: capture API error detail if it exists
+            // NEW: capture API error detail if it exists
             String detail =
                     session.contains("getDetail")
                             ? session.getString("getDetail")

@@ -24,13 +24,38 @@ public class CheckerUsersScenarioBuild {
                 .repeat(100).on(  
                 //.forever().on(  
                 //WHY ARE LOOPS SO HARD!?              
-                randomSwitch()
-                
+                randomSwitch()                
                     .on(
-                        percent(90).then(exec(ApproveAccountScenario.ApproveAccountRequest())),
-                        percent(10).then(exec(RejectAccountScenario.RejectAccountRequest()))
-                    )
-                ))
-                );
+                        percent(90).then(exec(ApproveAccountScenario.ApproveAccountRequest())
+                        .exec(session -> {  int current = session.contains("approvedCount")
+                                                ? session.getInt("approvedCount")
+                                                : 0;
+
+                                            String username = session.getString("Username");
+                                            System.out.println(
+                                                "[APPROVE] User=" + username +
+                                                " | Count=" + (current + 1)
+                                            );
+                                            return session.set("approvedCount", current + 1);
+                                        }
+                            )),
+                        percent(10).then(exec(RejectAccountScenario.RejectAccountRequest())
+                        .exec(session -> {  int current = session.contains("rejectedCount")
+                                                ? session.getInt("rejectedCount")
+                                                : 0;
+
+                                            String username = session.getString("Username");
+                                            System.out.println(
+                                                "[REJECT] User=" + username +
+                                                " | Count=" + (current + 1)
+                                            );
+
+                                            return session.set("rejectedCount", current + 1);
+                                        }
+                            )
+                    
+                        )
+                )))
+            );
     }
 }

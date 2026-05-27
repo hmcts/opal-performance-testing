@@ -23,9 +23,9 @@ public final class LoginScenario {
                 exec(http("OPAL - Sso - Login - /")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
                     .headers(Headers.getHeaders(1))
-                    .check(status().saveAs("loginStatus"))
+                //    .check(status().saveAs("loginStatus"))
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /", "loginStatus"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
 
                 .exitHereIfFailed() 
 
@@ -138,18 +138,13 @@ public final class LoginScenario {
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
                 .check(Feeders.saveErrorDetails()) 
+                .check(status().is(200))
                 .check(
                     jsonPath("$.business_unit_users[*].business_unit_id")
-                        .findAll()
-                        .saveAs("businessUnitIds"),
-
+                        .findAll().saveAs("businessUnitIds"),
                     jsonPath("$.business_unit_users[*].business_unit_user_id")
-                        .findAll()
-                        .saveAs("businessUnitUserIds"),
-                    jsonPath("$.name")
-                        .saveAs("getUserName"),                                            
-                    jsonPath("$.detail").optional().saveAs("getDetail"))
-
+                        .findAll().saveAs("businessUnitUserIds"),
+                    jsonPath("$.name").saveAs("getUserName"))
             )
             .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
             .exitHereIfFailed() 
