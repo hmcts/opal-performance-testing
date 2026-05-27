@@ -221,7 +221,9 @@ public final class CreateAccountConditionalCautionScenario {
                     .headers(Headers.getHeaders(14)) 
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
                     .check(status().is(201)) 
-                    .check(status().saveAs("loginStatus")) 
+                    .check(status().saveAs("loginStatus"))
+                    .check(Feeders.saveErrorDetails())                
+ 
                 )  
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))

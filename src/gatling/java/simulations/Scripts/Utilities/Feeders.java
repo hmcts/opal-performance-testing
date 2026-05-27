@@ -106,8 +106,9 @@ public class Feeders {
     public static CheckBuilder.Final saveProsecutors() {
         return CoreDsl.jsonPath("$.ref_data[*]").findAll().saveAs("prosecutors");
     }
-
-
+    public static CheckBuilder.Final saveErrorDetails() {
+        return CoreDsl.jsonPath("$.detail").optional().saveAs("getDetail");
+    }
 
     public static FeederBuilder<Object> listFeeder(String key, List<Object> items) {
         return CoreDsl.listFeeder(items.stream()
