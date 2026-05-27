@@ -21,8 +21,8 @@ public class CheckerUsersScenarioBuild {
                                     //adding the repeat as well since the first test I did only did 5 at all. 
                                     //MH changing the repeat to a forever because I understand the assignment now
                                     //I don't underdtand the assignment, it didn't work, going to up the repeat to 50 to see if that gets me to 20 min
-                .repeat(100).on(  
-                //.forever().on(  
+                //.repeat(100).on(  
+                .forever().on(  
                 //WHY ARE LOOPS SO HARD!?              
                 randomSwitch()                
                     .on(

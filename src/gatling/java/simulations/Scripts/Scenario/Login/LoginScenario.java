@@ -23,6 +23,7 @@ public final class LoginScenario {
                 exec(http("OPAL - Sso - Login - /")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
                     .headers(Headers.getHeaders(1))
+                    .check(status().is(200))
                 //    .check(status().saveAs("loginStatus"))
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))

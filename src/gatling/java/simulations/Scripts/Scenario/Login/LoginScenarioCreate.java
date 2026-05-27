@@ -23,9 +23,9 @@ public final class LoginScenarioCreate {
                 exec(http("OPAL - Sso - Login - /")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
                     .headers(Headers.getHeaders(1))
-                    .check(status().saveAs("loginStatus"))
+                    .check(status().is(200))
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /", "loginStatus"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
 
                 .exitHereIfFailed() 
 
@@ -64,10 +64,10 @@ public final class LoginScenarioCreate {
                     .post(AppConfig.UrlConfig.AUTH_URL +"common/GetCredentialType?mkt=en-US")
                         .headers(Headers.getHeaders(2))
                         .body(StringBody(session -> session.get("loginRequestPayload"))).asJson()
-                        .check(status().saveAs("loginStatus")) 
+                        .check(status().is(200))
                 )
 
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Common - GetCredentialType", "loginStatus"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Common - GetCredentialType"))
                 .exitHereIfFailed()  
                         
             ///This Gets changed and causes internal users to fail log in. If this happens manually go into the portal with 1 user and grab it from the cookies. 
@@ -108,7 +108,7 @@ public final class LoginScenarioCreate {
                 .check(Feeders.saveTokenCode())
                 .check(Feeders.saveClientInfo())
                 .check(Feeders.saveSessionState())
-                .check(status().saveAs("loginStatus")) 
+                .check(status().is(200))
             )     
             .exec(session -> {
                 System.out.println("TokenCode = " + session.getString("TokenCode"));
@@ -117,7 +117,7 @@ public final class LoginScenarioCreate {
                 return session;
             })
                         
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Login", "loginStatus"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Login"))
                 .exitHereIfFailed()  
     
             .exec(
