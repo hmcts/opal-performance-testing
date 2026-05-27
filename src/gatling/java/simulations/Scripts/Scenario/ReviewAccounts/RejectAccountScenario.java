@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.ReviewAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
@@ -192,7 +193,8 @@ public final class RejectAccountScenario {
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
                     .headers(Headers.getHeaders(15))
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
-                    .check(status().is(200)) 
+                    .check(status().is(200))
+                    .check(Feeders.saveErrorDetails()) 
                 )             
                 
                 .exec(

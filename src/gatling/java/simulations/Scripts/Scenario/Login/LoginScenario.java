@@ -157,7 +157,7 @@ public final class LoginScenario {
               http("OPAL - Opal-User-Service - Users - 0 - state")
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
-                .check(jsonPath("$.detail").optional().saveAs("getDetail"))
+                .check(Feeders.saveErrorDetails())                
 
             )
             .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))

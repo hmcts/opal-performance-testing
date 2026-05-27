@@ -14,7 +14,7 @@ public class LoginScenarioBuild {
         return scenario(scenarioName)
             .group("OPAL Login Requests")
             .on(
-                exec(feed(Feeders.createUsers())
+                exec(feed(Feeders.checkerUsers())
                     .exec(LoginScenarioCreate.LoginRequest())
 
                     //.exec(LoginScenario.LoginRequest())

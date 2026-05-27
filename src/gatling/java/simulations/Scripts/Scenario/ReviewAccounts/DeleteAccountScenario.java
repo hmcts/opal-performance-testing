@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.ReviewAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
@@ -59,6 +60,7 @@ public final class DeleteAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                         .check(status().saveAs("loginStatus")) 
+                        .check(Feeders.saveErrorDetails())
                 )
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
@@ -215,6 +217,7 @@ public final class DeleteAccountScenario {
                     .body(StringBody(session -> session.get("deleteAccountRequestPayload"))).asJson()
                     .check(status().is(200)) 
                     .check(status().saveAs("loginStatus")) 
+                    .check(Feeders.saveErrorDetails())
                 )  
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts", "loginStatus"))
