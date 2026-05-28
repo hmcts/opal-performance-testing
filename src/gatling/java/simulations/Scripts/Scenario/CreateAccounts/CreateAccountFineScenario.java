@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
+import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
 public final class CreateAccountFineScenario {
 
@@ -23,15 +24,132 @@ public final class CreateAccountFineScenario {
     public static ChainBuilder CreateAccountFineRequest() {
 
         return group("OPAL Create Manual Account").on(
+            //Selecting Account tab:
 
+                exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                )  
+  
+            //Create and Manage Draft Accounts
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                )  
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                ) 
+            // Displays the created accounts by filters.    
+            //Build draft account query parameters from business unit data in session (Submitted / Resubmitted) 
+                
+                .exec(session ->
+                    DraftAccountQueryBuilder.buildAndStore(
+                        session,
+                        "draftAccountSubmittedQueryParams",
+                        List.of("Submitted", "Resubmitted"),
+                        "not_submitted_by",
+                       false
+                    )
+                )
+                .exec(
+                    http("OPAL - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
+                        )
+                        .headers(Headers.getHeaders(11))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
+                    .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exitHereIfFailed()
+
+                //Build draft account query parameters from business unit data in session (Publishing Failed)               
+
+                .exec(session ->
+                    DraftAccountQueryBuilder.buildAndStore(
+                        session,
+                        "draftAccountFailedQueryParams",
+                        List.of("Publishing Failed"),
+                        "not_submitted_by",
+                       false
+                    )
+                )                
+                .exec(
+                    http("OPAL - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountFailedQueryParams")
+                        )
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                )
+                .exitHereIfFailed() 
+
+                //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
+                .exec(
+                    http("OPAL - Opal-fines-service - Draft-accounts")
+                        .get(session ->
+                            AppConfig.UrlConfig.BASE_URL +
+                            "/opal-fines-service/draft-accounts?" +
+                            session.getString("draftAccountSubmittedQueryParams")
+                        )
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(
+                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
+                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
+                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
+                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
+                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
+                            )
+
+                        )
+                
+                .exec(session -> {
+
+                    List<Integer> draftAccountIds = session.getList("draftAccountIds");
+                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
+                    List<String> accountStatuses = session.getList("accountStatuses");
+                    List<String> submittedBys = session.getList("submittedBys");
+                    List<String> submittedByNames = session.getList("submittedByNames");
+
+                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
+                        return session.markAsFailed();
+                    }
+
+                  // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+                        
+                    return session
+                        .set("selectedDraftAccountId", draftAccountIds.get(index))
+                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
+                        .set("accountStatus", accountStatuses.get(index))
+                        .set("submittedBy", submittedBys.get(index))
+                        .set("submittedByName", submittedByNames.get(index));
+                    }
+                )
                 //Selecting Manual create account
-                exec(http("OPAL - Sso - Authenticated")
+                .exec(
+                    http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
                 )
                 
-                .exec(http("OPAL - Sso - Authenticated")
+                .exec(
+                    http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         

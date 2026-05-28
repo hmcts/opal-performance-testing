@@ -160,6 +160,42 @@ public final class LoginScenario {
             // )
             // .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
             // .exitHereIfFailed() 
+
+
+            // Search dashboard display from login.
+
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+                        .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - Opal-fines-service - Business-units")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units")
+                    .headers(Headers.getHeaders(12))
+                    .check(status().is(200)) 
+                )               
+            .exitHereIfFailed()
         );            
     }
 }
