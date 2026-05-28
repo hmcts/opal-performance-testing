@@ -55,7 +55,8 @@ public final class RejectAccountScenario {
                             session.getString("draftAccountSubmittedQueryParams")
                         )
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))                   
                     .check(Feeders.saveErrorDetails())
                 )  
 
@@ -81,8 +82,9 @@ public final class RejectAccountScenario {
                             session.getString("draftAccountFailedQueryParams")
                         )
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                        .check(Feeders.saveErrorDetails())
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
+                    .check(Feeders.saveErrorDetails())
                 )  
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
@@ -156,7 +158,12 @@ public final class RejectAccountScenario {
                     http("OPAL - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/33369")
                     .headers(Headers.getHeaders(11))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Offences"))
+                .exitHereIfFailed()  
+
                 .exec(
                     http("OPAL - Opal-fines-service - Courts")
                     .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=" + session.get("selectedBusinessUnitId"))
@@ -186,7 +193,12 @@ public final class RejectAccountScenario {
                     http("OPAL - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=HY35014")
                     .headers(Headers.getHeaders(11))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Offences"))
+                .exitHereIfFailed()  
+
                 //Reject the selected draft account
                 .pause(60,300)
                 .exec(session -> { 

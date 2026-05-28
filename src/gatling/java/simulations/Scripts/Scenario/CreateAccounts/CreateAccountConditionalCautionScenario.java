@@ -138,9 +138,14 @@ public final class CreateAccountConditionalCautionScenario {
                 //This is added once entered a offence.
                 .exec(
                     http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")                    
                     .headers(Headers.getHeaders(12))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Offences"))
+                .exitHereIfFailed()  
+
                 .exec(
                     http("OPAL - Opal-user-service - Users - 0 - State")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
@@ -220,9 +225,9 @@ public final class CreateAccountConditionalCautionScenario {
                     .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts")
                     .headers(Headers.getHeaders(14)) 
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
+                    .check(status().saveAs("httpStatus"))
                     .check(status().is(201)) 
-                    .check(Feeders.saveErrorDetails())                
- 
+                    .check(Feeders.saveErrorDetails())
                 )  
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))

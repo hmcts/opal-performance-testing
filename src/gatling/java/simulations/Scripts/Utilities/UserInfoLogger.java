@@ -13,7 +13,7 @@ public class UserInfoLogger {
             LoggerFactory.getLogger(UserInfoLogger.class);
 
     /**
-     * Logs request outcome using Gatling session failure state
+     * Main request logger
      */
     public static ChainBuilder logDetailedErrorMessage(
             String requestName
@@ -21,9 +21,29 @@ public class UserInfoLogger {
 
         return exec(session -> {
 
-            String userName =
-                    session.contains("Username")
-                            ? session.getString("Username")
+            String statusCode =
+                    session.contains("httpStatus")
+                            ? String.valueOf(session.getInt("httpStatus"))
+                            : "N/A";
+
+            String responseBody =
+                    session.contains("responseBody")
+                            ? session.getString("responseBody")
+                            : "N/A";
+
+            String errorType =
+                    session.contains("Changetosomething2")
+                            ? session.getString("Changetosomething2")
+                            : "N/A";
+
+            String errorTitle =
+                    session.contains("Changetosomething")
+                            ? session.getString("Changetosomething")
+                            : "N/A";
+
+            String errorStatus =
+                    session.contains("errorStatus")
+                            ? session.getString("errorStatus")
                             : "N/A";
 
             String detail =
@@ -31,23 +51,54 @@ public class UserInfoLogger {
                             ? session.getString("getDetail")
                             : "N/A";
 
-            if (session.isFailed()) {
+            String userName =
+                    session.contains("Username")
+                            ? session.getString("Username")
+                            : "N/A";
 
-                LOGGER.error(
-                        "Request '{}' FAILED. User: {}. Detail: {}",
-                        requestName,
-                        userName,
-                        detail
-                );
-
-            } else {
+            // -------------------------
+            // SUCCESS
+            // -------------------------
+            if (!session.isFailed()) {
 
                 LOGGER.info(
-                        "Request '{}' was successful. User: {}",
+                        "Request '{}' succeeded. User: {}. Status: {}",
                         requestName,
-                        userName
+                        userName,
+                        statusCode
                 );
+
+                return session;
             }
+
+            // -------------------------
+            // FAILURE
+            // -------------------------
+            LOGGER.error(
+                    """
+                    Request '{}' FAILED
+
+                    Status Code: {}
+                    Error Type: {}
+                    Error Title: {}
+                    Error Status: {}
+
+                    User:
+                    detail={}
+                    Username={}
+
+                    Response Body:
+                    {}
+                    """,
+                    requestName,
+                    statusCode,
+                    errorType,
+                    errorTitle,
+                    errorStatus,
+                    detail,
+                    userName,
+                    responseBody
+            );
 
             return session;
         });

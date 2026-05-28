@@ -143,9 +143,13 @@ public final class CreateAccountFineScenario {
                     http("OPAL - Opal-fines-service - Offences")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences?q=#{offenceCode}")
                     .headers(Headers.getHeaders(12))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Offences"))
+                .exitHereIfFailed()  
 
-                 //Selecting Review offence        
+                //Selecting Review offence        
                 .pause(5,20) 
                 .exec(
                     http("OPAL - Opal-user-service - Users - 0 - State")
@@ -230,11 +234,10 @@ public final class CreateAccountFineScenario {
                     .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts")
                     .headers(Headers.getHeaders(14)) 
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
-                    .check(status().is(201)) 
-                    .check(Feeders.saveErrorDetails())                
-
-                )  
-
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(201))
+                    .check(Feeders.saveErrorDetails()) 
+                )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
                 .exitHereIfFailed() 
                 

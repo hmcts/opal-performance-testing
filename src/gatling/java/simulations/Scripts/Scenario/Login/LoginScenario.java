@@ -23,8 +23,8 @@ public final class LoginScenario {
                 exec(http("OPAL - Sso - Login - /")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
                     .headers(Headers.getHeaders(1))
+                    .check(status().saveAs("httpStatus"))
                     .check(status().is(200))
-                //    .check(status().saveAs("loginStatus"))
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
 
@@ -138,7 +138,8 @@ public final class LoginScenario {
               http("OPAL - Opal-User-Service - Users - 0 - state")
               .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
                 .headers(Headers.getHeaders(7))
-                .check(Feeders.saveErrorDetails()) 
+                .check(Feeders.saveErrorDetails())
+                .check(status().saveAs("httpStatus"))
                 .check(status().is(200))
                 .check(
                     jsonPath("$.business_unit_users[*].business_unit_id")
