@@ -139,13 +139,13 @@ public final class LoginScenarioCreate {
                 .headers(Headers.getHeaders(6))
             )
             .exec(
-              http("OPAL - Opal-User-Service - Users - 0 - state")
-              .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+              http("OPAL - API - Users-state")
+              .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(7))
             )
             .exec(
-              http("OPAL - Opal-User-Service - Users - 0 - state")
-              .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+              http("OPAL - API - Users-state")
+              .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(7))
            )
         );            

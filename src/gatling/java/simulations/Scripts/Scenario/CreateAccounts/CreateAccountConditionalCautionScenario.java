@@ -210,8 +210,8 @@ public final class CreateAccountConditionalCautionScenario {
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("OPAL - Opal-user-service - Users - 0 - State")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(12))
                 )
 
@@ -267,8 +267,8 @@ public final class CreateAccountConditionalCautionScenario {
                 .exitHereIfFailed()  
 
                 .exec(
-                    http("OPAL - Opal-user-service - Users - 0 - State")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(12))
                 )
 

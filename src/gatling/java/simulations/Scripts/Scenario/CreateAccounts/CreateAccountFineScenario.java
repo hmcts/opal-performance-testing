@@ -212,8 +212,8 @@ public final class CreateAccountFineScenario {
                     .headers(Headers.getHeaders(11))
                 )
                 .exec(
-                    http("OPAL - Opal-user-service - Users - 0 - State")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(12))
                 )
                 .exec(
@@ -270,8 +270,8 @@ public final class CreateAccountFineScenario {
                 //Selecting Review offence        
                 .pause(5,20) 
                 .exec(
-                    http("OPAL - Opal-user-service - Users - 0 - State")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(12))
                 )
 

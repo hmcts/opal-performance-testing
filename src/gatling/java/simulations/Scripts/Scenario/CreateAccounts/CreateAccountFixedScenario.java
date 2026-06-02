@@ -241,8 +241,8 @@ public final class CreateAccountFixedScenario {
                 .exitHereIfFailed()  
 
                 .exec(
-                    http("OPAL - Opal-user-service - Users - 0 - State")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(12))
                 )
                 .exec(

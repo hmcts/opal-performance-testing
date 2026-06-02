@@ -195,8 +195,8 @@ public final class DeleteAccountScenario {
                 )
                 //Delete selected draft account
                 .exec(
-                http("OPAL - Opal-User-Service - Users - 0 - state")
-                .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                http("OPAL - API - Users-state")
+                .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                     .headers(Headers.getHeaders(7))
                 )
                 .exec(
@@ -222,8 +222,8 @@ public final class DeleteAccountScenario {
                 .exitHereIfFailed()  
 
                 .exec(
-                    http("OPAL - Opal-User-Service - Users - 0 - state")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                    http("OPAL - API - Users-state")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                         .headers(Headers.getHeaders(7))
                 )          
                 

@@ -26,8 +26,8 @@ public final class UserExistsScenario {
     public static ChainBuilder UserExistsRequest() {
         return group("User Refresh - Keep Alive").on(
             exec(
-                http("OPAL - Opal-user-service - Users - 0 - State")
-                .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                http("OPAL - API - Users-state")
+                .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(12))
             )
 
@@ -40,8 +40,8 @@ public final class UserExistsScenario {
             .exitHereIfFailed()
 
             .exec(
-                http("OPAL - Opal-user-service - Users - 0 - State")
-                .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+                http("OPAL - API - Users-state")
+                .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(12))
             )
         );

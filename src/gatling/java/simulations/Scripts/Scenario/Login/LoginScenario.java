@@ -135,30 +135,31 @@ public final class LoginScenario {
                 .headers(Headers.getHeaders(6))
             )
             .exec(
-              http("OPAL - Opal-User-Service - Users - 0 - state")
-              .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+              http("OPAL - API - User-state")
+              .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(7))
                 .check(Feeders.saveErrorDetails())
+                .check(bodyString().optional().saveAs("responseBody"))
                 .check(status().saveAs("httpStatus"))
                 .check(status().is(200))
                 .check(
-                    jsonPath("$.business_unit_users[*].business_unit_id")
+                    jsonPath("$.domains.fines.business_unit_users[*].business_unit_id")
                         .findAll().saveAs("businessUnitIds"),
-                    jsonPath("$.business_unit_users[*].business_unit_user_id")
+                    jsonPath("$.domains.fines.business_unit_users[*].business_unit_user_id")
                         .findAll().saveAs("businessUnitUserIds"),
                     jsonPath("$.name").saveAs("getUserName"))
             )
-            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - API - Users-state"))
             .exitHereIfFailed() 
             
             // .exec(
-            //   http("OPAL - Opal-User-Service - Users - 0 - state")
-            //   .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+            //   http("OPAL - API - Users-state")
+            //   .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
             //     .headers(Headers.getHeaders(7))
             //     .check(Feeders.saveErrorDetails())                
 
             // )
-            // .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
+            // .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - API - Users-state"))
             // .exitHereIfFailed() 
 
 
