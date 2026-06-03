@@ -41,7 +41,7 @@ public class MAC_01aSimulation extends Simulation {
                 ),
 
             // ===================== Checker Users Scenario =====================
-            // Builds the Checker scenario and ramps up checker users
+            //Builds the Checker scenario and ramps up checker users
             CheckerUsersScenarioBuild.build(SimulationNames.MAC_01A_TEST + " - Checker")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.CHECKER_USERS)

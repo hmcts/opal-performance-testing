@@ -13,6 +13,9 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
@@ -59,7 +62,7 @@ public final class CreateAccountConditionalCautionScenario {
                     )
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -70,7 +73,7 @@ public final class CreateAccountConditionalCautionScenario {
                     .check(status().is(200))
                     .check(Feeders.saveErrorDetails())
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams"))
                 .exitHereIfFailed()
 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
@@ -85,7 +88,7 @@ public final class CreateAccountConditionalCautionScenario {
                     )
                 )                
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -98,7 +101,7 @@ public final class CreateAccountConditionalCautionScenario {
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -106,41 +109,54 @@ public final class CreateAccountConditionalCautionScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
-                        .check(
-                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
-                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
-                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
-                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
-                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
-                            )
-
-                        )
+                             .check(
+                                   jsonPath("$.summaries").findAll().saveAs("summaries"))
+                                // jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
+                                // jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
+                                // jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
+                                // jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
+                                // jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
+                            )                       
                 
                 .exec(session -> {
 
-                    List<Integer> draftAccountIds = session.getList("draftAccountIds");
-                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
-                    List<String> accountStatuses = session.getList("accountStatuses");
-                    List<String> submittedBys = session.getList("submittedBys");
-                    List<String> submittedByNames = session.getList("submittedByNames");
+                    List<String> summaries = session.getList("summaries");
 
-                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
+                    if (summaries == null || summaries.isEmpty()) {
                         return session.markAsFailed();
                     }
 
-                  // Generate a random index
-                    int index = java.util.concurrent.ThreadLocalRandom.current()
-                        .nextInt(businessUnitIds.size());
-                        
-                    return session
-                        .set("selectedDraftAccountId", draftAccountIds.get(index))
-                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
-                        .set("accountStatus", accountStatuses.get(index))
-                        .set("submittedBy", submittedBys.get(index))
-                        .set("submittedByName", submittedByNames.get(index));
+                    String rawJson = summaries.get(0); // usually only one array wrapper
+
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+
+                        // STEP 1: parse outer array
+                        JsonNode arrayNode = mapper.readTree(rawJson);
+
+                        if (!arrayNode.isArray() || arrayNode.size() == 0) {
+                            System.err.println("Summaries array is empty or invalid");
+                            return session.markAsFailed();
+                        }
+
+                        // STEP 2: pick a real summary object inside array
+                        JsonNode node = arrayNode.get(
+                            ThreadLocalRandom.current().nextInt(arrayNode.size())
+                        );
+
+                        return session
+                            .set("selectedDraftAccountId", node.get("draft_account_id").asText())
+                            .set("selectedBusinessUnitId", node.get("business_unit_id").asText())
+                            .set("accountStatus", node.get("account_status").asText())
+                            .set("submittedBy", node.get("submitted_by").asText())
+                            .set("submittedByName", node.get("submitted_by_name").asText());
+
+                    } catch (Exception e) {
+                        System.err.println("Failed to parse summaries JSON: " + rawJson);
+                        e.printStackTrace();
+                        return session.markAsFailed();
                     }
-                )  
-            
+                })
                 //Selecting Manual create account
                 .exec(
                     http("OPAL - Sso - Authenticated")
@@ -348,11 +364,31 @@ public final class CreateAccountConditionalCautionScenario {
                     .check(status().saveAs("httpStatus"))
                     .check(status().is(201)) 
                     .check(Feeders.saveErrorDetails())
+                    .check(Feeders.saveCreatedAccountId())
                 )  
 
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
                 .exitHereIfFailed() 
-                
+
+                // =======================================================
+                // CUSTOM LOGGING SECTION
+                // =======================================================
+                .exec(session -> {
+
+                    int count = session.getInt("createdAccountCount") + 1;
+
+                    System.out.println(
+                        "\n========== DRAFT ACCOUNT CREATED ==========\n" +
+                        "User: " + session.getString("username") + "\n" +
+                        "Account Type: " + session.getString("createdAccountType") + "\n" +
+                        "Business Unit ID: " + session.getString("createdBusinessUnitId") + "\n" +
+                        "New Created Account ID: " + session.getString("getCreatedAccountId") + "\n" +
+                        "Created Account Count: " + count + "\n" +
+                        "===========================================\n"
+                    );
+
+                    return session.set("createdAccountCount", count);
+                })                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

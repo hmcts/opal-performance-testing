@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
 import simulations.Scripts.ScenarioBuilder.DraftAccountQueryBuilder;
 
@@ -59,7 +62,7 @@ public final class CreateAccountFineScenario {
                     )
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -70,7 +73,7 @@ public final class CreateAccountFineScenario {
                     .check(status().is(200))
                     .check(Feeders.saveErrorDetails())
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams"))
                 .exitHereIfFailed()
 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
@@ -85,7 +88,7 @@ public final class CreateAccountFineScenario {
                     )
                 )                
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -98,7 +101,7 @@ public final class CreateAccountFineScenario {
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -106,48 +109,62 @@ public final class CreateAccountFineScenario {
                         )
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
-                        .check(
-                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
-                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
-                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
-                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
-                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
-                            )
-
-                        )
+                              .check(
+                                   jsonPath("$.summaries").findAll().saveAs("summaries"))
+                                // jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
+                                // jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
+                                // jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
+                                // jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
+                                // jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
+                            )                       
                 
                 .exec(session -> {
 
-                    List<Integer> draftAccountIds = session.getList("draftAccountIds");
-                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
-                    List<String> accountStatuses = session.getList("accountStatuses");
-                    List<String> submittedBys = session.getList("submittedBys");
-                    List<String> submittedByNames = session.getList("submittedByNames");
+                    List<String> summaries = session.getList("summaries");
 
-                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
+                    if (summaries == null || summaries.isEmpty()) {
                         return session.markAsFailed();
                     }
 
-                  // Generate a random index
-                    int index = java.util.concurrent.ThreadLocalRandom.current()
-                        .nextInt(businessUnitIds.size());
-                        
-                    return session
-                        .set("selectedDraftAccountId", draftAccountIds.get(index))
-                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
-                        .set("accountStatus", accountStatuses.get(index))
-                        .set("submittedBy", submittedBys.get(index))
-                        .set("submittedByName", submittedByNames.get(index));
+                    String rawJson = summaries.get(0); // usually only one array wrapper
+
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+
+                        // STEP 1: parse outer array
+                        JsonNode arrayNode = mapper.readTree(rawJson);
+
+                        if (!arrayNode.isArray() || arrayNode.size() == 0) {
+                            System.err.println("Summaries array is empty or invalid");
+                            return session.markAsFailed();
+                        }
+
+                        // STEP 2: pick a real summary object inside array
+                        JsonNode node = arrayNode.get(
+                            ThreadLocalRandom.current().nextInt(arrayNode.size())
+                        );
+
+                        return session
+                            .set("selectedDraftAccountId", node.get("draft_account_id").asText())
+                            .set("selectedBusinessUnitId", node.get("business_unit_id").asText())
+                            .set("accountStatus", node.get("account_status").asText())
+                            .set("submittedBy", node.get("submitted_by").asText())
+                            .set("submittedByName", node.get("submitted_by_name").asText());
+
+                    } catch (Exception e) {
+                        System.err.println("Failed to parse summaries JSON: " + rawJson);
+                        e.printStackTrace();
+                        return session.markAsFailed();
                     }
-                )
+                })
+
                 //Selecting Manual create account
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )
-                
+                )                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -169,14 +186,22 @@ public final class CreateAccountFineScenario {
                         .set("selectedBusinessUnitId", businessUnitIds.get(index))
                         .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
                 })
-                
+
+                //Selecting Create new account
+                .pause(5,20)
+
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))                                         
+                )
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
                         .headers(Headers.getHeaders(12))
                         .check(status().is(200)) 
                         .check(Feeders.saveBusinessUnitId())
-
                 )               
                 .exitHereIfFailed()                       
            
@@ -320,7 +345,7 @@ public final class CreateAccountFineScenario {
                     )
 
                 ) 
-                 .exec(session -> {
+                                .exec(session -> {
                     // Retrieve lists of prosecutor IDs and names from the Gatling session
                     List<Integer> prosecutorIds = session.getList("prosecutorIds");
                     List<String> prosecutorNames = session.getList("prosecutorNames");
@@ -329,21 +354,55 @@ public final class CreateAccountFineScenario {
                         System.out.println("No prosecutors found!");
                         return session;
                     }
-
+                    // Generate a random index based on the size of the prosecutor list
                     int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
-
+                    // Store the randomly selected prosecutor ID and name back into the session for use in later requests
                     return session
                         .set("selectedProsecutorId", prosecutorIds.get(index))
                         .set("selectedProsecutorName", prosecutorNames.get(index));
                 })
                 .exec(session -> {
-                        // Store the generated payload in the session
+                    // Retrieve business unit IDs and corresponding user IDs from the session
+                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
+                    List<String> businessUnitUserIds = session.getList("businessUnitUserIds");
+
+                    // Generate a random index
+                    int index = java.util.concurrent.ThreadLocalRandom.current()
+                        .nextInt(businessUnitIds.size());
+
+                    return session
+                        .set("selectedProsecutorId", businessUnitIds.get(index))
+                        .set("selectedProsecutorName", businessUnitUserIds.get(index));
+                })                                        
+
+              .exec(session -> {
+                    try {
                         String draftAccountRequestPayload =
                             RequestBodyBuilder.BuildDraftAccountFineRequestBody(session);
-                        //System.out.println("draftAccountRequestPayload (Fine) = " + draftAccountRequestPayload);
-                        return session.set("draftAccountRequestPayload", draftAccountRequestPayload);
+
+                        ObjectMapper mapper = new ObjectMapper();
+
+                        // Convert directly into JsonNode WITHOUT readTree
+                        JsonNode json = mapper.readValue(draftAccountRequestPayload, JsonNode.class);
+
+                        String accountType = json.has("account_type")
+                            ? json.get("account_type").asText()
+                            : "UNKNOWN";
+
+                        String businessUnitId = json.has("business_unit_id")
+                            ? json.get("business_unit_id").asText()
+                            : "UNKNOWN";
+
+                        return session
+                            .set("draftAccountRequestPayload", draftAccountRequestPayload)
+                            .set("createdAccountType", accountType)
+                            .set("createdBusinessUnitId", businessUnitId);
+
+                    } catch (Exception e) {
+                        System.err.println("Payload parsing failed: " + e.getMessage());
+                        return session.markAsFailed();
                     }
-                )  
+                })
                 
                 //Selecting Submit for review
                 .pause(20,60)
@@ -355,10 +414,31 @@ public final class CreateAccountFineScenario {
                     .check(status().saveAs("httpStatus"))
                     .check(status().is(201))
                     .check(Feeders.saveErrorDetails()) 
+                    .check(Feeders.saveCreatedAccountId())
+
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
                 .exitHereIfFailed() 
-                
+
+                // =======================================================
+                // CUSTOM LOGGING SECTION
+                // =======================================================
+                .exec(session -> {
+
+                    int count = session.getInt("createdAccountCount") + 1;
+
+                    System.out.println(
+                        "\n========== DRAFT ACCOUNT CREATED ==========\n" +
+                        "User: " + session.getString("username") + "\n" +
+                        "Account Type: " + session.getString("createdAccountType") + "\n" +
+                        "Business Unit ID: " + session.getString("createdBusinessUnitId") + "\n" +
+                        "New Created Account ID: " + session.getString("getCreatedAccountId") + "\n" +
+                        "Created Account Count: " + count + "\n" +
+                        "===========================================\n"
+                    );
+
+                    return session.set("createdAccountCount", count);
+                })
                 .exec(
                     http("OPAL - Sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

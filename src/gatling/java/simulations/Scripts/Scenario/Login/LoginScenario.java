@@ -46,15 +46,15 @@ public final class LoginScenario {
                     .check(Feeders.saveCanary())
                     .check(Feeders.saveClientRequestId())
                 )
-                .exec(session -> {
-                    System.out.println("apiCanary = " + session.getString("apiCanary"));
-                    System.out.println("sessionId = " + session.getString("sessionId"));
-                    System.out.println("getSFT = " + session.getString("getSFT"));
-                    System.out.println("getSCtx = " + session.getString("getSCtx"));
-                    System.out.println("getCanary = " + session.getString("getCanary"));
-                    System.out.println("getClientRequestId = " + session.getString("getClientRequestId"));
-                    return session;
-                })
+                // .exec(session -> {
+                //     System.out.println("apiCanary = " + session.getString("apiCanary"));
+                //     System.out.println("sessionId = " + session.getString("sessionId"));
+                //     System.out.println("getSFT = " + session.getString("getSFT"));
+                //     System.out.println("getSCtx = " + session.getString("getSCtx"));
+                //     System.out.println("getCanary = " + session.getString("getCanary"));
+                //     System.out.println("getClientRequestId = " + session.getString("getClientRequestId"));
+                //     return session;
+                // })
 
                 .exec(session -> {
                     String loginRequestPayload = RequestBodyBuilder.buildLoginRequestBody(session);
@@ -107,12 +107,12 @@ public final class LoginScenario {
                 .check(Feeders.saveClientInfo())
                 .check(Feeders.saveSessionState())
             )     
-            .exec(session -> {
-                System.out.println("TokenCode = " + session.getString("TokenCode"));
-                System.out.println("getClientInfo = " + session.getString("getClientInfo"));
-                System.out.println("getSessionState = " + session.getString("getSessionState"));
-                return session;
-            })
+            // .exec(session -> {
+            //     System.out.println("TokenCode = " + session.getString("TokenCode"));
+            //     System.out.println("getClientInfo = " + session.getString("getClientInfo"));
+            //     System.out.println("getSessionState = " + session.getString("getSessionState"));
+            //     return session;
+            // })
                         
             .exitHereIfFailed() 
     

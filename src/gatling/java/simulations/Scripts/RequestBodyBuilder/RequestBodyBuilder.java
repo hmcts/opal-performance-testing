@@ -459,7 +459,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": \"%s\",\n" +
         "                \"vehicle_registration_mark\": \"%s\"\n" +
         "            },\n" +
-        "            \"dob\": \"2015-01-08\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": \"%s\",\n" +
         "            \"email_address_2\": null,\n" +
@@ -501,7 +501,7 @@ public class RequestBodyBuilder {
         "                \"offence_id\": 33369\n" +
         "            }\n" +
         "        ],\n" +
-        "        \"originator_id\": %s,\n" +
+        "        \"originator_id\": 1300000000045,\n" +
         "        \"originator_name\": \"%s\",\n" +
         "        \"originator_type\": \"NEW\",\n" +
         "        \"payment_card_request\": null,\n" +
@@ -540,7 +540,7 @@ public class RequestBodyBuilder {
         accountNoteText, accountNoteText, addressLine1, 
         employeeRef, employerAddressLine1, employerCompanyName, 
         email1, vehicleMake, vehicleReg, email1, forename,
-        surname, courtId, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
+        surname, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
    public static String BuildApproveAccountRequestBody(Session session) {

@@ -48,7 +48,7 @@ public final class RejectAccountScenario {
                     )
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -60,7 +60,7 @@ public final class RejectAccountScenario {
                     .check(Feeders.saveErrorDetails())
                 )  
 
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams"))
                 //.exitHereIfFailed()   
                 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
@@ -75,7 +75,7 @@ public final class RejectAccountScenario {
                     )
                 )                
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -87,12 +87,12 @@ public final class RejectAccountScenario {
                     .check(Feeders.saveErrorDetails())
                 )  
 
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams"))
                 //.exitHereIfFailed() 
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -216,7 +216,28 @@ public final class RejectAccountScenario {
                     .check(status().is(200))
                     .check(Feeders.saveErrorDetails()) 
                 )             
-                
+                                .exec(session -> {
+
+                    int count = session.contains("RejectedAccountCount")
+                        ? session.getInt("RejectedAccountCount")
+                        : 0;
+
+                    count++;
+
+                    System.out.println(
+                        "\n========== DRAFT ACCOUNT REJECTED ==========\n" +
+                        "User: " + session.getString("username") + "\n" +
+                        "Business Unit ID: " + session.getString("selectedBusinessUnitId") + "\n" +
+                        "Draft Account ID: " + session.getString("selectedDraftAccountId") + "\n" +
+                        "Rejected Account Count: " + count + "\n" +
+                        "===========================================\n"
+                    );
+
+                    return session.set("RejectedAccountCount", count);
+                })
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
+                .exitHereIfFailed()   
+
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -238,7 +259,7 @@ public final class RejectAccountScenario {
                     .headers(Headers.getHeaders(11))
                 ) 
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -248,7 +269,7 @@ public final class RejectAccountScenario {
                         .check(status().is(200))
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -258,7 +279,7 @@ public final class RejectAccountScenario {
                         .check(status().is(200))
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
