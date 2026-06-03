@@ -1,6 +1,7 @@
 package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
@@ -352,6 +353,11 @@ public final class CreateAccountFixedScenario {
                         .check(Feeders.saveErrorDetails())
                         .check(Feeders.saveCreatedAccountId())
                 )
+                .exec(session -> {
+                    AccountCounters.TOTAL_CREATED.incrementAndGet();
+                    AccountCounters.FIXED_CREATED.incrementAndGet();
+                    return session;
+                })
 
                 // optional detailed logger you already have
                 .exec(UserInfoLogger.logDetailedErrorMessage(

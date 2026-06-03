@@ -1,6 +1,7 @@
 package simulations.Scripts.Scenario.CreateAccounts;
 
 import simulations.Scripts.Headers.Headers;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
@@ -366,7 +367,11 @@ public final class CreateAccountConditionalCautionScenario {
                     .check(Feeders.saveErrorDetails())
                     .check(Feeders.saveCreatedAccountId())
                 )  
-
+                .exec(session -> {
+                    AccountCounters.TOTAL_CREATED.incrementAndGet();
+                    AccountCounters.CONDITIONAL_CREATED.incrementAndGet();
+                    return session;
+                })
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts"))
                 .exitHereIfFailed() 
 

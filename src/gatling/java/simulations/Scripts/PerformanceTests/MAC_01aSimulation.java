@@ -1,5 +1,6 @@
 package simulations.Scripts.PerformanceTests;
 
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
@@ -24,7 +25,35 @@ public class MAC_01aSimulation extends Simulation {
         System.out.println("Simulation starting...");
         PerformanceRunInfo.logRunConfig();
     }
+   
+    @Override
+    public void after() {
 
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("ACCOUNT CREATION SUMMARY");
+        System.out.println("========================================");
+
+        System.out.println("Total Accounts Created: "
+            + AccountCounters.TOTAL_CREATED.get());
+
+        System.out.println();
+
+        System.out.println("Fixed Accounts Created: "
+            + AccountCounters.FIXED_CREATED.get());
+
+        System.out.println();
+
+        System.out.println("Fine Accounts Created: "
+            + AccountCounters.FINE_CREATED.get());
+
+        System.out.println();
+
+        System.out.println("Conditional Accounts Created: "
+            + AccountCounters.CONDITIONAL_CREATED.get());
+
+        System.out.println("========================================");
+    }
 
     public MAC_01aSimulation() {
 
@@ -69,6 +98,6 @@ public class MAC_01aSimulation extends Simulation {
 
         // ===================== Assertions =====================
         // Adds performance assertions specific to MAC_01A (e.g. response time, error rate)
-        .assertions(AssertionsConfig.getMac01Assertions());
+        .assertions(AssertionsConfig.getMac01Assertions());        
     }
 }
