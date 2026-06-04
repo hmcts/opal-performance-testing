@@ -3,6 +3,7 @@ package simulations.Scripts.Scenario.ReviewAccounts;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
@@ -202,13 +203,20 @@ public final class RejectAccountScenario {
 
                 //Reject the selected draft account
                 .pause(60,300)
-                .exec(session -> { 
-                        return session
-                            .set("draftAccountRequestPayload",
-                                RequestBodyBuilder.BuildRejectAccountRequestBody(session))
-                            .set("actionType", "REJECT");
-                    }  
-                )          
+                                .exec(session -> {
+                    String draftAccountRequestPayload =
+                                RequestBodyBuilder.BuildRejectAccountRequestBody(session);
+
+                    String contentDigest =
+                        ContentDigestGenerator.generateSha512ContentDigest(
+                            draftAccountRequestPayload
+                        );
+
+                    return session
+                        .set("draftAccountRequestPayload", draftAccountRequestPayload)
+                            .set("actionType", "REJECT")
+                        .set("contentDigest", contentDigest);
+                })         
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                     .patch(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))

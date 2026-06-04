@@ -3,6 +3,7 @@ package simulations.Scripts.Scenario.ReviewAccounts;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
@@ -204,10 +205,18 @@ public final class ApproveAccountScenario {
                 //Approve selected draft account
                 .pause(300,580)
                 .exec(session -> {
+                    String draftAccountRequestPayload =
+                        RequestBodyBuilder.BuildApproveAccountRequestBody(session);
+
+                    String contentDigest =
+                        ContentDigestGenerator.generateSha512ContentDigest(
+                            draftAccountRequestPayload
+                        );
+
                     return session
-                        .set("draftAccountRequestPayload",
-                            RequestBodyBuilder.BuildApproveAccountRequestBody(session))
-                        .set("actionType", "APPROVE");
+                        .set("draftAccountRequestPayload", draftAccountRequestPayload)
+                        .set("actionType", "APPROVE")
+                        .set("contentDigest", contentDigest);
                 })
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts - Approve")
