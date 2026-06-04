@@ -52,6 +52,16 @@ public class MAC_01aSimulation extends Simulation {
         System.out.println("Conditional Accounts Created: "
             + AccountCounters.CONDITIONAL_CREATED.get());
 
+        System.out.println();
+        
+        System.out.println("Approved Accounts: "
+            + AccountCounters.APPROVED.get());
+
+        System.out.println();
+
+        System.out.println("Rejected Accounts: "
+            + AccountCounters.REJECTED.get());
+
         System.out.println("========================================");
     }
 

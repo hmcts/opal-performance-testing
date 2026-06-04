@@ -3,6 +3,7 @@ package simulations.Scripts.Scenario.CreateAccounts;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
@@ -380,6 +381,12 @@ public final class CreateAccountFineScenario {
                     try {
                         String draftAccountRequestPayload =
                             RequestBodyBuilder.BuildDraftAccountFineRequestBody(session);
+                        
+                        // Create SHA-512 digest
+                        String contentDigest =
+                            ContentDigestGenerator.generateSha512ContentDigest(
+                                draftAccountRequestPayload
+                            );
 
                         ObjectMapper mapper = new ObjectMapper();
 
@@ -396,6 +403,7 @@ public final class CreateAccountFineScenario {
 
                         return session
                             .set("draftAccountRequestPayload", draftAccountRequestPayload)
+                            .set("contentDigest", contentDigest)
                             .set("createdAccountType", accountType)
                             .set("createdBusinessUnitId", businessUnitId);
 

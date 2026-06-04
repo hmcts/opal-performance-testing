@@ -1,6 +1,7 @@
 package simulations.Scripts.Scenario.ReviewAccounts;
 
 import simulations.Scripts.Headers.Headers;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
@@ -215,9 +216,13 @@ public final class RejectAccountScenario {
                     .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
                     .check(status().is(200))
                     .check(Feeders.saveErrorDetails()) 
-                )             
-                                .exec(session -> {
-
+                )
+                //Keeps track of the Total accounts rejected in the simulation
+                .exec(session -> {
+                    AccountCounters.REJECTED.incrementAndGet();
+                    return session;
+})            
+                .exec(session -> {
                     int count = session.contains("RejectedAccountCount")
                         ? session.getInt("RejectedAccountCount")
                         : 0;

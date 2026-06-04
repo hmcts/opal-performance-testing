@@ -3,6 +3,7 @@ package simulations.Scripts.Scenario.CreateAccounts;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.DataGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
@@ -11,6 +12,9 @@ import io.gatling.javaapi.core.*;
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -315,6 +319,12 @@ public final class CreateAccountFixedScenario {
                     try {
                         String draftAccountRequestPayload =
                             RequestBodyBuilder.BuildDraftAccountRequestBody(session);
+                
+                        // Create SHA-512 digest
+                        String contentDigest =
+                            ContentDigestGenerator.generateSha512ContentDigest(
+                                draftAccountRequestPayload
+                            );
 
                         ObjectMapper mapper = new ObjectMapper();
 
@@ -331,6 +341,7 @@ public final class CreateAccountFixedScenario {
 
                         return session
                             .set("draftAccountRequestPayload", draftAccountRequestPayload)
+                            .set("contentDigest", contentDigest)
                             .set("createdAccountType", accountType)
                             .set("createdBusinessUnitId", businessUnitId);
 

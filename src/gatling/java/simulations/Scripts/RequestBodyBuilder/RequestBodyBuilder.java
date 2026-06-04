@@ -134,7 +134,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": null,\n" +
         "                \"vehicle_registration_mark\": null\n" +
         "            },\n" +
-        "            \"dob\": \"1985-06-15\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": null,\n" +
         "            \"email_address_2\": null,\n" +
@@ -299,7 +299,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": \"%s\",\n" +
         "                \"vehicle_registration_mark\": \"%s\"\n" +
         "            },\n" +
-        "            \"dob\": \"2013-01-02\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": \"%s\",\n" +
         "            \"email_address_2\": null,\n" +  
