@@ -67,7 +67,7 @@ public final class CreateAccountFixedScenario {
                     )
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -93,7 +93,7 @@ public final class CreateAccountFixedScenario {
                     )
                 )                
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Publishing Failed")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -104,9 +104,9 @@ public final class CreateAccountFixedScenario {
                 )
                 .exitHereIfFailed() 
 
-                //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
+                //Third call for draft account query parameters from business unit data in session (Submitted / Resubmitted) 
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +

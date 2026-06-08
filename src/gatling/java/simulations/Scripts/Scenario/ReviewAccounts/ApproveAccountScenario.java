@@ -52,7 +52,7 @@ public final class ApproveAccountScenario {
                     )
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -78,7 +78,7 @@ public final class ApproveAccountScenario {
                     )
                 )                
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Publishing Failed")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -91,7 +91,7 @@ public final class ApproveAccountScenario {
 
                 //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -247,7 +247,6 @@ public final class ApproveAccountScenario {
                     System.out.println(
                         "\n========== DRAFT ACCOUNT APPROVED ==========\n" +
                         "User: " + session.getString("username") + "\n" +
-                        "Account Type: " + session.getString("ApprovedAccountCount") + "\n" +
                         "Business Unit ID: " + session.getString("selectedBusinessUnitId") + "\n" +
                         "Draft Account ID: " + session.getString("selectedDraftAccountId") + "\n" +
                         "Approved Account Count: " + count + "\n" +
@@ -280,7 +279,7 @@ public final class ApproveAccountScenario {
                     .headers(Headers.getHeaders(11))
                 ) 
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -290,7 +289,7 @@ public final class ApproveAccountScenario {
                         .check(status().is(200))
                 )
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Publishing Failed")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
@@ -301,7 +300,7 @@ public final class ApproveAccountScenario {
                 )
                 .pause(20,60)
                 .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams")
+                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
                             AppConfig.UrlConfig.BASE_URL +
                             "/opal-fines-service/draft-accounts?" +
