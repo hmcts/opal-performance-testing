@@ -52,6 +52,7 @@ public class HttpProtocolConfig {
      * Checks if proxy is enabled based on configuration.
      * Proxy is considered enabled if the ENABLED flag is true and HOST is set and not empty.
      */
+    //fiddler values
     private static boolean isProxyEnabled() {
-        return false;    }
+        return true;    }
 }

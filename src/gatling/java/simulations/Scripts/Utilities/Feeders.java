@@ -109,6 +109,9 @@ public class Feeders {
     public static CheckBuilder.Final saveErrorDetails() {
         return CoreDsl.jsonPath("$.detail").optional().saveAs("getDetail");
     }
+    public static CheckBuilder.Final saveCreatedAccountId() {
+        return CoreDsl.jsonPath("$.draft_account_id").findRandom().saveAs("getCreatedAccountId");
+    }
 
     public static FeederBuilder<Object> listFeeder(String key, List<Object> items) {
         return CoreDsl.listFeeder(items.stream()

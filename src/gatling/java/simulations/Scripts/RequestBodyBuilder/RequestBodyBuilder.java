@@ -134,7 +134,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": null,\n" +
         "                \"vehicle_registration_mark\": null\n" +
         "            },\n" +
-        "            \"dob\": \"1985-06-15\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": null,\n" +
         "            \"email_address_2\": null,\n" +
@@ -210,14 +210,14 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, addressLine1,         
@@ -299,7 +299,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": \"%s\",\n" +
         "                \"vehicle_registration_mark\": \"%s\"\n" +
         "            },\n" +
-        "            \"dob\": \"2013-01-02\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": \"%s\",\n" +
         "            \"email_address_2\": null,\n" +  
@@ -367,14 +367,14 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +       
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, 
@@ -459,7 +459,7 @@ public class RequestBodyBuilder {
         "                \"vehicle_make\": \"%s\",\n" +
         "                \"vehicle_registration_mark\": \"%s\"\n" +
         "            },\n" +
-        "            \"dob\": \"2015-01-08\",\n" +
+        "            \"dob\": null,\n" +
         "            \"driving_licence_number\": null,\n" +
         "            \"email_address_1\": \"%s\",\n" +
         "            \"email_address_2\": null,\n" +
@@ -501,7 +501,7 @@ public class RequestBodyBuilder {
         "                \"offence_id\": 33369\n" +
         "            }\n" +
         "        ],\n" +
-        "        \"originator_id\": %s,\n" +
+        "        \"originator_id\": 1300000000045,\n" +
         "        \"originator_name\": \"%s\",\n" +
         "        \"originator_type\": \"NEW\",\n" +
         "        \"payment_card_request\": null,\n" +
@@ -527,20 +527,20 @@ public class RequestBodyBuilder {
         "    \"draft_account_id\": null,\n" +
         "    \"submitted_by\": \"%s\",\n" +
         "    \"submitted_by_name\": \"%s\",\n" +
-        "    \"timeline_data\": [\n" +
-        "        {\n" +
-        "            \"reason_text\": null,\n" +
-        "            \"status\": \"Submitted\",\n" +
-        "            \"status_date\": \"%s\",\n" +
-        "            \"username\": \"%s\"\n" +
-        "        }\n" +
-        "    ],\n" +
+        // "    \"timeline_data\": [\n" +
+        // "        {\n" +
+        // "            \"reason_text\": null,\n" +
+        // "            \"status\": \"Submitted\",\n" +
+        // "            \"status_date\": \"%s\",\n" +
+        // "            \"username\": \"%s\"\n" +
+        // "        }\n" +
+        // "    ],\n" +
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, 
         employeeRef, employerAddressLine1, employerCompanyName, 
         email1, vehicleMake, vehicleReg, email1, forename,
-        surname, courtId, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
+        surname, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
    public static String BuildApproveAccountRequestBody(Session session) {
@@ -572,20 +572,20 @@ public class RequestBodyBuilder {
             "  \"account_status\": \"Publishing Pending\",\n" +
             "  \"business_unit_id\": %s,\n" +
             "  \"reason_text\": null,\n" +
-            "  \"timeline_data\": [\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Submitted\",\n" +
-            "      \"status_date\": \"2026-01-09\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Publishing Pending\",\n" +
-            "      \"status_date\": \"%s\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    }\n" +
-            "  ],\n" +
+            // "  \"timeline_data\": [\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Submitted\",\n" +
+            // "      \"status_date\": \"2026-01-09\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    },\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Publishing Pending\",\n" +
+            // "      \"status_date\": \"%s\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    }\n" +
+            // "  ],\n" +
             "  \"validated_by\": \"%s\",\n" +
             "  \"validated_by_name\": \"%s\",\n" +
             "  \"version\": \"\\\"0\\\"\"\n" +
@@ -629,20 +629,20 @@ public class RequestBodyBuilder {
             "  \"account_status\": \"Rejected\",\n" +
             "  \"business_unit_id\": %s,\n" +
             "  \"reason_text\": \"%s\",\n" +
-            "  \"timeline_data\": [\n" +
-            "    {\n" +
-            "      \"reason_text\": null,\n" +
-            "      \"status\": \"Submitted\",\n" +
-            "      \"status_date\": \"2026-01-09\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    },\n" +
-            "    {\n" +
-            "      \"reason_text\": \"%s\",\n" +
-            "      \"status\": \"Rejected\",\n" +
-            "      \"status_date\": \"%s\",\n" +
-            "      \"username\": \"%s\"\n" +
-            "    }\n" +
-            "  ],\n" +
+            // "  \"timeline_data\": [\n" +
+            // "    {\n" +
+            // "      \"reason_text\": null,\n" +
+            // "      \"status\": \"Submitted\",\n" +
+            // "      \"status_date\": \"2026-01-09\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    },\n" +
+            // "    {\n" +
+            // "      \"reason_text\": \"%s\",\n" +
+            // "      \"status\": \"Rejected\",\n" +
+            // "      \"status_date\": \"%s\",\n" +
+            // "      \"username\": \"%s\"\n" +
+            // "    }\n" +
+            // "  ],\n" +
             "  \"validated_by\": null,\n" +
             "  \"validated_by_name\": null,\n" +
             "  \"version\": \"\\\"0\\\"\"\n" +

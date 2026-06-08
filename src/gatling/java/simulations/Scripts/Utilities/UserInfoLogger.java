@@ -13,121 +13,92 @@ public class UserInfoLogger {
             LoggerFactory.getLogger(UserInfoLogger.class);
 
     /**
-     * Overload with no status key required
-     */
-    public static ChainBuilder logDetailedErrorMessage(String requestName) {
-    return logDetailedErrorMessage(requestName, null);
-    }
-
-    /**
-     * Main logging method
+     * Main request logger
      */
     public static ChainBuilder logDetailedErrorMessage(
-            String requestName,
-            String statusKey
+            String requestName
     ) {
 
         return exec(session -> {
 
-            int reqStatus = -1;
+            String statusCode =
+                    session.contains("httpStatus")
+                            ? String.valueOf(session.getInt("httpStatus"))
+                            : "N/A";
 
-            if (statusKey != null
-                    && !statusKey.isBlank()
-                    && session.contains(statusKey)) {
+            String responseBody =
+                    session.contains("responseBody")
+                            ? session.getString("responseBody")
+                            : "N/A";
 
-                reqStatus = session.getInt(statusKey);
-            }
+            String errorType =
+                    session.contains("Changetosomething2")
+                            ? session.getString("Changetosomething2")
+                            : "N/A";
 
-            boolean isSuccess = reqStatus == 200 || reqStatus == 302;
+            String errorTitle =
+                    session.contains("Changetosomething")
+                            ? session.getString("Changetosomething")
+                            : "N/A";
+
+            String errorStatus =
+                    session.contains("errorStatus")
+                            ? session.getString("errorStatus")
+                            : "N/A";
+
+            String detail =
+                    session.contains("getDetail")
+                            ? session.getString("getDetail")
+                            : "N/A";
 
             String userName =
                     session.contains("Username")
                             ? session.getString("Username")
                             : "N/A";
 
-            String email =
-                    session.contains("Email")
-                            ? session.getString("Email")
-                            : "N/A";
-
-            // ✅ NEW: capture API error detail if it exists
-            String detail =
-                    session.contains("getDetail")
-                            ? session.getString("getDetail")
-                            : "N/A";
-
-            if (isSuccess) {
+            // -------------------------
+            // SUCCESS
+            // -------------------------
+            if (!session.isFailed()) {
 
                 LOGGER.info(
-                        "Request '{}' was successful. User: {}. Email: {}. Status: {}",
+                        "Request '{}' succeeded. User: {}. Status: {}",
                         requestName,
                         userName,
-                        email,
-                        reqStatus == -1 ? "N/A" : reqStatus
+                        statusCode
                 );
 
-            } else {
-
-                LOGGER.error(
-                        "Request '{}' FAILED. User: {}. Email: {}. Status: {}. Detail: {}",
-                        requestName,
-                        userName,
-                        email,
-                        reqStatus == -1 ? "N/A" : reqStatus,
-                        detail
-                );
+                return session;
             }
 
-            return session;
-        });
-    }
+            // -------------------------
+            // FAILURE
+            // -------------------------
+            LOGGER.error(
+                    """
+                    Request '{}' FAILED
 
-    /**
-     * Regex failure logger
-     */
-    public static ChainBuilder logDetailedErrorMessage(
-            String requestName,
-            String regexName,
-            String expectedPattern
-    ) {
+                    Status Code: {}
+                    Error Type: {}
+                    Error Title: {}
+                    Error Status: {}
 
-        return exec(session -> {
+                    User:
+                    detail={}
+                    Username={}
 
-            String email =
-                    session.contains("Email")
-                            ? session.getString("Email")
-                            : "N/A";
-
-            String password =
-                    session.contains("Password")
-                            ? session.getString("Password")
-                            : "N/A";
-
-            String userName =
-                    session.contains("user_name")
-                            ? session.getString("user_name")
-                            : "N/A";
-
-            boolean regexFailed =
-                    session.contains("regexFailed")
-                            && session.getBoolean("regexFailed");
-
-            if (regexFailed) {
-
-                String errorMessage = String.format(
-                        "Request '%s' encountered a regex issue for user: " +
-                        "Email=%s, Password=%s, User Name=%s. " +
-                        "Failed to match regex '%s' with pattern '%s'.",
-                        requestName,
-                        email,
-                        password,
-                        userName,
-                        regexName,
-                        expectedPattern
-                );
-
-                LOGGER.error(errorMessage);
-            }
+                    Response Body:
+                    {}
+                    """,
+                    requestName,
+                    statusCode,
+                    errorType,
+                    errorTitle,
+                    errorStatus,
+                    detail,
+                    userName,
+                    responseBody
+            );
 
             return session;
         });

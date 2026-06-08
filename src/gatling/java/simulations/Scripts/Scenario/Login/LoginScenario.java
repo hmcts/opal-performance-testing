@@ -23,9 +23,10 @@ public final class LoginScenario {
                 exec(http("OPAL - Sso - Login - /")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
                     .headers(Headers.getHeaders(1))
-                    .check(status().saveAs("loginStatus"))
+                    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /", "loginStatus"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
 
                 .exitHereIfFailed() 
 
@@ -45,15 +46,15 @@ public final class LoginScenario {
                     .check(Feeders.saveCanary())
                     .check(Feeders.saveClientRequestId())
                 )
-                .exec(session -> {
-                    System.out.println("apiCanary = " + session.getString("apiCanary"));
-                    System.out.println("sessionId = " + session.getString("sessionId"));
-                    System.out.println("getSFT = " + session.getString("getSFT"));
-                    System.out.println("getSCtx = " + session.getString("getSCtx"));
-                    System.out.println("getCanary = " + session.getString("getCanary"));
-                    System.out.println("getClientRequestId = " + session.getString("getClientRequestId"));
-                    return session;
-                })
+                // .exec(session -> {
+                //     System.out.println("apiCanary = " + session.getString("apiCanary"));
+                //     System.out.println("sessionId = " + session.getString("sessionId"));
+                //     System.out.println("getSFT = " + session.getString("getSFT"));
+                //     System.out.println("getSCtx = " + session.getString("getSCtx"));
+                //     System.out.println("getCanary = " + session.getString("getCanary"));
+                //     System.out.println("getClientRequestId = " + session.getString("getClientRequestId"));
+                //     return session;
+                // })
 
                 .exec(session -> {
                     String loginRequestPayload = RequestBodyBuilder.buildLoginRequestBody(session);
@@ -106,12 +107,12 @@ public final class LoginScenario {
                 .check(Feeders.saveClientInfo())
                 .check(Feeders.saveSessionState())
             )     
-            .exec(session -> {
-                System.out.println("TokenCode = " + session.getString("TokenCode"));
-                System.out.println("getClientInfo = " + session.getString("getClientInfo"));
-                System.out.println("getSessionState = " + session.getString("getSessionState"));
-                return session;
-            })
+            // .exec(session -> {
+            //     System.out.println("TokenCode = " + session.getString("TokenCode"));
+            //     System.out.println("getClientInfo = " + session.getString("getClientInfo"));
+            //     System.out.println("getSessionState = " + session.getString("getSessionState"));
+            //     return session;
+            // })
                         
             .exitHereIfFailed() 
     
@@ -134,34 +135,68 @@ public final class LoginScenario {
                 .headers(Headers.getHeaders(6))
             )
             .exec(
-              http("OPAL - Opal-User-Service - Users - 0 - state")
-              .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
+              http("OPAL - API - User-state")
+              .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                 .headers(Headers.getHeaders(7))
+                .check(Feeders.saveErrorDetails())
+                .check(bodyString().optional().saveAs("responseBody"))
+                .check(status().saveAs("httpStatus"))
+                .check(status().is(200))
                 .check(
-                    jsonPath("$.business_unit_users[*].business_unit_id")
-                        .findAll()
-                        .saveAs("businessUnitIds"),
-
-                    jsonPath("$.business_unit_users[*].business_unit_user_id")
-                        .findAll()
-                        .saveAs("businessUnitUserIds"),
-                    jsonPath("$.name")
-                        .saveAs("getUserName"),                                            
-                    jsonPath("$.detail").optional().saveAs("getDetail"))
-
+                    jsonPath("$.domains.fines.business_unit_users[*].business_unit_id")
+                        .findAll().saveAs("businessUnitIds"),
+                    jsonPath("$.domains.fines.business_unit_users[*].business_unit_user_id")
+                        .findAll().saveAs("businessUnitUserIds"),
+                    jsonPath("$.name").saveAs("getUserName"))
             )
-            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - API - Users-state"))
             .exitHereIfFailed() 
             
-            .exec(
-              http("OPAL - Opal-User-Service - Users - 0 - state")
-              .get(AppConfig.UrlConfig.BASE_URL + "/opal-user-service/users/0/state")
-                .headers(Headers.getHeaders(7))
-                .check(Feeders.saveErrorDetails())                
+            // .exec(
+            //   http("OPAL - API - Users-state")
+            //   .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
+            //     .headers(Headers.getHeaders(7))
+            //     .check(Feeders.saveErrorDetails())                
 
+            // )
+            // .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - API - Users-state"))
+            // .exitHereIfFailed() 
+
+
+            // Search dashboard display from login.
+
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
             )
-            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-User-Service - Users - 0 - state"))
-            .exitHereIfFailed() 
+                        .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - sso - Authenticated")
+                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                .headers(Headers.getHeaders(5))
+            )
+            .exec(
+                http("OPAL - Opal-fines-service - Business-units")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units")
+                    .headers(Headers.getHeaders(12))
+                    .check(status().is(200)) 
+                )               
+            .exitHereIfFailed()
         );            
     }
 }
