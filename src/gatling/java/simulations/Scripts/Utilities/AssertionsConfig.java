@@ -88,5 +88,43 @@ public class AssertionsConfig {
         };
     }
 
+
+//MH attempting to make assertions that she understands and will put in the correct place
+//The percentile value listed in the NFRs is 90th not 95th
+    public static Assertion[] getSimpleAssertions() {
+        return new Assertion[]{
+            global().responseTime().percentile(90).lt(2000),
+            global().responseTime().max().lt(6000)
+        };
+    }
+   public static Assertion[] getComplexAssertions() {
+        return new Assertion[]{
+            global().responseTime().percentile(90).lt(5000),
+            global().responseTime().max().lt(15000)
+        };
+    }
+    
+    public static Assertion[] getR1bAssertions() {
+        return new Assertion[]{
+
+           // Simple requests
+        details("Load Defendant")
+            .responseTime().percentile(90).lt(2000),
+        details("Load Defendant")
+            .responseTime().max().lt(6000),
+
+        // Complex requests
+        details("Load header summary")
+            .responseTime().percentile(90).lt(5000),
+        details("Load header summary")
+            .responseTime().max().lt(15000),
+
+        details("Load at a glance")
+            .responseTime().percentile(90).lt(5000),
+        details("Load at a glance")
+            .responseTime().max().lt(15000)
+
+        };
+    }
     
 }

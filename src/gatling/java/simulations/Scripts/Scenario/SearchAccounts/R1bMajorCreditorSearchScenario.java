@@ -1,9 +1,15 @@
 package simulations.Scripts.Scenario.SearchAccounts;
+import static io.gatling.javaapi.core.CoreDsl.*;
+import static io.gatling.javaapi.http.HttpDsl.*;
+
+import io.gatling.javaapi.core.ChainBuilder;
 
 public class R1bMajorCreditorSearchScenario {
-
-    public static ChainBuilder build() {
-        return exec(
+private R1bMajorCreditorSearchScenario() {
+    }
+    public static ChainBuilder MajorCreditorSearch() {
+        return group("Major Creditor Search").on(
+        exec(
             http("Get major creditors for business unit")
                 .get("/opal-fines-service/major-creditors")
                 .queryParam("businessUnit", "#{businessUnit}")
@@ -16,7 +22,7 @@ public class R1bMajorCreditorSearchScenario {
             http("Open major creditor defendant view")
                 .get("/fines/account/#{major_creditor_id}/defendant")
                 .check(status().is(200))
-        );
+        ));
     }
     
 }
