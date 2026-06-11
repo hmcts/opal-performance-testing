@@ -6,12 +6,15 @@ import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
+import simulations.Scripts.Utilities.AccountCounters;
+
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,8 +110,7 @@ public final class ApproveAccountScenario {
                                 jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
                             )
 
-                        )
-                
+                )                
                 .exec(session -> {
 
                     List<Integer> draftAccountIds = session.getList("draftAccountIds");
@@ -121,18 +123,37 @@ public final class ApproveAccountScenario {
                         return session.markAsFailed();
                     }
 
-                  // Generate a random index
-                    int index = java.util.concurrent.ThreadLocalRandom.current()
-                        .nextInt(businessUnitIds.size());
-                        
-                    return session
-                        .set("selectedDraftAccountId", draftAccountIds.get(index))
-                        .set("selectedBusinessUnitId", businessUnitIds.get(index))
-                        .set("accountStatus", accountStatuses.get(index))
-                        .set("submittedBy", submittedBys.get(index))
-                        .set("submittedByName", submittedByNames.get(index));
+                    int attempts = 0;
+                    int selectedIndex = -1;
+
+                    while (attempts < draftAccountIds.size()) {
+
+                        int randomIndex = ThreadLocalRandom.current()
+                            .nextInt(draftAccountIds.size());
+
+                        Integer candidateId = draftAccountIds.get(randomIndex);
+
+                        // Atomic claim
+                        if (AccountCounters.CLAIMED_ACCOUNTS.add(candidateId)) {
+                            selectedIndex = randomIndex;
+                            break;
+                        }
+
+                        attempts++;
                     }
-                )
+
+                    if (selectedIndex == -1) {
+                        System.out.println("No available draft accounts");
+                        return session.markAsFailed();
+                    }
+
+                    return session
+                        .set("selectedDraftAccountId", draftAccountIds.get(selectedIndex))
+                        .set("selectedBusinessUnitId", businessUnitIds.get(selectedIndex))
+                        .set("accountStatus", accountStatuses.get(selectedIndex))
+                        .set("submittedBy", submittedBys.get(selectedIndex))
+                        .set("submittedByName", submittedByNames.get(selectedIndex));
+                })
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
