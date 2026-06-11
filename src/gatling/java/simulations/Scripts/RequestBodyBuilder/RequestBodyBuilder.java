@@ -382,7 +382,7 @@ public class RequestBodyBuilder {
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         email1, forename, surname,        
         courtId, prosecutorId, prosecutorName, prosecutorCaseRef, 
-        businessUnitId, businessUnitUserIds, userName, todaydate, userName);
+        businessUnitId, businessUnitUserIds, userName);
     }
     
 

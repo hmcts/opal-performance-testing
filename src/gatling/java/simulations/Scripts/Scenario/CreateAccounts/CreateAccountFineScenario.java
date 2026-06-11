@@ -373,8 +373,8 @@ public final class CreateAccountFineScenario {
                         .nextInt(businessUnitIds.size());
 
                     return session
-                        .set("selectedProsecutorId", businessUnitIds.get(index))
-                        .set("selectedProsecutorName", businessUnitUserIds.get(index));
+                        .set("selectedbusinessUnitIds", businessUnitIds.get(index))
+                        .set("selectedbusinessUnitUserIds", businessUnitUserIds.get(index));
                 })                                        
 
               .exec(session -> {
