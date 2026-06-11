@@ -112,48 +112,61 @@ public final class ApproveAccountScenario {
 
                 )                
                 .exec(session -> {
+                // Lists returned from the draft account search response
+                List<String> draftAccountIds = session.getList("draftAccountIds");
+                List<String> businessUnitIds = session.getList("businessUnitIds");
+                List<String> accountStatuses = session.getList("accountStatuses");
+                List<String> submittedBys = session.getList("submittedBys");
+                List<String> submittedByNames = session.getList("submittedByNames");
+                
+                // Lists returned from the draft account search response
+                if (draftAccountIds == null || draftAccountIds.isEmpty()) {
+                    System.out.println("No draft accounts returned");
+                    return session.markAsFailed();
+                }
 
-                    List<Integer> draftAccountIds = session.getList("draftAccountIds");
-                    List<Integer> businessUnitIds = session.getList("businessUnitIds");
-                    List<String> accountStatuses = session.getList("accountStatuses");
-                    List<String> submittedBys = session.getList("submittedBys");
-                    List<String> submittedByNames = session.getList("submittedByNames");
+                // Will hold the index of the account we successfully claim
+                int selectedIndex = -1;
+                
+                // Loop through available accounts and attempt to claim one
+                // We use a random index to spread users across different accounts
+                for (int i = 0; i < draftAccountIds.size(); i++) {
+                    
+                    // Select a random account from the returned list
+                    int randomIndex = ThreadLocalRandom.current()
+                        .nextInt(draftAccountIds.size());
 
-                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
-                        return session.markAsFailed();
+                    String candidateId = draftAccountIds.get(randomIndex);
+
+                    // add() returns true only if not already claimed
+                    if (AccountCounters.CLAIMED_ACCOUNTS.add(candidateId)) {
+                        selectedIndex = randomIndex;
+                        break;
                     }
+                }
 
-                    int attempts = 0;
-                    int selectedIndex = -1;
+                if (selectedIndex == -1) {
+                    System.out.println("No unclaimed draft accounts available");
+                    return session.markAsFailed();
+                }
 
-                    while (attempts < draftAccountIds.size()) {
+                // System.out.println(
+                //     "Selected Draft Account ID = " +
+                //     draftAccountIds.get(selectedIndex)
+                // );
 
-                        int randomIndex = ThreadLocalRandom.current()
-                            .nextInt(draftAccountIds.size());
-
-                        Integer candidateId = draftAccountIds.get(randomIndex);
-
-                        // Atomic claim
-                        if (AccountCounters.CLAIMED_ACCOUNTS.add(candidateId)) {
-                            selectedIndex = randomIndex;
-                            break;
-                        }
-
-                        attempts++;
-                    }
-
-                    if (selectedIndex == -1) {
-                        System.out.println("No available draft accounts");
-                        return session.markAsFailed();
-                    }
-
-                    return session
-                        .set("selectedDraftAccountId", draftAccountIds.get(selectedIndex))
-                        .set("selectedBusinessUnitId", businessUnitIds.get(selectedIndex))
-                        .set("accountStatus", accountStatuses.get(selectedIndex))
-                        .set("submittedBy", submittedBys.get(selectedIndex))
-                        .set("submittedByName", submittedByNames.get(selectedIndex));
-                })
+                return session
+                    .set("selectedDraftAccountId",
+                        draftAccountIds.get(selectedIndex))
+                    .set("selectedBusinessUnitId",
+                        businessUnitIds.get(selectedIndex))
+                    .set("accountStatus",
+                        accountStatuses.get(selectedIndex))
+                    .set("submittedBy",
+                        submittedBys.get(selectedIndex))
+                    .set("submittedByName",
+                        submittedByNames.get(selectedIndex));
+            })
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

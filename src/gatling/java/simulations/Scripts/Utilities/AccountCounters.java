@@ -13,7 +13,7 @@ public final class AccountCounters {
     public static final AtomicInteger CONDITIONAL_CREATED = new AtomicInteger(0);
     public static final AtomicInteger APPROVED = new AtomicInteger(0);
     public static final AtomicInteger REJECTED = new AtomicInteger(0);
-    public static final Set<Integer> CLAIMED_ACCOUNTS = ConcurrentHashMap.newKeySet();
+    public static final Set<String> CLAIMED_ACCOUNTS = ConcurrentHashMap.newKeySet();
     
     private AccountCounters() {
     }
