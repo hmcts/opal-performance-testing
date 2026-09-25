@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.SearchAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Scenario.DefendantAmendments.AddingEnforcementScenario;
+import simulations.Scripts.Scenario.DefendantAmendments.AddingOverrideEnforcementScenario2;
 import simulations.Scripts.Scenario.DefendantAmendments.AmendCollectionOrderEnforcementScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.RemovingEnforcementScenario;
 import simulations.Scripts.Utilities.AccountSearch;
@@ -122,7 +123,7 @@ public final class EnforcementOverrideToAccountsScenario {
             )
             .then(
                 exec(
-                    AddingEnforcementScenario.AddingEnforcementRequest()
+                    AddingOverrideEnforcementScenario2.AddingOverrideEnforcementRequest2()
                 )
             )
             .orElse(

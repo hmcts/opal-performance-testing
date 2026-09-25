@@ -4,5 +4,6 @@ public enum SearchType {
     ACCOUNT,
     ENFORCEMENT,
     PGACCOUNT,
-    MINOR_CREDITOR
+    MINOR_CREDITOR,
+    COMPANY
 }

@@ -7,6 +7,9 @@ import static io.gatling.javaapi.core.CoreDsl.jsonPath;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.Session;
 import simulations.Scripts.Utilities.DataGenerator;
@@ -493,6 +496,123 @@ public static final class DefendantAccountSearch {
                 amendedCollectionOrderFlag
             );
         }
+
+         public static String buildCovertToCompanyRequestBody(Session session) {
+
+            String partyId = session.get("partyId") != null ? session.get("partyId").toString() : ""; 
+
+            // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
+            String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
+            String surname = session.get("generatedSurname") != null ? session.get("generatedSurname").toString() : DataGenerator.generateRandomLastName();
+            String vehicleReg = session.get("generatedVehicleReg") != null ? session.get("generatedVehicleReg").toString() : DataGenerator.generateRandomVehicleRegistration();
+            String email1 = session.get("generatedEmail1") != null ? session.get("generatedEmail1").toString() : (forename.toLowerCase() + "." + surname.toLowerCase() + "@example.com");
+            String addressLine1 = session.get("generatedAddressLine1") != null ? session.get("generatedAddressLine1").toString() : DataGenerator.generateRandomAddress();
+            String addressLine2 = session.get("generatedAddressLine2") != null ? session.get("generatedAddressLine2").toString() : DataGenerator.generateRandomCity();
+            String vehicleMake = session.get("generatedVehicleMake") != null ? session.get("generatedVehicleMake").toString() : DataGenerator.generateRandomVehicleMake();
+
+            return String.format(
+                "{\n" +
+                "  \"address\": {\n" +
+                "    \"address_line_1\": \"%s\",\n" +
+                "    \"address_line_2\": \"%s\",\n" +
+                "    \"address_line_3\": null,\n" +
+                "    \"address_line_4\": null,\n" +
+                "    \"address_line_5\": null,\n" +
+                "    \"postcode\": null\n" +
+                "  },\n" +
+                "  \"contact_details\": {\n" +
+                "    \"home_telephone_number\": null,\n" +
+                "    \"mobile_telephone_number\": null,\n" +
+                "    \"primary_email_address\": \"%s\",\n" +
+                "    \"secondary_email_address\": null,\n" +
+                "    \"work_telephone_number\": null\n" +
+                "  },\n" +
+                "    \"defendant_account_party_type\": \"Defendant\",\n" +
+                "    \"employer_details\": null,\n" +
+                "    \"is_debtor\": true,\n" +
+                "  \"language_preferences\": {\n" +
+                "    \"document_language_preference\": null,\n" +
+                "    \"hearing_language_preference\": null\n" +
+                "  },\n" +
+                "  \"party_details\": {\n" +
+                "       \"individual_details\": null,\n" +
+                "           \"organisation_details\": {\n" +
+                "               \"organisation_aliases\": null,\n" +
+                "               \"organisation_name\": \" Company %s\"\n" +          
+                "           },\n" +
+                "  \"organisation_flag\": true,\n" +
+                "  \"party_id\": \"%s\"\n" +
+                "  },\n" +
+                "  \"vehicle_details\": {\n" +
+                "       \"vehicle_make_and_model\": \"%s\",\n" +
+                "       \"vehicle_registration\": \"%s\"\n" +
+                "  }\n" +
+                "}",
+                addressLine1, addressLine2, email1, forename, partyId, vehicleMake, vehicleReg
+            );
+        }
+
+        public static String buildCovertToDefendantRequestBody(Session session) {
+
+            String partyId = session.get("partyId") != null ? session.get("partyId").toString() : ""; 
+
+            // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
+            String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
+            String surname = session.get("generatedSurname") != null ? session.get("generatedSurname").toString() : DataGenerator.generateRandomLastName();
+            String vehicleReg = session.get("generatedVehicleReg") != null ? session.get("generatedVehicleReg").toString() : DataGenerator.generateRandomVehicleRegistration();
+            String email1 = session.get("generatedEmail1") != null ? session.get("generatedEmail1").toString() : (forename.toLowerCase() + "." + surname.toLowerCase() + "@example.com");
+            String addressLine1 = session.get("generatedAddressLine1") != null ? session.get("generatedAddressLine1").toString() : DataGenerator.generateRandomAddress();
+            String addressLine2 = session.get("generatedAddressLine2") != null ? session.get("generatedAddressLine2").toString() : DataGenerator.generateRandomCity();
+            String vehicleMake = session.get("generatedVehicleMake") != null ? session.get("generatedVehicleMake").toString() : DataGenerator.generateRandomVehicleMake();
+            String adultDob = DataGenerator.generateRandomAdultDateOfBirth();
+
+            return String.format(
+                "{\n" +
+                "  \"address\": {\n" +
+                "    \"address_line_1\": \"%s\",\n" +
+                "    \"address_line_2\": \"%s\",\n" +
+                "    \"address_line_3\": null,\n" +
+                "    \"address_line_4\": null,\n" +
+                "    \"address_line_5\": null,\n" +
+                "    \"postcode\": null\n" +
+                "  },\n" +
+                "  \"contact_details\": {\n" +
+                "    \"home_telephone_number\": null,\n" +
+                "    \"mobile_telephone_number\": null,\n" +
+                "    \"primary_email_address\": \"%s\",\n" +
+                "    \"secondary_email_address\": null,\n" +
+                "    \"work_telephone_number\": null\n" +
+                "  },\n" +
+                "    \"defendant_account_party_type\": \"Defendant\",\n" +
+                "    \"employer_details\": null,\n" +
+                "    \"is_debtor\": true,\n" +
+                "  \"language_preferences\": {\n" +
+                "    \"document_language_preference\": null,\n" +
+                "    \"hearing_language_preference\": null\n" +
+                "  },\n" +
+                "  \"party_details\": {\n" +
+                "       \"individual_details\": {\n" +
+                "           \"age\": \"null\",\n" +
+                "           \"date_of_birth\": \"%s\",\n" +
+                "           \"forenames\": \"Convert %s\",\n" +
+                "           \"individual_aliases\": null,\n" +
+                "           \"national_insurance_number\": null,\n" +
+                "           \"surname\": \"Convert %s\",\n" +
+                "           \"title\": \"Mr\"\n" +
+                "  },\n" +
+                "  \"organisation_details\": null,\n" +
+                "  \"organisation_flag\": false,\n" +
+                "  \"party_id\": \"%s\"\n" +
+                "  },\n" +
+                "  \"vehicle_details\": {\n" +
+                "       \"vehicle_make_and_model\": \"%s\",\n" +
+                "       \"vehicle_registration\": \"%s\"\n" +
+                "  }\n" +
+                "}",
+                addressLine1, addressLine2, email1, adultDob, forename, surname, partyId, vehicleMake, vehicleReg
+            );
+        }
+
         public static String buildOverrideEnforcementRequestBody(Session session) {
 
             // Get enforcement from Gatling session
@@ -532,7 +652,21 @@ public static final class DefendantAccountSearch {
                             "}" +
                         "}",
                         enforcement
-                    );    
+                    );  
+                
+                case "ABDC": 
+                    return String.format(
+                        "{\n" +
+                        "  \"enforcement_override\": {\n" +
+                        "      \"enforcement_override_result\": {\n" +
+                        "           \"enforcement_override_result_id\": \"%s\"\n" +
+                        "    },\n" +
+                        "  \"enforcer\": \"null,\"\n" +
+                        "  \"lja\": \"null\"\n" +
+                            "}" +
+                        "}",
+                        enforcement
+                    );
                
                 /*
                 * CWN

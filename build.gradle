@@ -66,6 +66,9 @@ def simulations = [
     [task: 'runR1bSearchMajorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMajorCreditorSimulation'],
     [task: 'runR1bSearchMinorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMinorCreditorSimulation'],
     [task: 'runAmendingEnforcementsToAccountsSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.AmendingEnforcementsToAccountsSimulation'],
+    [task: 'runConvertToCompanyAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToCompanyAccountSimulation'],
+    [task: 'runConvertToDefendantAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToDefendantAccountSimulation'],
+
 
     // Simulations to run the Performance tests
     [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation'],

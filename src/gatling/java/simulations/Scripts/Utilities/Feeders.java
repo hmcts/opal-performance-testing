@@ -29,8 +29,11 @@ public class Feeders {
     public static final FeederBuilder<String> AmendEnforcementUsers;
     public static final FeederBuilder<String> DefendantSearchAccounts;
     public static final FeederBuilder<String> DefendantSearchUsers;
+    public static final FeederBuilder<String> CompanyAccountUsers;
+    public static final FeederBuilder<String> ConvertDefendantAccounts;
 
-    
+
+
     //Data Changes on accounts
     public static final FeederBuilder<String> DraftAccounts;
     public static final boolean USE_CSV_DRAFT_ACCOUNT = false;
@@ -52,6 +55,8 @@ public class Feeders {
         AmendEnforcementUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.AMEND_ENFORCEMENT_USERS_CSV).circular();
         DefendantSearchAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANTSEARCHACCOUNTS_CSV).circular();
         DefendantSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANTSEARCH_USERS_CSV).circular();
+        CompanyAccountUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.COMPANYACCOUNT_USERS_CSV).circular();
+        ConvertDefendantAccounts  = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.CONVERTDEFENDANTACCOUNT_CSV).circular();
 
     } catch (Exception e) {
         System.err.println("Error loading CSV: " + e.getMessage());
@@ -82,6 +87,14 @@ public class Feeders {
 
     public static FeederBuilder<String> pGUsers() {
         return PGUsers;
+    }
+
+    public static FeederBuilder<String> companyAccountUsers() {
+        return CompanyAccountUsers;
+    }
+
+    public static FeederBuilder<String> convertDefendantAccounts() {
+        return ConvertDefendantAccounts;
     }
     
     public static FeederBuilder<String> majorCreditorUsers() {

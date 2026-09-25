@@ -1,20 +1,21 @@
 package simulations.Scripts.ScenarioBuilder.R1B;
 
 import simulations.Scripts.Scenario.ConvertToCompany.ConvertToCompanyAccountScenario;
+import simulations.Scripts.Scenario.ConvertToCompany.ConvertToDefendantAccountScenario;
 import simulations.Scripts.Scenario.Login.LoginScenario;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
-public class ConvertToCompanyAccountScenarioBuild {
+public class ConvertToDefendantAccountScenarioBuild {
 
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
             .group("OPAL Login Requests")
             .on(
                 exec(
-                    feed(Feeders.convertDefendantAccounts())
+                    feed(Feeders.companyAccountUsers())
                 )
                 .exec(LoginScenario.LoginRequest())
 
@@ -28,38 +29,32 @@ public class ConvertToCompanyAccountScenarioBuild {
 
                         int iteration = session.getInt("loopCounter") + 1;
 
-                        String forenameColumn = "";
-                        String surnameColumn = "";
+                        String CompanyNameColumn = "";
                         String accountIdColumn = "";
 
                         switch (iteration) {
                             case 1:
-                                forenameColumn = "forename1";
-                                surnameColumn = "surname1";
+                                CompanyNameColumn = "CompanyName1";
                                 accountIdColumn = "AccountId1";
                                 break;
 
                             case 2:
-                                forenameColumn = "forename2";
-                                surnameColumn = "surname2";
+                                CompanyNameColumn = "CompanyName2";
                                 accountIdColumn = "AccountId2";
                                 break;
 
                             case 3:
-                                forenameColumn = "forename3";
-                                surnameColumn = "surname3";
+                                CompanyNameColumn = "CompanyName3";
                                 accountIdColumn = "AccountId3";
                                 break;
 
                             case 4:
-                                forenameColumn = "forename4";
-                                surnameColumn = "surname4";
+                                CompanyNameColumn = "CompanyName4";
                                 accountIdColumn = "AccountId4";
                                 break;
 
                             case 5:
-                                forenameColumn = "forename5";
-                                surnameColumn = "surname5";
+                                CompanyNameColumn = "CompanyName5";
                                 accountIdColumn = "AccountId5";
                                 break;
 
@@ -69,25 +64,22 @@ public class ConvertToCompanyAccountScenarioBuild {
                                 );
                         }
 
-                        String forenames = session.getString(forenameColumn);
-                        String surname = session.getString(surnameColumn);
+                        String CompanyName = session.getString(CompanyNameColumn);
                         String accountId = session.getString(accountIdColumn);
 
                         System.out.println("======================================");
                         System.out.println("PG Account Search - Iteration: " + iteration);
-                        System.out.println("Forename: [" + forenames + "]");
-                        System.out.println("Surname:  [" + surname + "]");
+                        System.out.println("CompanyName: [" + CompanyName + "]");
                         System.out.println("Account ID: [" + accountId + "]");
                         System.out.println("======================================");
 
                         return session
-                            .set("forename", forenames)
-                            .set("surname", surname)
+                            .set("CompanyName", CompanyName)
                             .set("accountId", accountId)
                             .set("loopCounter", iteration);
                     })
 
-                    .exec(ConvertToCompanyAccountScenario.ConvertToCompanyAccountRequest())
+                    .exec(ConvertToDefendantAccountScenario.ConvertToDefendantAccountRequest())
                 )
             );
     }    

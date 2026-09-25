@@ -52,7 +52,7 @@ public final class AddingOverrideEnforcementScenario {
                     http("OPAL - Opal-fines-service - Results - Enforcement")
                         .get(
                             AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/results?enforcement=true&enforcement_override=false"
+                            "/opal-fines-service/results?enforcement=true&enforcement_override=true"
                         )
                         .headers(Headers.getHeaders(12))
                         .check(status().saveAs("httpStatus"))

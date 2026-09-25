@@ -80,6 +80,18 @@ public class AccountSearch {
                                 "OPAL - Minor Creditor Accounts - Search";
                         }
 
+                        case COMPANY -> {
+                            payload =
+                                RequestBodyBuilder
+                                    .buildSearchCompanyAccountRequestBody(session);
+
+                            endpoint =
+                                "/opal-fines-service/defendant-accounts/search";
+                            
+                            requestName =
+                                "OPAL - Minor Creditor Accounts - Search";
+                        }
+
 
 
                         default ->

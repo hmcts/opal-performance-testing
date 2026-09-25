@@ -312,7 +312,20 @@ public final class Headers {
             headers.put("sec-ch-ua-platform", "Windows");
             headers.put("Accept-Encoding", "gzip, deflate, br, zstd");
             headers.put("Accept", "application/json, text/plain, */*");
+            break; 
 
+            case TEST_21:
+            headers.put("Origin", AppConfig.UrlConfig.BASE_URL);
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("business-unit-id", "#{getBusinessUnitId}");
+            headers.put("if-match", "#{etag}");
+            headers.put("Content-Digest", "#{contentDigest}");
+            headers.put("content-type", "application/json");
+            headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "Windows");
             default:
             break;
         }

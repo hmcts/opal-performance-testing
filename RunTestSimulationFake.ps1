@@ -5,7 +5,7 @@ $targetPath = $PSScriptRoot
 Set-Location -Path $targetPath
 
 # Execute the Gradle command
-& ".\gradlew.bat" runAmendingEnforcementsToAccountsSimulation   `
+& ".\gradlew.bat" runConvertToDefendantAccountSimulation   `
 
 #Use this to kill tests
 #TASKKILL /F /IM java.exe

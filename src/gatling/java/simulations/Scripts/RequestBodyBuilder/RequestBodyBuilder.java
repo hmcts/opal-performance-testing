@@ -1184,7 +1184,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         );
     }
 
-       public static String buildSearchAccountRequestBody(Session session) {
+        public static String buildSearchAccountRequestBody(Session session) {
 
             String businessUnitIdsJson = session.get("getListBusinessUnitId") != null
                     ? session.get("getListBusinessUnitId").toString()
@@ -1216,6 +1216,39 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
                 businessUnitIdsJson,
                 forenames,
                 surname
+            );
+        }
+        public static String buildSearchCompanyAccountRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("getListBusinessUnitId") != null
+                    ? session.get("getListBusinessUnitId").toString()
+                    : "[]";
+
+            String CompanyName = session.getString("CompanyName");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": true,\n" +
+                "  \"business_unit_ids\": %s,\n" +  
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": {\n" +
+                "    \"address_line_1\": null,\n" +
+                "    \"birth_date\": null,\n" +
+                "    \"exact_match_forenames\": null,\n" +
+                "    \"exact_match_organisation_name\": false,\n" +
+                "    \"exact_match_surname\": null,\n" +
+                "    \"forenames\": null,\n" +
+                "    \"include_aliases\": false,\n" +
+                "    \"national_insurance_number\": null,\n" +
+                "    \"organisation\": true,\n" +
+                "    \"organisation_name\": \"%s\",\n" +                
+                "    \"postcode\": null,\n" +
+                "    \"surname\": null\n" +
+                "  },\n" +
+                "  \"reference_number\": null\n" +
+                "}",
+                businessUnitIdsJson,
+                CompanyName                
             );
         }
         
