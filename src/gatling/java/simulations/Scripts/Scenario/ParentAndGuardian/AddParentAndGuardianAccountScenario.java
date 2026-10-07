@@ -27,7 +27,6 @@ public final class AddParentAndGuardianAccountScenario {
         .on(
             group("Create and Manage")
             .on(
-
                 exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - This is a test - Add")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getDefendantAccountPartyId}")

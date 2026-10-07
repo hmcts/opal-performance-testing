@@ -57,7 +57,7 @@ public class MAC_01bSimulation extends Simulation {
             + AccountCounters.CONDITIONAL_CREATED.get());
 
         System.out.println();
-        
+
         System.out.println("Approved Accounts: "
             + AccountCounters.APPROVED.get());
 
@@ -65,6 +65,101 @@ public class MAC_01bSimulation extends Simulation {
 
         System.out.println("Rejected Accounts: "
             + AccountCounters.REJECTED.get());
+
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("PARENT & GUARDIAN ACCOUNT SUMMARY");
+        System.out.println("========================================");
+
+        System.out.println("Added:   "
+            + AccountCounters.PG_ADDED.get());
+
+        System.out.println("Removed: "
+            + AccountCounters.PG_REMOVED.get());
+
+        System.out.println("Changed: "
+            + AccountCounters.PG_CHANGED.get());
+
+        System.out.println("----------------------------------------");
+
+        System.out.println("Total:   "
+            + (
+                AccountCounters.PG_ADDED.get()
+                + AccountCounters.PG_REMOVED.get()
+                + AccountCounters.PG_CHANGED.get()
+            ));
+
+        System.out.println("========================================");
+
+        System.out.println();
+
+        System.out.println("========================================");
+        System.out.println("ENFORCEMENT ACTION SUMMARY");
+        System.out.println("========================================");
+
+        int enforcementAdded =
+            AccountCounters.ENFORCEMENT_ADDED.get();
+
+        int enforcementRemoved =
+            AccountCounters.ENFORCEMENT_REMOVED.get();
+
+        int enforcementChanged =
+            AccountCounters.ENFORCEMENT_CHANGED.get();
+
+        System.out.println(
+            "Added:   " + enforcementAdded
+        );
+
+        System.out.println(
+            "Removed: " + enforcementRemoved
+        );
+
+        System.out.println(
+            "Changed: " + enforcementChanged
+        );
+
+        System.out.println("----------------------------------------");
+
+        System.out.println(
+            "Total:   "
+            + (
+                enforcementAdded
+                + enforcementRemoved
+                + enforcementChanged
+            )
+        );
+
+        System.out.println("========================================");
+
+        System.out.println();
+
+        System.out.println("========================================");
+        System.out.println("MINOR CREDITOR ACTION SUMMARY");
+        System.out.println("========================================");
+
+        int minorCreditorUpdated =
+            AccountCounters.MINOR_CREDITOR_UPDATED.get();
+
+        int minorCreditorChanged =
+            AccountCounters.MINOR_CREDITOR_CHANGED.get();
+
+        System.out.println(
+            "Updated: " + minorCreditorUpdated
+        );
+
+        System.out.println(
+            "Changed: " + minorCreditorChanged
+        );
+
+        System.out.println("----------------------------------------");
+
+        System.out.println(
+            "Total:   "
+            + (
+                minorCreditorUpdated
+                + minorCreditorChanged
+            )
+        );
 
         System.out.println("========================================");
     }
@@ -116,11 +211,11 @@ public class MAC_01bSimulation extends Simulation {
             //             .during(AppConfig.PerformanceConfig.getRampDuration())
             //     ),
             
-            // R1bMajorCreditorSearchBuild.build(SimulationNames.MAC_01B_TEST + " - Search for major creditor accounts")
-            //     .injectOpen(
-            //         rampUsers(AppConfig.PerformanceConfig.MAJOR_CREDITOR_USERS)
-            //             .during(AppConfig.PerformanceConfig.getRampDuration())
-            //     ),
+            R1bMajorCreditorSearchBuild.build(SimulationNames.MAC_01B_TEST + " - Search for major creditor accounts")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.MAJOR_CREDITOR_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                )
          
             // R1bMajorCreditorSearchBuild.build(SimulationNames.MAC_01B_TEST + " - Search for major creditor accounts")
             //     .injectOpen(

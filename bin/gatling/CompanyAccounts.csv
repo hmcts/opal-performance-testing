@@ -1,2 +1,2 @@
-Username,PartyId,AccountId1,CompanyName1
-opal-user-301@dev.platform.hmcts.net,6E+13,6E+13,test ac company
+Username,PartyId1,AccountId1,CompanyName1,PartyId2,AccountId2,CompanyName2,PartyId3,AccountId3,CompanyName3,PartyId4,AccountId4,CompanyName4,PartyId5,AccountId5,CompanyName5
+opal-user-301@dev.platform.hmcts.net,6E+13,60000000002407,test ac company,6E+13,60000000001170,Reuben,,,,,,,,,

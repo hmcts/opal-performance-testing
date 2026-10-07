@@ -235,11 +235,22 @@ public final class CreateAccountConditionalCautionScenario {
                         .headers(Headers.getHeaders(12))
                        .check(Feeders.saveCourtId())                        
                 )
-                .exec(
-                    http("OPAL - Opal-fines-service - Local-justice-areas")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
-                        .headers(Headers.getHeaders(12))
-                ) 
+                    .exec(
+                        http("OPAL - Opal-fines-service - Local-justice-areas")
+                            .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
+                            .headers(Headers.getHeaders(12))
+                            .check(status().is(200))
+                            .check(
+                                jsonPath("$.refData[?(@.lja_type == 'CRWCRT')].local_justice_area_id")
+                                    .findAll()
+                                    .saveAs("localJusticeAreaIds")
+                            )
+                            .check(
+                                jsonPath("$.refData[?(@.lja_type == 'CRWCRT')].name")
+                                    .findAll()
+                                    .saveAs("localJusticeAreaNames")
+                            )
+                    ) 
             )
             .group("Enter Personal Details")
             .on(
@@ -521,6 +532,55 @@ public final class CreateAccountConditionalCautionScenario {
                             businessUnitUserIds.get(index)
                     );
                 })
+                
+                .exec(session -> {
+
+                        List<String> localJusticeAreaIds =
+                            session.getList("localJusticeAreaIds");
+
+                        List<String> localJusticeAreaNames =
+                            session.getList("localJusticeAreaNames");
+
+                        if (localJusticeAreaIds == null || localJusticeAreaIds.isEmpty()) {
+                            System.out.println("No Local Justice Areas found!");
+                            return session.markAsFailed();
+                        }
+
+                        if (localJusticeAreaNames == null ||
+                            localJusticeAreaNames.size() != localJusticeAreaIds.size()) {
+
+                            System.out.println(
+                                "Local Justice Area IDs and names do not match!"
+                            );
+
+                            return session.markAsFailed();
+                        }
+
+                        int index =
+                            ThreadLocalRandom.current().nextInt(localJusticeAreaIds.size());
+
+                        String selectedLocalJusticeAreaId =
+                            localJusticeAreaIds.get(index);
+
+                        String selectedLocalJusticeAreaName =
+                            localJusticeAreaNames.get(index);
+
+                        System.out.println("Selected index = " + index);
+
+                        System.out.println(
+                            "Selected Local Justice Area ID = " +
+                            selectedLocalJusticeAreaId
+                        );
+
+                        System.out.println(
+                            "Selected Local Justice Area Name = " +
+                            selectedLocalJusticeAreaName
+                        );
+
+                        return session
+                            .set("selectedLocalJusticeAreaId", selectedLocalJusticeAreaId)
+                            .set("selectedLocalJusticeAreaName", selectedLocalJusticeAreaName);
+                    })
             )
             //.exec(UserInfoLogger.logSessionStatus("Before Submit Draft Account"))
 

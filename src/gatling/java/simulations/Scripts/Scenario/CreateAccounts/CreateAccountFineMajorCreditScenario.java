@@ -228,6 +228,7 @@ public final class CreateAccountFineMajorCreditScenario {
                         http("OPAL - Opal-fines-service - Courts")
                             .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/courts?business_unit=#{selectedBusinessUnitId}")
                             .headers(Headers.getHeaders(12))
+                            .check(status().is(200))
                             .check(Feeders.saveCourtId())                        
 
                     )
@@ -235,6 +236,17 @@ public final class CreateAccountFineMajorCreditScenario {
                         http("OPAL - Opal-fines-service - Local-justice-areas")
                             .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/local-justice-areas")
                             .headers(Headers.getHeaders(12))
+                            .check(status().is(200))
+                            .check(
+                                jsonPath("$.refData[?(@.lja_type == 'CRWCRT')].local_justice_area_id")
+                                    .findAll()
+                                    .saveAs("localJusticeAreaIds")
+                            )
+                            .check(
+                                jsonPath("$.refData[?(@.lja_type == 'CRWCRT')].name")
+                                    .findAll()
+                                    .saveAs("localJusticeAreaNames")
+                            )
                     ) 
                 )
                 
@@ -515,50 +527,89 @@ public final class CreateAccountFineMajorCreditScenario {
                             )
 
                         ) 
-                    .exec(session -> {
-                        // Retrieve lists of prosecutor IDs and names from the Gatling session
-                        List<Integer> prosecutorIds = session.getList("prosecutorIds");
-                        List<String> prosecutorNames = session.getList("prosecutorNames");
-                        //log it and return the session unchanged to avoid runtime errors
+                   .exec(session -> {
+
+                        List<String> prosecutorIds =
+                            session.getList("prosecutorIds");
+
+                        List<String> prosecutorNames =
+                            session.getList("prosecutorNames");
+
                         if (prosecutorIds == null || prosecutorIds.isEmpty()) {
                             System.out.println("No prosecutors found!");
                             return session;
                         }
-                        // Generate a random index based on the size of the prosecutor list
-                        int index = ThreadLocalRandom.current().nextInt(prosecutorIds.size());
-                        // Store the randomly selected prosecutor ID and name back into the session for use in later requests
+
+                        int index =
+                            ThreadLocalRandom.current().nextInt(prosecutorIds.size());
+
+                        String selectedProsecutorId =
+                            prosecutorIds.get(index);
+
+                        String selectedProsecutorName =
+                            prosecutorNames.get(index);
+
+                        System.out.println(
+                            "selectedProsecutorId = " + selectedProsecutorId
+                        );
+
+                        System.out.println(
+                            "selectedProsecutorName = " + selectedProsecutorName
+                        );
+
                         return session
-                            .set("selectedProsecutorId", prosecutorIds.get(index))
-                            .set("selectedProsecutorName", prosecutorNames.get(index));
+                            .set("selectedProsecutorId", selectedProsecutorId)
+                            .set("selectedProsecutorName", selectedProsecutorName);
                     })
+
                     .exec(session -> {
-                        String selectedBusinessUnitId =
-                            session.get("selectedBusinessUnitId").toString();
 
-                        List<String> businessUnitIds =
-                            session.getList("businessUnitIds");
+                        List<String> localJusticeAreaIds =
+                            session.getList("localJusticeAreaIds");
 
-                        List<String> businessUnitUserIds =
-                            session.getList("businessUnitUserIds");
+                        List<String> localJusticeAreaNames =
+                            session.getList("localJusticeAreaNames");
 
-                        // System.out.println("selectedBusinessUnitId = " + selectedBusinessUnitId);
-                        // System.out.println("businessUnitIds = " + businessUnitIds);
-                        // System.out.println("businessUnitUserIds = " + businessUnitUserIds);
-
-                        int index = businessUnitIds.indexOf(selectedBusinessUnitId);
-
-                        if (index == -1) {
-                            throw new RuntimeException(
-                                "No business unit user found for business unit "
-                                    + selectedBusinessUnitId
-                            );
+                        if (localJusticeAreaIds == null || localJusticeAreaIds.isEmpty()) {
+                            System.out.println("No Local Justice Areas found!");
+                            return session.markAsFailed();
                         }
 
-                        return session.set(
-                            "selectedBusinessUnitUserId",
-                            businessUnitUserIds.get(index)
+                        if (localJusticeAreaNames == null ||
+                            localJusticeAreaNames.size() != localJusticeAreaIds.size()) {
+
+                            System.out.println(
+                                "Local Justice Area IDs and names do not match!"
+                            );
+
+                            return session.markAsFailed();
+                        }
+
+                        int index =
+                            ThreadLocalRandom.current().nextInt(localJusticeAreaIds.size());
+
+                        String selectedLocalJusticeAreaId =
+                            localJusticeAreaIds.get(index);
+
+                        String selectedLocalJusticeAreaName =
+                            localJusticeAreaNames.get(index);
+
+                        System.out.println("Selected index = " + index);
+
+                        System.out.println(
+                            "Selected Local Justice Area ID = " +
+                            selectedLocalJusticeAreaId
                         );
-                    })                                         
+
+                        System.out.println(
+                            "Selected Local Justice Area Name = " +
+                            selectedLocalJusticeAreaName
+                        );
+
+                        return session
+                            .set("selectedLocalJusticeAreaId", selectedLocalJusticeAreaId)
+                            .set("selectedLocalJusticeAreaName", selectedLocalJusticeAreaName);
+                    })
                 )
                 .group("Submit Draft Account").on(
                     exec(session -> {

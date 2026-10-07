@@ -23,9 +23,9 @@ public final class RemoveParentAndGuardianAccountScenario {
 
     public static ChainBuilder RemoveParentAndGuardianAccountRequest() {
 
-        return group("OPAL Add Parent And Guardian Account")
+        return group("OPAL Remove Parent And Guardian")
         .on(
-            group("Create and Manage")
+            group("Remove Parent And Guardian")
             .on(
 
                 exec(

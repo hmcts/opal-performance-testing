@@ -4,6 +4,7 @@ import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Scenario.DefendantAmendments.AddingEnforcementScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.AmendCollectionOrderEnforcementScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.RemovingEnforcementScenario;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.SearchType;
@@ -104,7 +105,8 @@ public final class AmendingEnforcementsToAccountsScenario2 {
             )
             .exec(session -> {
 
-                String resultId = session.get("enforcementActionResultId");
+                String resultId =
+                    session.get("enforcementActionResultId");
 
                 System.out.println(
                     "Existing Enforcement Result: [" + resultId + "]"
@@ -115,7 +117,9 @@ public final class AmendingEnforcementsToAccountsScenario2 {
 
             .doIfOrElse(
                 session -> {
-                    String resultId = session.get("enforcementActionResultId");
+
+                    String resultId =
+                        session.get("enforcementActionResultId");
 
                     return resultId != null &&
                         resultId.equalsIgnoreCase("NOENF");
@@ -123,13 +127,27 @@ public final class AmendingEnforcementsToAccountsScenario2 {
             )
             .then(
                 exec(
-                    RemovingEnforcementScenario.RemovingEnforcementRequest()
+                    RemovingEnforcementScenario
+                        .RemovingEnforcementRequest()
                 )
+                .exec(session -> {
+
+                    AccountCounters.ENFORCEMENT_REMOVED
+                        .incrementAndGet();
+
+                    System.out.println(
+                        "ENFORCEMENT ACTION: REMOVED"
+                    );
+
+                    return session;
+                })
             )
             .orElse(
                 doIfOrElse(
                     session -> {
-                        String resultId = session.get("enforcementActionResultId");
+
+                        String resultId =
+                            session.get("enforcementActionResultId");
 
                         return resultId != null &&
                             resultId.equalsIgnoreCase("SC");
@@ -137,8 +155,20 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                 )
                 .then(
                     exec(
-                        AddingEnforcementScenario.AddingEnforcementRequest()
+                        AddingEnforcementScenario
+                            .AddingEnforcementRequest()
                     )
+                    .exec(session -> {
+
+                        AccountCounters.ENFORCEMENT_ADDED
+                            .incrementAndGet();
+
+                        System.out.println(
+                            "ENFORCEMENT ACTION: ADDED"
+                        );
+
+                        return session;
+                    })
                 )
                 .orElse(
                     randomSwitch()
@@ -148,16 +178,39 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                                     AmendCollectionOrderEnforcementScenario
                                         .AmendCollectionOrderEnforcementRequest()
                                 )
+                                .exec(session -> {
+
+                                    AccountCounters.ENFORCEMENT_CHANGED
+                                        .incrementAndGet();
+
+                                    System.out.println(
+                                        "ENFORCEMENT ACTION: CHANGED"
+                                    );
+
+                                    return session;
+                                })
                             ),
+
                             percent(50.0).then(
                                 exec(
                                     AddingEnforcementScenario
                                         .AddingEnforcementRequest()
                                 )
+                                .exec(session -> {
+
+                                    AccountCounters.ENFORCEMENT_ADDED
+                                        .incrementAndGet();
+
+                                    System.out.println(
+                                        "ENFORCEMENT ACTION: ADDED"
+                                    );
+
+                                    return session;
+                                })
                             )
                         )
                 )
-            )       
+            )    
             
         );            
     }

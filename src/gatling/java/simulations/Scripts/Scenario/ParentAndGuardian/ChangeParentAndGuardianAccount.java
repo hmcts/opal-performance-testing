@@ -25,7 +25,7 @@ public final class ChangeParentAndGuardianAccount {
 
         return group("OPAL Change Parent And Guardian Account")
         .on(
-            group("Create and Manage")
+            group("Selecting Parent and Guardian")
             .on(
                 //Selecting parent and Guardian tab:
 
@@ -33,6 +33,7 @@ public final class ChangeParentAndGuardianAccount {
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(12))
+                        .check(status().is(200))
                         .check(jsonPath(session -> "$.defendant_account_party.address.address_line_1").find().optional().saveAs("getAddressLine1"))
                         .check(jsonPath(session -> "$.defendant_account_party.address.address_line_2").find().optional().saveAs("getAddressLine2"))
                         .check(jsonPath(session -> "$.defendant_account_party.contact_details.primary_email_address").find().optional().saveAs("getPrimaryEmailAddress"))
@@ -45,13 +46,17 @@ public final class ChangeParentAndGuardianAccount {
                         .check(jsonPath(session -> "$.defendant_account_party.vehicle_details.vehicle_make_and_model").find().optional().saveAs("getVehicleMakeAndModel"))
                         .check(jsonPath(session -> "$.defendant_account_party.vehicle_details.vehicle_registration").find().optional().saveAs("getVehicleRegistration"))
                         ) 
-                )
+                
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
                         .headers(Headers.getHeaders(12))
+                        .check(status().is(200))  
                 )
-                .pause(5,20)
+            )
+            .group("Amend Parent and Guardian")
+            .on(
+                pause(5,20)
                 .exec(session -> {
                     try {
                         String defendantAccountPartiesRequestPayload =
@@ -94,19 +99,22 @@ public final class ChangeParentAndGuardianAccount {
                         .put(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(19))
                         .body(StringBody(session -> session.get("defendantAccountPartiesRequestPayload"))).asJson()
-
+                        .check(status().is(200)) 
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
                             .headers(Headers.getHeaders(12))
+                            .check(status().is(200)) 
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                             .headers(Headers.getHeaders(12))
+                            .check(status().is(200))
                 )
-            );            
+            )
+        );            
     }
 }
                      

@@ -75,7 +75,7 @@ public class R1BAmendingEnforcementsToAccountsBuild {
 
                             session = session
                                         .set("forename", forenames)         // Set the forenames
-                                        .set("surname", surname) // Set the surname usage
+                                        .set("surname", surname)            // Set the surname usage
                                         .set("accountId", accountId); 
 
                             // Update the loop counter in the session for the next iteration

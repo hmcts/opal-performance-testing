@@ -1180,6 +1180,29 @@ public static final class DefendantAccountSearch {
                 forenames,
                 surname
             );
-        }        
+        }  
+        
+        public static String buildAddNoteRequestBody(Session session) {
+
+            String defendantAccountId = session.get("defendant_account_id") != null
+                ? session.get("defendant_account_id").toString().trim().toUpperCase()
+                : "";
+
+            DataGenerator randomStringGenerator = new DataGenerator();
+            String reasonText1 = randomStringGenerator.generateRandomString(10);
+
+
+            return String.format(
+                "{\n" +
+                "  \"activity_note\": {\n" +
+                "    \"note_text\": \"%s\",\n" +
+                "    \"note_type\": \"AA\",\n" +
+                "    \"record_id\": \"%s\",\n" +
+                "    \"record_type\": \"defendant_accounts\"\n" +
+                "  }\n" +
+                "}",
+                reasonText1, defendantAccountId
+            );
+        }
     }
 }

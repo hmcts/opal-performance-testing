@@ -326,6 +326,22 @@ public final class Headers {
             headers.put("sec-ch-ua", "Google Chrome\";v=\"143\", \"Chromium\";v=\"143\", \"Not A(Brand\";v=\"24");
             headers.put("sec-ch-ua-mobile", "?0");
             headers.put("sec-ch-ua-platform", "Windows");
+            break;
+
+            case TEST_22:
+            headers.put("Cache-Control", "max-age=0");
+            headers.put("Origin", AppConfig.UrlConfig.BASE_URL);
+            headers.put("Sec-Fetch-Dest", "empty");
+            headers.put("Sec-Fetch-Mode", "cors");
+            headers.put("Sec-Fetch-Site", "same-origin");
+            headers.put("business-unit-id", "#{getBusinessUnitId}");
+            headers.put("Content-Digest", "#{contentDigest}");
+            headers.put("content-type", "application/json");
+            headers.put("sec-ch-ua", "Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Google Chrome\";v=\"150");
+            headers.put("sec-ch-ua-mobile", "?0");
+            headers.put("sec-ch-ua-platform", "Windows");
+            headers.put("want-content-digest", "sha-512");
+            headers.put("Referer",AppConfig.UrlConfig.BASE_URL);
             default:
             break;
         }

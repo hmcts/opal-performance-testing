@@ -1,11 +1,16 @@
 package simulations.Scripts.Scenario.SearchAccounts;
 
 import simulations.Scripts.Headers.Headers;
+import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.ContentDigestGenerator;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class R1bDefendantAmmendmentsScenario {
 
@@ -39,8 +44,8 @@ public static ChainBuilder R1bDefendantAmmendmentsRequest() {
                 return session.set(
                     "detailsPageUrl",
                     AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/" + id + "/details");
-                        })
-
+            }
+        )
         //MH debugging
         .exec(session -> {
 
@@ -71,6 +76,7 @@ public static ChainBuilder R1bDefendantAmmendmentsRequest() {
                 .check(jsonPath("$.account_type").saveAs("account_type"))
                 //turns out we also need the party ID
                 .check(jsonPath("$.defendant_account_party_id").saveAs("defendant_account_party_id"))
+                .check(jsonPath("$.business_unit_summary.business_unit_id").find().saveAs("getBusinessUnitId"))
         )
         
         .exec(
@@ -80,9 +86,47 @@ public static ChainBuilder R1bDefendantAmmendmentsRequest() {
                 .headers(Headers.getHeaders(17))
                 .header("Referer", "#{detailsPageUrl}")
                 .check(status().is(200))
+                .check(header("ETag").saveAs("etag"))
+
         )
 
         .pause(15,30)
+
+        .exec(session -> {
+            try {
+                String addNoteRequestPayload =
+                RequestBodyBuilderR1b.DefendantAccountSearch.buildAddNoteRequestBody(session);
+
+                // System.out.println("Enforcement: " + addNoteRequestPayload);
+                
+                // Create SHA-512 digest
+                String contentDigest =
+                    ContentDigestGenerator.generateSha512ContentDigest(
+                        addNoteRequestPayload
+                    );
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                // Convert directly into JsonNode WITHOUT readTree
+                JsonNode json = mapper.readValue(addNoteRequestPayload, JsonNode.class);
+
+                return session
+                    .set("addNoteRequestPayload", addNoteRequestPayload)
+                    .set("contentDigest", contentDigest);
+
+                } catch (Exception e) {
+                    System.err.println("Payload parsing failed: " + e.getMessage());
+                    return session.markAsFailed();
+                }
+            }
+        )            
+        .exec(
+            http("OPAL - Opal-fines-service - Notes - Add")
+            .post(AppConfig.UrlConfig.BASE_URL + " /opal-fines-service/notes/add")
+               .headers(Headers.getHeaders(22))
+               .body(StringBody(session -> session.get("addNoteRequestPayload"))).asJson()
+               .check(status().is(200))                       
+        )
 
         .exec(
             http("Load Defendant")

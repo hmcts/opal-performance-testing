@@ -5,6 +5,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 import io.gatling.javaapi.core.ChainBuilder;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
@@ -47,6 +48,8 @@ private R1bMinorCreditorSearchScenario() {
                     http("OPAL - Minor-creditor-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/minor-creditor-accounts/#{creditor_account_id}/header-summary")
                         .headers(Headers.getHeaders(12))
+                        .check(status().is(200))
+
                         .check(
                                 jsonPath(session ->
                                     "$.business_unit.business_unit_id")
@@ -98,11 +101,17 @@ private R1bMinorCreditorSearchScenario() {
                 ) 
             
                 .doIfOrElse(session ->
-                    !session.contains("accountName") ||
-                    session.getString("accountName") == null
+                        !session.contains("accountName") ||
+                        session.getString("accountName") == null
                 )
                 .then(
                     exec(session -> {
+
+                        System.out.println(
+                            "MINOR CREDITOR ACTION: UPDATED"
+                        );
+
+                        AccountCounters.MINOR_CREDITOR_UPDATED.incrementAndGet();
 
                         String updateMinorCreditorSearchAccountRequestPayload =
                             RequestBodyBuilderR1b.DefendantAccountSearch
@@ -137,6 +146,12 @@ private R1bMinorCreditorSearchScenario() {
                 .orElse(
                     exec(session -> {
 
+                        System.out.println(
+                            "MINOR CREDITOR ACTION: CHANGED"
+                        );
+
+                        AccountCounters.MINOR_CREDITOR_CHANGED.incrementAndGet();
+
                         String updateMinorCreditorSearchAccountRequestPayload =
                             RequestBodyBuilderR1b.DefendantAccountSearch
                                 .buildRemovePaymentMinorCreditorAccountRequestBody(session);
@@ -169,9 +184,20 @@ private R1bMinorCreditorSearchScenario() {
                 )
                 .exec(
                     http("OPAL - Minor-creditor-accounts - Patch")
-                        .patch(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/minor-creditor-accounts/#{creditor_account_id}")
+                        .patch(
+                            AppConfig.UrlConfig.BASE_URL
+                                + "/opal-fines-service/minor-creditor-accounts/#{creditor_account_id}"
+                        )
                         .headers(Headers.getHeaders(19))
-                        .body(StringBody(session -> session.get("updateMinorCreditorSearchAccountRequestPayload"))).asJson()
+                        .body(
+                            StringBody(
+                                session ->
+                                    session.get(
+                                        "updateMinorCreditorSearchAccountRequestPayload"
+                                    )
+                            )
+                        )
+                        .asJson()
                         .check(status().is(200))
                 )
                 .exec(

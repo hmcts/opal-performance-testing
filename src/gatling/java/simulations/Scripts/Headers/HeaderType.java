@@ -24,7 +24,8 @@ public enum HeaderType {
     TEST_18(18),
     TEST_19(19),
     TEST_20(20),
-    TEST_21(21);   
+    TEST_21(21),
+    TEST_22(22);   
     
     private final int value;
 

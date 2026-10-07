@@ -46,7 +46,7 @@ public class RequestBodyBuilder {
         String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
         String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
         String todaydate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-
+       
         
         // Generate random values using DataGenerator
         String forename = DataGenerator.generateRandomFirstName();
@@ -212,9 +212,13 @@ public class RequestBodyBuilder {
         String businessUnitId = session.get("selectedBusinessUnitId") != null ? session.get("selectedBusinessUnitId").toString() : "";
         String businessUnitUserIds = session.get("selectedBusinessUnitUserId") != null ? session.get("selectedBusinessUnitUserId").toString() : ""; 
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
-        String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
-        String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+     //   String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
+      //  String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
         String majorCreditorId = session.get("selectedMajorCreditorId") != null ? session.get("selectedMajorCreditorId").toString() : ""; 
+        String LocalJusticeAreaName = session.get("selectedLocalJusticeAreaName") != null ? session.get("selectedLocalJusticeAreaName").toString() : ""; 
+        String LocalJusticeAreaId = session.get("selectedLocalJusticeAreaId") != null ? session.get("selectedLocalJusticeAreaId").toString() : ""; 
+
+
 
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
         String forename = session.get("generatedForename") != null ? session.get("generatedForename").toString() : DataGenerator.generateRandomFirstName();
@@ -234,6 +238,11 @@ public class RequestBodyBuilder {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String responseDate = LocalDate.now().plusWeeks(3).format(formatter);
+
+        System.out.println("courtId = " + courtId);
+System.out.println("LocalJusticeAreaId = " + LocalJusticeAreaId);
+System.out.println("LocalJusticeAreaName = " + LocalJusticeAreaName);
+System.out.println("businessUnitId = " + businessUnitId);
 
         return String.format(
         "{\n" +
@@ -316,9 +325,9 @@ public class RequestBodyBuilder {
         "                    {\n" +
         "                        \"amount_imposed\": 500,\n" +
         "                        \"amount_paid\": 200,\n" +
-        "                        \"major_creditor_id\": %s,\n" +
+        "                        \"major_creditor_id\": null,\n" +
         "                        \"minor_creditor\": null,\n" +
-        "                        \"result_id\": \"FCOMP\"\n" +
+        "                        \"result_id\": \"FVS\"\n" +
         "                    }\n" +
         "                ],\n" +
         "                \"offence_id\": 33369\n" +
@@ -370,7 +379,7 @@ public class RequestBodyBuilder {
         addressLine1, addressLine2, employeeRef, employerAddressLine1, 
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         adultDob, email1, forename, surname,        
-        courtId, majorCreditorId, prosecutorId, prosecutorName,responseDate, prosecutorCaseRef, 
+        courtId, LocalJusticeAreaId, LocalJusticeAreaName,responseDate, prosecutorCaseRef, 
         businessUnitId, businessUnitUserIds, userName);
     }
 
@@ -382,6 +391,8 @@ public class RequestBodyBuilder {
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
         String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
         String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String LocalJusticeAreaName = session.get("selectedLocalJusticeAreaName") != null ? session.get("selectedLocalJusticeAreaName").toString() : ""; 
+        String LocalJusticeAreaId = session.get("selectedLocalJusticeAreaId") != null ? session.get("selectedLocalJusticeAreaId").toString() : ""; 
 
 
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
@@ -551,7 +562,7 @@ public class RequestBodyBuilder {
         pgAddressLine1, pgAddressLine2, employeeRef, employerAddressLine1, 
         employerCompanyName, vehicleMake, vehicleReg, adultDob,
 		pgEmail1, pgForename, pgSurname, surname,
-		courtId, prosecutorId, prosecutorName, prosecutorCaseRef, 
+		courtId, LocalJusticeAreaId, LocalJusticeAreaName, prosecutorCaseRef, 
         businessUnitId, businessUnitUserIds, userName);
     }
 
@@ -563,6 +574,8 @@ public class RequestBodyBuilder {
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
         String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
         String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String LocalJusticeAreaName = session.get("selectedLocalJusticeAreaName") != null ? session.get("selectedLocalJusticeAreaName").toString() : ""; 
+        String LocalJusticeAreaId = session.get("selectedLocalJusticeAreaId") != null ? session.get("selectedLocalJusticeAreaId").toString() : ""; 
 
 
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
@@ -704,8 +717,8 @@ public class RequestBodyBuilder {
         "}",
         accountNoteText, accountNoteText, 
 		addressLine1, addressLine2,  employeeRef, employerAddressLine1, employerCompanyName, 
-        vehicleMake, vehicleReg, youthDob, email1, forename, surname, courtId, prosecutorId, 
-        prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName); 
+        vehicleMake, vehicleReg, youthDob, email1, forename, surname, courtId, LocalJusticeAreaId, LocalJusticeAreaName,
+        prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName); 
     }
     
 public static String BuildDraftAccountMinorCreditorRequestBody(Session session) {
@@ -716,6 +729,8 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
         String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
         String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
+        String LocalJusticeAreaName = session.get("selectedLocalJusticeAreaName") != null ? session.get("selectedLocalJusticeAreaName").toString() : ""; 
+        String LocalJusticeAreaId = session.get("selectedLocalJusticeAreaId") != null ? session.get("selectedLocalJusticeAreaId").toString() : ""; 
 
 
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)
@@ -877,7 +892,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         addressLine1, addressLine2, employeeRef, employerAddressLine1, 
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         email1, forename, surname,        
-        courtId, minorCreditorAddressLine1, minorForename, minorSurname, prosecutorId, prosecutorName, prosecutorCaseRef, 
+        courtId, minorCreditorAddressLine1, minorForename, minorSurname, LocalJusticeAreaId, LocalJusticeAreaName, prosecutorCaseRef, 
         businessUnitId, businessUnitUserIds, userName);
     }
 
@@ -889,7 +904,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         String courtId = session.get("getCourtId") != null ? session.get("getCourtId").toString() : ""; 
         String prosecutorId = session.get("selectedProsecutorId") != null ? session.get("selectedProsecutorId").toString() : ""; 
         String prosecutorName = session.get("selectedProsecutorName") != null ? session.get("selectedProsecutorName").toString() : ""; 
-
+      
         
         
         // Retrieve reused data from session (generated in BuildDraftAccountRequestBody)

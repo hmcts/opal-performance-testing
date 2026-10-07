@@ -1,6 +1,7 @@
 package simulations.Scripts.Scenario.ParentAndGuardian;
 
 import simulations.Scripts.Headers.Headers;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.SearchType;
@@ -21,7 +22,7 @@ public final class AmendYouthAccountScenario {
 
         return group("OPAL Add Parent And Guardian Account")
         .on(
-            group("Create and Manage")
+            group("Selecting Account")
             .on(
                 //Selecting Account tab:
                 exec(
@@ -37,7 +38,8 @@ public final class AmendYouthAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )   
+                )
+             
                 
                 .exec(session -> {
                     System.out.println(
@@ -47,6 +49,7 @@ public final class AmendYouthAccountScenario {
                     );
                     return session;
                 })
+            ) 
             .group("Search Account").on(
                
                 //Selecting search button 
@@ -59,13 +62,15 @@ public final class AmendYouthAccountScenario {
                     )
                     .find()
                     .saveAs("defendant_account_id"))
-                )         
+                )       
 
-            )
+            
                 .exec(
                     http("OPAL - Fines - Account - Defendant")
                         .get(AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/#{defendant_account_id}/details")
                         .headers(Headers.getHeaders(10))
+                        .check(status().is(200))                                         
+
                 ) 
                 .exec(session ->
                     session.set("getDefendantAccountPartyId", "")
@@ -75,6 +80,7 @@ public final class AmendYouthAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL
                             + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
                         .headers(Headers.getHeaders(12))
+                        .check(status().is(200))
                         .check(
                             jsonPath("$.parent_guardian_party_id").optional().saveAs("getParentGuardianPartyId"))
                         .check(
@@ -85,82 +91,107 @@ public final class AmendYouthAccountScenario {
                 )
 
              // Check whether Parent Guardian exists
-            .exec(session -> {
+                .exec(session -> {
 
-                Object parentGuardianPartyId = session.get("getParentGuardianPartyId");
+                    Object parentGuardianPartyId = session.get("getParentGuardianPartyId");
 
-                boolean shouldAddPG = parentGuardianPartyId == null;
+                    boolean shouldAddPG = parentGuardianPartyId == null;
 
-                System.out.println(
-                    "Existing PG Account: [" + parentGuardianPartyId + "]" +
-                    " | Should Add PG: " + shouldAddPG
-                );
+                    System.out.println(
+                        "Existing PG Account: [" + parentGuardianPartyId + "]" +
+                        " | Should Add PG: " + shouldAddPG
+                    );
 
-                return session.set("shouldAddPG", shouldAddPG);
-            })
-
-            .exec(
-                http("OPAL - Opal-fines-service - Defendant-accounts - At-a-glance")
-                    .get(AppConfig.UrlConfig.BASE_URL
-                        + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")
-                    .headers(Headers.getHeaders(12))
-                    .check(
-                        header("ETag").saveAs("etag")
-                    )
+                    return session.set("shouldAddPG", shouldAddPG);
+                })
             )
+            .group("Selecting Account").on(
 
-            .doIfOrElse(session -> session.getBoolean("shouldAddPG"))
-                .then(
-                    exec(
-                        AddParentAndGuardianAccountScenario
-                            .AddParentAndGuardianAccountRequest()
-                    )
-                    .exec(session -> {
-
-                        int count = session.getInt("addedPGCount");
-
-                        System.out.println("PG ACTION: ADDED");
-
-                        return session.set("addedPGCount", count + 1);
-                    })
-                )
-                .orElse(
-                    randomSwitch()
-                        .on(
-                            percent(50.0).then(
-                                exec(
-                                    RemoveParentAndGuardianAccountScenario.RemoveParentAndGuardianAccountRequest()
-                                )
-                                .exec(session -> {
-
-                                    int count = session.getInt("removedPGCount");
-
-                                    System.out.println("PG ACTION: REMOVED");
-
-                                    return session.set("removedPGCount", count + 1);
-                                })
-                            ),
-
-                            percent(50.0).then(
-                                exec(
-                                    ChangeParentAndGuardianAccount.ChangeParentAndGuardianAccountRequest()
-                                )
-                                .exec(session -> {
-
-                                    int count = session.getInt("changedPGCount");
-
-                                    System.out.println("PG ACTION: CHANGED");
-
-                                    return session.set("changedPGCount", count + 1);
-                                })
-                            )
+                exec(
+                    http("OPAL - Opal-fines-service - Defendant-accounts - At-a-glance")
+                        .get(AppConfig.UrlConfig.BASE_URL
+                            + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")
+                        .headers(Headers.getHeaders(12))
+                        .check(status().is(200)) 
+                        .check(
+                            header("ETag").saveAs("etag")
                         )
                 )
-                
-                .exec(
+            )
+
+           .doIfOrElse(session -> session.getBoolean("shouldAddPG"))
+            .then(
+                exec(
+                    AddParentAndGuardianAccountScenario
+                        .AddParentAndGuardianAccountRequest()
+                )
+                .exec(session -> {
+
+                    int count = session.getInt("addedPGCount");
+
+                    System.out.println("PG ACTION: ADDED");
+
+                    // Global counter - all Gatling users
+                    AccountCounters.PG_ADDED.incrementAndGet();
+
+                    // Per-user counter
+                    return session.set("addedPGCount", count + 1);
+                })
+            )
+            .orElse(
+                randomSwitch()
+                    .on(
+                        percent(50.0).then(
+                            exec(
+                                RemoveParentAndGuardianAccountScenario
+                                    .RemoveParentAndGuardianAccountRequest()
+                            )
+                            .exec(session -> {
+
+                                int count = session.getInt("removedPGCount");
+
+                                System.out.println("PG ACTION: REMOVED");
+
+                                // Global counter - all Gatling users
+                                AccountCounters.PG_REMOVED.incrementAndGet();
+
+                                // Per-user counter
+                                return session.set(
+                                    "removedPGCount",
+                                    count + 1
+                                );
+                            })
+                        ),
+
+                        percent(50.0).then(
+                            exec(
+                                ChangeParentAndGuardianAccount
+                                    .ChangeParentAndGuardianAccountRequest()
+                            )
+                            .exec(session -> {
+
+                                int count = session.getInt("changedPGCount");
+
+                                System.out.println("PG ACTION: CHANGED");
+
+                                // Global counter - all Gatling users
+                                AccountCounters.PG_CHANGED.incrementAndGet();
+
+                                // Per-user counter
+                                return session.set(
+                                    "changedPGCount",
+                                    count + 1
+                                );
+                            })
+                        )
+                    )
+            )
+            .group("Account Details").on(
+                exec(
                     http("OPAL - Opal-fines-service - Major-creditor-accounts - At-a-glance")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")
                         .headers(Headers.getHeaders(12))
+                        .check(status().is(200)) 
                         .check(header("ETag").saveAs("etag")
                     )
                 )               
