@@ -22,7 +22,7 @@ public class Feeders {
     public static final FeederBuilder<String> InputterUsers;
     //MH adding R1b things
     public static final FeederBuilder<String> SearchViewUsers;
-    public static final FeederBuilder<String> PGAccounts;
+  //  public static final FeederBuilder<String> PGAccounts;
     public static final FeederBuilder<String> PGUsers;
     public static final FeederBuilder<String> MajorCreditorUsers;
     public static final FeederBuilder<String> MinorCreditorUsers;
@@ -47,7 +47,7 @@ public class Feeders {
         CheckerUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.CHECKER_USERS_CSV).circular();
         InputterUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.INPUTTER_USERS_CSV).circular();
         SearchViewUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.SEARCHVIEW_USERS_CSV).circular(); //MH added this as well for R1b
-        PGAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.PG_ACCOUNTS_CSV).circular();
+    //    PGAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.PG_ACCOUNTS_CSV).circular();
         PGUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.PG_USERS_CSV).circular();
         MajorCreditorUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.MAJOR_CREDITOR_USERS_CSV).circular();
         MinorCreditorUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.MINOR_CREDITOR_USERS_CSV).circular();
@@ -81,9 +81,9 @@ public class Feeders {
         return SearchViewUsers;
     }
 
-    public static FeederBuilder<String> pGAccounts() {
-        return PGAccounts;
-    } 
+    // public static FeederBuilder<String> pGAccounts() {
+    //     return PGAccounts;
+    // } 
 
     public static FeederBuilder<String> pGUsers() {
         return PGUsers;
@@ -146,7 +146,7 @@ public class Feeders {
     }
 
     public static CheckBuilder.Final saveBusinessUnitId() {
-        return CoreDsl.jsonPath("$.refData[*].business_unit_id").findRandom().saveAs("selectedBusinessUnitId");
+        return CoreDsl.jsonPath("$.refData[?(@.business_unit_id != 113 && @.business_unit_id != 107)].business_unit_id").findRandom().saveAs("selectedBusinessUnitId");
     }
     public static CheckBuilder.Final saveCourtId() {
         return CoreDsl.jsonPath("$.refData[*].court_id").findRandom().saveAs("getCourtId");

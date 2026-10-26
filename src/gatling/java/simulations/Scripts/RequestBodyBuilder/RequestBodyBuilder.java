@@ -170,7 +170,7 @@ public class RequestBodyBuilder {
         "                        \"result_id\": \"FO\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
@@ -325,12 +325,12 @@ System.out.println("businessUnitId = " + businessUnitId);
         "                    {\n" +
         "                        \"amount_imposed\": 500,\n" +
         "                        \"amount_paid\": 200,\n" +
-        "                        \"major_creditor_id\": null,\n" +
+        "                        \"major_creditor_id\": %s,\n" +
         "                        \"minor_creditor\": null,\n" +
-        "                        \"result_id\": \"FVS\"\n" +
+        "                        \"result_id\": \"FCOMP\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
@@ -379,7 +379,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         addressLine1, addressLine2, employeeRef, employerAddressLine1, 
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         adultDob, email1, forename, surname,        
-        courtId, LocalJusticeAreaId, LocalJusticeAreaName,responseDate, prosecutorCaseRef, 
+        courtId, majorCreditorId, LocalJusticeAreaId, LocalJusticeAreaName,responseDate, prosecutorCaseRef, 
         businessUnitId, businessUnitUserIds, userName);
     }
 
@@ -521,7 +521,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         "                        \"result_id\": \"FVS\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
@@ -679,7 +679,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         "                        \"result_id\": \"FVS\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
@@ -857,7 +857,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "                        \"result_id\": \"FCOMP\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +
@@ -1006,7 +1006,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "                        \"result_id\": \"FVS\"\n" +
         "                    }\n" +
         "                ],\n" +
-        "                \"offence_id\": 33369\n" +
+        "                \"offence_id\": 294885\n" +
         "            }\n" +
         "        ],\n" +
         "        \"originator_id\": %s,\n" +

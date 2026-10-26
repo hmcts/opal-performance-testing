@@ -11,7 +11,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 
 public class R1bSearchMinorCreditorSimulation extends Simulation {
 
-    private static final String SCENARIO_NAME = "R1b Search and View Defendant";
+    private static final String SCENARIO_NAME = "R1b Search and Amend Minor Creditor";
 
     @Override
     public void before() {

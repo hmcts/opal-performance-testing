@@ -18,7 +18,7 @@ private R1bMajorCreditorSearchScenario() {
         .on( 
             exec(session -> {
                 List<String> businessUnitIds = session.getList("businessUnitIds");
-                  System.out.println("businessUnitIds = " + businessUnitIds);
+                //  System.out.println("businessUnitIds = " + businessUnitIds);
 
                 if (businessUnitIds == null || businessUnitIds.isEmpty()) {
                     return session.markAsFailed();
@@ -28,7 +28,7 @@ private R1bMajorCreditorSearchScenario() {
                     businessUnitIds.get(
                         ThreadLocalRandom.current().nextInt(businessUnitIds.size())
                     );
-                    System.out.println("selectedBusinessUnitId = " + selectedBusinessUnitId);
+                   // System.out.println("selectedBusinessUnitId = " + selectedBusinessUnitId);
 
                 return session.set("selectedBusinessUnitId", selectedBusinessUnitId);
             })        

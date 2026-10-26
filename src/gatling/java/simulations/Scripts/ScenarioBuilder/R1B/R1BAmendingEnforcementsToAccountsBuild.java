@@ -16,19 +16,19 @@ public class R1BAmendingEnforcementsToAccountsBuild {
             .on(
                 feed(Feeders.amendEnforcementUsers())
                 
-                .exec(session -> session
-                    .set("username", session.getString("Username"))
-                    .set("password", session.getString("Password"))
-                )
+                // .exec(session -> session
+                //     .set("username", session.getString("Username"))
+                //     .set("password", session.getString("Password"))
+                // )
                     .exec(LoginScenario.LoginRequest())
                     .exec(session -> session.set("loopCounter", 0)) // Initialize loop counter
-                    .repeat(5).on(
-                   //     exec(exec(feed(Feeders.amendEnforcementUsers())
 
+                    .repeat(5).on(
                         exec(session -> {
                         // Increment the loop counter
                             int iteration = session.getInt("loopCounter") + 1;
-        
+                            System.out.println("loopCounter at start of pass: " + iteration);
+
                              // Determine the column name based on the iteration number
                             String forenameColumn = "";
                             String surnameColumn = "";
@@ -81,11 +81,11 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                             // Update the loop counter in the session for the next iteration
                             return session.set("loopCounter", iteration);
                         }
-                    ))
+                    )
                   //  .exec(AmendingEnforcementsToAccountsScenario.AmendingEnforcementsToAccountsRequest())
                     .exec(AmendingEnforcementsToAccountsScenario2.AmendingEnforcementsToAccountsRequest2())
-
                     )
+                )
             ;
     }
 }

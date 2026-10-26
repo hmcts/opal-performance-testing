@@ -4,6 +4,7 @@ import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.SearchType;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -30,6 +31,8 @@ public final class SearchAccountScenario {
                     jsonPath("$.defendant_accounts[0].defendant_account_id").saveAs("defendant_account_id"))
 
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Defendant Accounts - Search"))   
+                .exitHereIfFailed()              
             );            
     }
 }

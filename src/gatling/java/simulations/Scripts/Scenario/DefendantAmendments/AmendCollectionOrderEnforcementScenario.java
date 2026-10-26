@@ -80,7 +80,7 @@ public final class AmendCollectionOrderEnforcementScenario {
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts")
-                    .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}")
+                    .patch(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}")
                     .headers(Headers.getHeaders(19))
                     .body(StringBody(session -> session.get("amendEnforcementRequestPayload"))).asJson()
                     .check(status().is(200))

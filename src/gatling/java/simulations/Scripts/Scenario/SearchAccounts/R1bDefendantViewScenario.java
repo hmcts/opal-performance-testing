@@ -4,6 +4,7 @@ import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -31,7 +32,14 @@ public static ChainBuilder ViewDefendant() {
                 http("OPAL - Fines - Account - Defendant - Details")
                     .get(AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/#{defendant_account_id}/details")
                     .check(status().is(200))
-            )         
+            ) 
+            .exec(session -> {
+                    UserInfoLogger.logDetailedErrorMessage("OPAL - Fines - Account - Defendant - Details"
+                     + session.get("Username")
+                    );  
+                    return session; 
+                }
+            )        
 
             //MH getting the referrer value for the later calls from this page
             .exec(session -> {
@@ -69,8 +77,7 @@ public static ChainBuilder ViewDefendant() {
                     .check(status().is(200))
                     .check(header("ETag").saveAs("etag") 
                 )
-            )
-        
+            )        
 
             .pause(15,30)
             //Load Defendant
@@ -82,45 +89,7 @@ public static ChainBuilder ViewDefendant() {
                     .check(status().is(200))
             )
         )
-        .group("Add Note")
-        .on(
-            exec(session -> {
-                try {
-                    String addNoteRequestPayload =
-                    RequestBodyBuilderR1b.DefendantAccountSearch.buildAddNoteRequestBody(session);
-
-                    // System.out.println("Enforcement: " + addNoteRequestPayload);
-                    
-                    // Create SHA-512 digest
-                    String contentDigest =
-                        ContentDigestGenerator.generateSha512ContentDigest(
-                            addNoteRequestPayload
-                        );
-
-                    ObjectMapper mapper = new ObjectMapper();
-
-                    // Convert directly into JsonNode WITHOUT readTree
-                    JsonNode json = mapper.readValue(addNoteRequestPayload, JsonNode.class);
-
-                    return session
-                        .set("addNoteRequestPayload", addNoteRequestPayload)
-                        .set("contentDigest", contentDigest);
-
-                    } catch (Exception e) {
-                        System.err.println("Payload parsing failed: " + e.getMessage());
-                        return session.markAsFailed();
-                    }
-                }
-            )            
-            .exec(
-                http("OPAL - Opal-fines-service - Notes - Add")
-                .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/notes/add")
-                .headers(Headers.getHeaders(21))
-                .body(StringBody(session -> session.get("addNoteRequestPayload"))).asJson()
-                .check(status().is(201))                       
-            )
-        )
-
+        
         .pause(15,30)
         .group("Payment Terms")
         .on(  
@@ -143,6 +112,7 @@ public static ChainBuilder ViewDefendant() {
                     .headers(Headers.getHeaders(17))
                     .check(status().is(200))
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Enforcement-status"))
         )
 
         //impositions and History notes are not recording for some reason, may need to confirm development and permissions
@@ -159,7 +129,9 @@ public static ChainBuilder ViewDefendant() {
                 .headers(Headers.getHeaders(17))
                 .check(status().is(200))
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Impositions"))
         )
+
 
         .pause(15,30)
         .group("History")
@@ -171,6 +143,8 @@ public static ChainBuilder ViewDefendant() {
                 .headers(Headers.getHeaders(17))
                 .check(status().is(200))
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - History"))
+
         )
         //if this is a Fixed penalty account (from the header) then also go to the fixed penalty page
         .pause(15,30)

@@ -188,7 +188,16 @@ public final class ApproveAccountScenario {
                                 jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
                             )
 
-                )    
+                ) 
+                //If there are no draft accounts, stop the session.   
+                .exec(session -> {
+                    List<?> draftAccountIds = session.getList("draftAccountIds");
+                    if (draftAccountIds == null || draftAccountIds.isEmpty()) {
+                        return session.markAsFailed();
+                    }
+                    return session;
+                })
+                .exec(exitHereIfFailed())
                 
                 //Get draft account ID from CSV file instead of request.
                 .doIf(session -> Feeders.USE_CSV_DRAFT_ACCOUNT).then(
@@ -345,7 +354,7 @@ public final class ApproveAccountScenario {
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Offences")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/33369")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/offences/294885")
                     .headers(Headers.getHeaders(11))
                     .check(status().saveAs("httpStatus"))
                     .check(status().is(200))

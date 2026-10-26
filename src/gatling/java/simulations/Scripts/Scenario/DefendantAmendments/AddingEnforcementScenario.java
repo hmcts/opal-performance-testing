@@ -58,7 +58,7 @@ public final class AddingEnforcementScenario {
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
                         .check(
-                            jsonPath("$.refData[*].result_id").findRandom().saveAs("EnforcementId")
+                            jsonPath("$.refData[?(@.result_id == 'COLLO')].result_id").findRandom().saveAs("EnforcementId")
                         )
                 )               
                 

@@ -136,7 +136,7 @@ public final class LoginScenario {
                     .check(status().saveAs("httpStatus"))
                     .check(status().is(200))
                     .check(
-                        jsonPath("$.domains.fines.business_unit_users[?(@.business_unit_id > 0 && @.business_unit_id < 1000)].business_unit_id")
+                        jsonPath("$.domains.fines.business_unit_users[?(@.business_unit_id > 0 && @.business_unit_id < 1000 && @.business_unit_id != 113 && @.business_unit_id != 107)].business_unit_id")
                             .findAll().saveAs("businessUnitIds"),
                         jsonPath("$.domains.fines.business_unit_users[*].business_unit_user_id")
                             .findAll().saveAs("businessUnitUserIds"),
@@ -193,11 +193,12 @@ public final class LoginScenario {
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed()  
-                             .exec(
-                http("OPAL - Opal-fines-service - Business-units")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units")
-                    .headers(Headers.getHeaders(12))
-                    .check(status().is(200))               
+
+                .exec(
+                    http("OPAL - Opal-fines-service - Business-units")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units")
+                        .headers(Headers.getHeaders(12))
+                        .check(status().is(200))               
                 )               
             .exitHereIfFailed()
         );            

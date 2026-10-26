@@ -8,6 +8,8 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import io.gatling.javaapi.core.ChainBuilder;
@@ -489,8 +491,8 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"collection_order\": {\n" +
-                "    \"collection_order_date\": \"null\",\n" +
-                "    \"collection_order_flag\": \"%s\"\n" +
+                "    \"collection_order_date\": null,\n" +
+                "    \"collection_order_flag\": %s\n" +
                 "  }\n" +
                 "}",
                 amendedCollectionOrderFlag
@@ -620,7 +622,6 @@ public static final class DefendantAccountSearch {
                     ? session.get("EnforcementId").toString().trim().toUpperCase()
                     : "";
           
-
             // Stop early if enforcement is missing
             if (enforcement.isEmpty()) {
                 throw new IllegalArgumentException(
@@ -734,6 +735,10 @@ public static final class DefendantAccountSearch {
                 );
             }
 
+            String postedDate = LocalDateTime.now(ZoneId.of("Europe/London"))
+                                             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+
+
             DataGenerator randomStringGenerator = new DataGenerator();
 
             String reasonText1 = randomStringGenerator.generateRandomString(10);
@@ -794,27 +799,29 @@ public static final class DefendantAccountSearch {
                         "    \"date_days_in_default_imposed\": \"2026-08-14\",\n" +
                         "    \"days_in_default\": \"1\",\n" +
                         "    \"effective_date\": \"2026-08-04\",\n" +
-                        "    \"extension\": \"true\",\n" +
-                        "    \"instalment_amount\": \"10.99\",\n" +
+                        "    \"extension\": true,\n" +
+                        "    \"instalment_amount\": 10.99,\n" +
                         "    \"instalment_period\": {\n" +
                         "      \"instalment_period_code\": \"M\",\n" +
                         "      \"instalment_period_display_name\": \"Monthly\"\n" +
                         "    },\n" +
-                        "    \"lump_sum_amount\": \"null\",\n" +
+                        "    \"lump_sum_amount\": null,\n" +
                         "    \"payment_terms_type\": {\n" +
                         "      \"payment_terms_type_code\": \"I\",\n" +
                         "      \"payment_terms_type_display_name\": \"Instalments\"\n" +
                         "    },\n" +
                         "    \"posted_details\": {\n" +
-                        "      \"posted_by\": \"\",\n" +
-                        "      \"posted_by_name\": \"\",\n" +
-                        "      \"posted_date\": \"\"\n" +
-                        "    }\n" +
+                        "      \"posted_by\": null,\n" +
+                        "      \"posted_by_name\": null,\n" +
+                        "    \"posted_date\": \"%s\"\n" +
+                        "    },\n" +
+                        "    \"reason_for_extension\": \"\"\n" +
                         "  },\n" +
                         "  \"result_id\": \"COLLO\"\n" +
                         "}",
                         reasonText1,
-                        reasonText2
+                        reasonText2,
+                        postedDate
                     );  
 
                 /*
@@ -883,7 +890,7 @@ public static final class DefendantAccountSearch {
                 */
                 case "CWN": //Need to remove?
                 case "NAWT":
-                case "REW":
+            // need to remove this one    case "REW":
 
                      return String.format(
                         "{\n" +
@@ -1152,7 +1159,7 @@ public static final class DefendantAccountSearch {
             String businessUnitIdsJson = session.get("businessUnitIds") != null
                     ? session.get("businessUnitIds").toString()
                     : "[]";
-
+ 
             String forenames = session.getString("forename");
             String surname = session.getString("surname");
 
@@ -1187,6 +1194,10 @@ public static final class DefendantAccountSearch {
             String defendantAccountId = session.get("defendant_account_id") != null
                 ? session.get("defendant_account_id").toString().trim().toUpperCase()
                 : "";
+            String creditorAccountId = session.get("creditor_account_id") != null
+                ? session.get("creditor_account_id").toString().trim().toUpperCase()
+                : "";
+                
 
             DataGenerator randomStringGenerator = new DataGenerator();
             String reasonText1 = randomStringGenerator.generateRandomString(10);
@@ -1195,13 +1206,13 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"activity_note\": {\n" +
-                "    \"note_text\": \"%s\",\n" +
+                "    \"note_text\": \"Minor Creds - %s\",\n" +
                 "    \"note_type\": \"AA\",\n" +
-                "    \"record_id\": \"%s\",\n" +
-                "    \"record_type\": \"defendant_accounts\"\n" +
+                "    \"record_id\": %s,\n" +
+                "    \"record_type\": \"creditor_accounts\"\n" +
                 "  }\n" +
                 "}",
-                reasonText1, defendantAccountId
+                reasonText1, creditorAccountId
             );
         }
     }

@@ -62,10 +62,10 @@ def simulations = [
     //R1B
     [task: 'runSearchAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.SearchAccountSimulation'], 
     [task: 'runR1bSearchAndViewDefendantSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchAndViewDefendantSimulation'],
-    [task: 'runPGSearchAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.PGSearchAccountSimulation'],
+    [task: 'runPGSearchAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ParentGuardianSearchAccountSimulation'],
     [task: 'runR1bSearchMajorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMajorCreditorSimulation'],
     [task: 'runR1bSearchMinorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMinorCreditorSimulation'],
-    [task: 'runAmendingEnforcementsToAccountsSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.AmendingEnforcementsToAccountsSimulation'],
+    [task: 'runAmendingEnforcementsToAccountsSimulation2', class: 'simulations.Scripts.PerformanceTests.PlayTest.AmendingEnforcementsToAccountsSimulation2'],
     [task: 'runConvertToCompanyAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToCompanyAccountSimulation'],
     [task: 'runConvertToDefendantAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToDefendantAccountSimulation'],
 

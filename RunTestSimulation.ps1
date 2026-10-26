@@ -6,8 +6,8 @@ Set-Location -Path $targetPath
 
 # Execute the Gradle command
 & ".\gradlew.bat" runMAC_01aSimulation `
-    "-Dperformance.inputters=100" `
-    "-Dperformance.checkers=10" `
+    "-Dperformance.inputters=0" `
+    "-Dperformance.checkers=50" `
     "-Dperformance.existing=0" `
     "-Dperformance.rampup.minutes=2" `
     "-Dperformance.duration.minutes=60"

@@ -77,7 +77,7 @@ public class AccountSearch {
                                 "/opal-fines-service/defendant-accounts/search";
                             
                             requestName =
-                                "OPAL - Minor Creditor Accounts - Search";
+                                "OPAL - Defendant Accounts - Search";
                         }
 
                         case COMPANY -> {
@@ -89,7 +89,7 @@ public class AccountSearch {
                                 "/opal-fines-service/defendant-accounts/search";
                             
                             requestName =
-                                "OPAL - Minor Creditor Accounts - Search";
+                                "OPAL - Defendant Accounts - Search";
                         }
 
 
