@@ -1239,7 +1239,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
                     ? session.get("getListBusinessUnitId").toString()
                     : "[]";
 
-            String CompanyName = session.getString("CompanyName");
+            String CompanyName = session.getString("companyName");
 
             return String.format(
                 "{\n" +

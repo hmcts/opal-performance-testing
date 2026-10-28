@@ -66,13 +66,15 @@ def simulations = [
     [task: 'runR1bSearchMajorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMajorCreditorSimulation'],
     [task: 'runR1bSearchMinorCreditorSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.R1bSearchMinorCreditorSimulation'],
     [task: 'runAmendingEnforcementsToAccountsSimulation2', class: 'simulations.Scripts.PerformanceTests.PlayTest.AmendingEnforcementsToAccountsSimulation2'],
-    [task: 'runConvertToCompanyAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToCompanyAccountSimulation'],
+    [task: 'runConvertToCompanyAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertAccountsSimulation'],
     [task: 'runConvertToDefendantAccountSimulation', class: 'simulations.Scripts.PerformanceTests.PlayTest.ConvertToDefendantAccountSimulation'],
 
 
     // Simulations to run the Performance tests
     [task: 'runMAC_01aSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01aSimulation'],
-    [task: 'runMAC_01bSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01bSimulation']
+    [task: 'runMAC_01bDrop1Simulation', class: 'simulations.Scripts.PerformanceTests.MAC_01bDrop1Simulation'],
+    [task: 'runMAC_01bDrop2Simulation', class: 'simulations.Scripts.PerformanceTests.MAC_01bDrop2Simulation'],
+    [task: 'runMAC_01a_1bSimulation', class: 'simulations.Scripts.PerformanceTests.MAC_01a_1bSimulation']
 
 ]
 

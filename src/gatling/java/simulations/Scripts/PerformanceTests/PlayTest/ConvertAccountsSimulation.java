@@ -2,13 +2,13 @@ package simulations.Scripts.PerformanceTests.PlayTest;
 
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
-import simulations.Scripts.ScenarioBuilder.R1B.ConvertToCompanyAccountScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.ConvertAccountsScenarioBuild;
 import io.gatling.javaapi.core.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
-public class ConvertToCompanyAccountSimulation extends Simulation {   
+public class ConvertAccountsSimulation extends Simulation {   
 
     public static AtomicInteger global400ErrorCounter = new AtomicInteger(0);
     private static final String OPAL_LOGIN_TEST = "Opal Manual Account Creation Test";
@@ -22,9 +22,9 @@ public class ConvertToCompanyAccountSimulation extends Simulation {
 
 
 
-    public ConvertToCompanyAccountSimulation() {
+    public ConvertAccountsSimulation() {
         setUp(
-            ConvertToCompanyAccountScenarioBuild.build(OPAL_LOGIN_TEST)
+            ConvertAccountsScenarioBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
                      rampUsers(AppConfig.PerformanceConfig.PG_USERS_CSV)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))

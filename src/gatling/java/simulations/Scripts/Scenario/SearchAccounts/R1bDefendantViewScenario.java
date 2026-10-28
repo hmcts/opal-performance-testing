@@ -2,6 +2,7 @@ package simulations.Scripts.Scenario.SearchAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
 import simulations.Scripts.Utilities.UserInfoLogger;
@@ -32,10 +33,11 @@ public static ChainBuilder ViewDefendant() {
                 http("OPAL - Fines - Account - Defendant - Details")
                     .get(AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/#{defendant_account_id}/details")
                     .check(status().is(200))
-            ) 
+            )
             .exec(session -> {
+                    String username = session.getString("Username");
                     UserInfoLogger.logDetailedErrorMessage("OPAL - Fines - Account - Defendant - Details"
-                     + session.get("Username")
+                    // + session.get("Username")
                     );  
                     return session; 
                 }
@@ -160,6 +162,11 @@ public static ChainBuilder ViewDefendant() {
                         .headers(Headers.getHeaders(17))
                         .check(status().is(200))
                 )
+                .exec(session -> {
+                    System.out.println("FIXED ACCOUNT: TRUE");
+                    AccountCounters.FIXED_ACCOUNT.incrementAndGet();
+                    return session;
+                })
             )
         ));
     }

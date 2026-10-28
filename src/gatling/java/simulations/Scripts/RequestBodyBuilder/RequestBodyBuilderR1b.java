@@ -540,7 +540,7 @@ public static final class DefendantAccountSearch {
                 "       \"individual_details\": null,\n" +
                 "           \"organisation_details\": {\n" +
                 "               \"organisation_aliases\": null,\n" +
-                "               \"organisation_name\": \" Company %s\"\n" +          
+                "               \"organisation_name\": \" Converted - Test %s\"\n" +          
                 "           },\n" +
                 "  \"organisation_flag\": true,\n" +
                 "  \"party_id\": \"%s\"\n" +
@@ -596,10 +596,10 @@ public static final class DefendantAccountSearch {
                 "       \"individual_details\": {\n" +
                 "           \"age\": \"null\",\n" +
                 "           \"date_of_birth\": \"%s\",\n" +
-                "           \"forenames\": \"Convert %s\",\n" +
+                "           \"forenames\": \"Converted - Test %s\",\n" +
                 "           \"individual_aliases\": null,\n" +
                 "           \"national_insurance_number\": null,\n" +
-                "           \"surname\": \"Convert %s\",\n" +
+                "           \"surname\": \"Converted - Test %s\",\n" +
                 "           \"title\": \"Mr\"\n" +
                 "  },\n" +
                 "  \"organisation_details\": null,\n" +

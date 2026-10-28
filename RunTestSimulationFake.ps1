@@ -5,14 +5,14 @@ $targetPath = $PSScriptRoot
 Set-Location -Path $targetPath
 
 # Execute the Gradle command
-& ".\gradlew.bat" runMAC_01bSimulation `
-    "-Dperformance.inputters=1" `
-    "-Dperformance.checkers=1" `
-    "-Dperformance.majorCreditorUsers=1" `
-    "-Dperformance.minorCreditorUsers=1" `
+& ".\gradlew.bat" runConvertToCompanyAccountSimulation `
+    "-Dperformance.inputters=0" `
+    "-Dperformance.checkers=0" `
+    "-Dperformance.majorCreditorUsers=0" `
+    "-Dperformance.minorCreditorUsers=0" `
     "-Dperformance.pGUsers=1" `
-    "-Dperformance.enforcementUsers=1" `
-    "-Dperformance.searchViewUsers=1" `
+    "-Dperformance.enforcementUsers=0" `
+    "-Dperformance.searchViewUsers=0" `
     "-Dperformance.existing=0" `
     "-Dperformance.rampup.minutes=2" `
     "-Dperformance.duration.minutes=60"

@@ -29,6 +29,11 @@ public final class AccountCounters {
     public static final AtomicInteger MINOR_CREDITOR_UPDATED = new AtomicInteger();
     public static final AtomicInteger MINOR_CREDITOR_CHANGED = new AtomicInteger();
     public static final AtomicInteger MINOR_CREDITOR_PAYMENT_REMOVED = new AtomicInteger();
+
+    // Search
+    public static final AtomicInteger SEARCH_ACCOUNT = new AtomicInteger();
+    public static final AtomicInteger FIXED_ACCOUNT = new AtomicInteger();
+
     
     private AccountCounters() {
     }

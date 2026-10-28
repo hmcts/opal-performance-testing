@@ -6,8 +6,10 @@ import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
 import simulations.Scripts.Utilities.PerformanceRunInfo;
 import simulations.Scripts.Utilities.SimulationNames;
+import simulations.Scripts.PerformanceTests.PlayTest.ConvertAccountsSimulation;
 import simulations.Scripts.ScenarioBuilder.R1A.CheckerUsersScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1A.InputterUsersScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.ConvertAccountsScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.ParentGuardianAccountSearchScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.R1BAmendingEnforcementsToAccountsBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.R1bMajorCreditorSearchBuild;
@@ -19,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 
-public class MAC_01bSimulation extends Simulation {
+public class MAC_01a_1bSimulation extends Simulation {
 
 
     public static AtomicInteger global400ErrorCounter = new AtomicInteger(0);
@@ -162,9 +164,23 @@ public class MAC_01bSimulation extends Simulation {
         );
 
         System.out.println("========================================");
-    }
 
-    public MAC_01bSimulation() {
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("SEARCH DEFENDANT ACCOUNT SUMMARY");
+        System.out.println("========================================");
+
+        System.out.println("Searched: "
+            + AccountCounters.SEARCH_ACCOUNT.get());
+        
+        System.out.println("Searched Fixed: "
+            + AccountCounters.FIXED_ACCOUNT.get());
+        System.out.println("----------------------------------------");
+
+    }
+       
+
+    public MAC_01a_1bSimulation() {
 
         // Configure the simulation setup with multiple user scenarios
         setUp(
@@ -193,7 +209,7 @@ public class MAC_01bSimulation extends Simulation {
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
 
-            ParentGuardianAccountSearchScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search for Youth accounts with, without Parent and Guardian")
+            ParentGuardianAccountSearchScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search for Youth accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.PG_USERS_CSV)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
@@ -215,8 +231,13 @@ public class MAC_01bSimulation extends Simulation {
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.MAJOR_CREDITOR_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
-                )         
+                ),
 
+            ConvertAccountsScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Convert Company and Defendant accounts")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.CONVERT_ACCOUNT_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                )
         )
         // ===================== Duration Configuration =====================
         // Applies simulation max duration in seconds.

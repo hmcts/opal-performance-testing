@@ -25,7 +25,7 @@ public final class ConvertToCompanyAccountScenario {
             group("Converting Account To Company").on(
             
                 //Selecting Add Defendant tab:
-                               pause(10,20)
+                pause(10,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -38,7 +38,7 @@ public final class ConvertToCompanyAccountScenario {
                         SearchType.ACCOUNT,
                     jsonPath("$.count").saveAs("search_count"),
                     jsonPath("$.defendant_accounts[0].defendant_account_id").exists(),
-                    jsonPath("$.defendant_accounts[?(@.defendant_account_id == '#{accountId}')].defendant_account_id")
+                    jsonPath("$.defendant_accounts[0].defendant_account_id")
                     .find().saveAs("defendant_account_id"))
                 )  
                 .exec(

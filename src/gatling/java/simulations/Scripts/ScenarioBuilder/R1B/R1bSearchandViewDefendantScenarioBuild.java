@@ -3,6 +3,7 @@ package simulations.Scripts.ScenarioBuilder.R1B;
 import simulations.Scripts.Scenario.Login.LoginScenario;
 import simulations.Scripts.Scenario.SearchAccounts.R1bDefendantViewScenario;
 import simulations.Scripts.Scenario.SearchAccounts.SearchAccountScenario;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
 
@@ -86,7 +87,13 @@ public class R1bSearchandViewDefendantScenarioBuild {
                         exec(
                             SearchAccountScenario.SearchAccountRequest()
                         )
+                        .exec(session -> {
+                            System.out.println("FIXED ACCOUNT: TRUE");
+                            AccountCounters.SEARCH_ACCOUNT.incrementAndGet();
+                            return session;
+                        })
                     )
+
                     .group("Defendant View")
                     .on(
                         exec(R1bDefendantViewScenario.ViewDefendant()

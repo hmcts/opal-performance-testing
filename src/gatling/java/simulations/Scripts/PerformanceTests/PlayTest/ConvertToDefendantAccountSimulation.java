@@ -3,7 +3,7 @@ package simulations.Scripts.PerformanceTests.PlayTest;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.AssertionsConfig;
 import simulations.Scripts.Utilities.HttpProtocolConfig;
-import simulations.Scripts.ScenarioBuilder.R1B.ConvertToCompanyAccountScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.ConvertAccountsScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.ConvertToDefendantAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.ParentGuardianAccountSearchScenarioBuild;
 import io.gatling.javaapi.core.*;
