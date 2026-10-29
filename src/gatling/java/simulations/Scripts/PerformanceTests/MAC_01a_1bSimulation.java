@@ -107,6 +107,9 @@ public class MAC_01a_1bSimulation extends Simulation {
 
         int enforcementChanged =
             AccountCounters.ENFORCEMENT_CHANGED.get();
+        
+        int paymentChanged =
+            AccountCounters.PAYMENT_CHANGE_ADDED.get();
 
         System.out.println(
             "Added:   " + enforcementAdded
@@ -120,6 +123,10 @@ public class MAC_01a_1bSimulation extends Simulation {
             "Changed: " + enforcementChanged
         );
 
+        System.out.println(
+            "Payment Changed: " + paymentChanged
+        );
+
         System.out.println("----------------------------------------");
 
         System.out.println(
@@ -128,6 +135,8 @@ public class MAC_01a_1bSimulation extends Simulation {
                 enforcementAdded
                 + enforcementRemoved
                 + enforcementChanged
+                + paymentChanged
+
             )
         );
 

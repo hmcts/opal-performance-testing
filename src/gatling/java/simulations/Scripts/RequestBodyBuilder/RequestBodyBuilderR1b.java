@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.Session;
@@ -496,6 +497,51 @@ public static final class DefendantAccountSearch {
                 "  }\n" +
                 "}",
                 amendedCollectionOrderFlag
+            );
+        }
+        public static String buildChangePaymentTermsRequestBody(Session session) {
+           
+            String postedDate = LocalDateTime.now(ZoneId.of("Europe/London"))
+                                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+            LocalDate imposedDate = LocalDate.now(ZoneId.of("Europe/London"))
+                                            .minusDays(ThreadLocalRandom.current().nextLong(0, 31));
+                                            
+            String imposedDateValue = imposedDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+            
+            String effectiveDateValue = imposedDate.minusDays(10)
+                                            .format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+            DataGenerator randomStringGenerator = new DataGenerator();
+            String reasonText1 = randomStringGenerator.generateRandomString(10);
+
+            return String.format(
+                "{\n" +
+                "  \"generate_payment_terms_change_letter\": true,\n" +
+                "  \"payment_terms\": {\n" +
+                "    \"date_days_in_default_imposed\": \"%s\",\n" +
+                "    \"days_in_default\": 1,\n" +
+                "    \"effective_date\": \"%s\",\n" +
+                "    \"extension\": true,\n" +
+                "    \"instalment_amount\": 10.99,\n" +
+                "    \"instalment_period\": {\n" +
+                "       \"instalment_period_code\": \"M\",\n" +
+                "       \"instalment_period_display_name\": \"Monthly\"\n" +
+                "      },\n" +
+                "    \"lump_sum_amount\": null,\n" +
+                "    \"payment_terms_type\": {\n" +
+                "       \"payment_terms_type_code\": \"I\",\n" +
+                "       \"payment_terms_type_display_name\": \"Instalments\"\n" +
+                "      },\n" +
+                "    \"posted_details\": {\n" +
+                "       \"posted_by\": null,\n" +
+                "       \"posted_by_name\": null,\n" +
+                "       \"posted_date\": \"%s\"\n" +
+                "     },\n" +
+                "    \"reason_for_extension\": \"Payment Change %s\"\n" +
+                "  },\n" +                
+                "  \"request_payment_card\": false\n" +                
+                "}",
+                imposedDateValue, effectiveDateValue, postedDate, reasonText1
             );
         }
 

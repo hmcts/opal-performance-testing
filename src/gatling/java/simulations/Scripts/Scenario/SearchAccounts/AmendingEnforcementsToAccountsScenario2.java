@@ -3,6 +3,7 @@ package simulations.Scripts.Scenario.SearchAccounts;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Scenario.DefendantAmendments.AddingEnforcementScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.AmendCollectionOrderEnforcementScenario;
+import simulations.Scripts.Scenario.DefendantAmendments.AmendPaymentTermsScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.RemovingEnforcementScenario;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AccountSearch;
@@ -173,7 +174,7 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                 .orElse(
                     randomSwitch()
                         .on(
-                            percent(50.0).then(
+                            percent(33.33).then(
                                 exec(
                                     AmendCollectionOrderEnforcementScenario
                                         .AmendCollectionOrderEnforcementRequest()
@@ -191,7 +192,7 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                                 })
                             ),
 
-                            percent(50.0).then(
+                            percent(33.33).then(
                                 exec(
                                     AddingEnforcementScenario
                                         .AddingEnforcementRequest()
@@ -203,6 +204,23 @@ public final class AmendingEnforcementsToAccountsScenario2 {
 
                                     System.out.println(
                                         "ENFORCEMENT ACTION: ADDED"
+                                    );
+
+                                    return session;
+                                })
+                            ),
+                            percent(33.33).then(
+                                exec(
+                                    AmendPaymentTermsScenario
+                                        .AmendPaymentTermsRequest()
+                                )
+                                .exec(session -> {
+
+                                    AccountCounters.PAYMENT_CHANGE_ADDED
+                                        .incrementAndGet();
+
+                                    System.out.println(
+                                        "PAYMENT CHANGE ACTION: ADDED"
                                     );
 
                                     return session;

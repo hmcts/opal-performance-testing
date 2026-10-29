@@ -5,13 +5,13 @@ $targetPath = $PSScriptRoot
 Set-Location -Path $targetPath
 
 # Execute the Gradle command
-& ".\gradlew.bat" runConvertToCompanyAccountSimulation `
+& ".\gradlew.bat" runAmendingEnforcementsToAccountsSimulation2 `
     "-Dperformance.inputters=0" `
     "-Dperformance.checkers=0" `
     "-Dperformance.majorCreditorUsers=0" `
     "-Dperformance.minorCreditorUsers=0" `
-    "-Dperformance.pGUsers=1" `
-    "-Dperformance.enforcementUsers=0" `
+    "-Dperformance.pGUsers=0" `
+    "-Dperformance.enforcementUsers=20" `
     "-Dperformance.searchViewUsers=0" `
     "-Dperformance.existing=0" `
     "-Dperformance.rampup.minutes=2" `

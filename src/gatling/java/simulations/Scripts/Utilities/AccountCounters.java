@@ -24,6 +24,10 @@ public final class AccountCounters {
     public static final AtomicInteger ENFORCEMENT_ADDED = new AtomicInteger();
     public static final AtomicInteger ENFORCEMENT_REMOVED = new AtomicInteger();
     public static final AtomicInteger ENFORCEMENT_CHANGED = new AtomicInteger();
+    
+    // Payment change action counters
+
+    public static final AtomicInteger PAYMENT_CHANGE_ADDED = new AtomicInteger();
 
     // Minor Creditor action counters
     public static final AtomicInteger MINOR_CREDITOR_UPDATED = new AtomicInteger();

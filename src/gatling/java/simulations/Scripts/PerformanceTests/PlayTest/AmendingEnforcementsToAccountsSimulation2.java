@@ -16,7 +16,7 @@ public class AmendingEnforcementsToAccountsSimulation2 extends Simulation {
     @Override
     public void before() {
         System.out.println("Simulation starting...");
-        System.out.println("User Count: " + AppConfig.PerformanceConfig.INPUTTER_USERS);
+        System.out.println("User Count: " + AppConfig.PerformanceConfig.ENFORCEMENT_USERS);
         System.out.println("Ramp Duration: " + AppConfig.PerformanceConfig.getRampDuration());
     }   
    
@@ -26,7 +26,7 @@ public class AmendingEnforcementsToAccountsSimulation2 extends Simulation {
         setUp(
             R1BAmendingEnforcementsToAccountsBuild.build(OPAL_LOGIN_TEST)
                 .injectOpen(
-                     rampUsers(AppConfig.PerformanceConfig.AMEND_USERS)
+                     rampUsers(AppConfig.PerformanceConfig.ENFORCEMENT_USERS)
                 .during(AppConfig.PerformanceConfig.getRampDuration()))
                 .protocols(HttpProtocolConfig.build()))
                 .maxDuration(AppConfig.PerformanceConfig.getSimulationDuration());      

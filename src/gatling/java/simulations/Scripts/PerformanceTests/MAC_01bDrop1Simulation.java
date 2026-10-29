@@ -68,6 +68,9 @@ public class MAC_01bDrop1Simulation extends Simulation {
 
         int enforcementChanged =
             AccountCounters.ENFORCEMENT_CHANGED.get();
+        
+        int paymentChanged =
+            AccountCounters.PAYMENT_CHANGE_ADDED.get();
 
         System.out.println(
             "Added:   " + enforcementAdded
@@ -81,6 +84,10 @@ public class MAC_01bDrop1Simulation extends Simulation {
             "Changed: " + enforcementChanged
         );
 
+        System.out.println(
+            "Payment Changed: " + paymentChanged
+        );
+
         System.out.println("----------------------------------------");
 
         System.out.println(
@@ -89,6 +96,8 @@ public class MAC_01bDrop1Simulation extends Simulation {
                 enforcementAdded
                 + enforcementRemoved
                 + enforcementChanged
+                + paymentChanged
+
             )
         );
 
@@ -133,7 +142,7 @@ public class MAC_01bDrop1Simulation extends Simulation {
                     rampUsers(AppConfig.PerformanceConfig.ENFORCEMENT_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
-                
+
             ConvertAccountsScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Convert Company and Defendant accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.CONVERT_ACCOUNT_USERS)
