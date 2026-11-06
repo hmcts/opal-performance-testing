@@ -8,6 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import io.gatling.javaapi.core.ChainBuilder;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
+import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 
 public class R1bMajorCreditorSearchScenario {
@@ -28,7 +29,7 @@ private R1bMajorCreditorSearchScenario() {
                     businessUnitIds.get(
                         ThreadLocalRandom.current().nextInt(businessUnitIds.size())
                     );
-                   // System.out.println("selectedBusinessUnitId = " + selectedBusinessUnitId);
+                    System.out.println("Major Creditor BU ID = " + selectedBusinessUnitId + "Username = " + session.getString("Username"));
 
                 return session.set("selectedBusinessUnitId", selectedBusinessUnitId);
             })        
@@ -44,10 +45,13 @@ private R1bMajorCreditorSearchScenario() {
                 )
                 .exec(
                     http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                    .check(status().is(200))
-                ) 
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
 
                 // Get major creditors for business unit
                 .exec(
@@ -83,16 +87,22 @@ private R1bMajorCreditorSearchScenario() {
                 )
                 .exec(
                     http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                    .check(status().is(200))
-                ) 
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                    .check(status().is(200))
-                )                    
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()                    
                 .pause(1)
                 .exec(
                     http("OPAL - Opal-fines-service - Major-creditor-accounts - Header-summary")

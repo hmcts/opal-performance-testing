@@ -2,7 +2,11 @@ package simulations.Scripts.Utilities;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
+import java.util.HashMap;
+
 
 public final class AccountCounters {
 
@@ -38,6 +42,37 @@ public final class AccountCounters {
     public static final AtomicInteger SEARCH_ACCOUNT = new AtomicInteger();
     public static final AtomicInteger FIXED_ACCOUNT = new AtomicInteger();
 
+    // Errror counters
+    // public static final AtomicInteger ERROR_COUNT = new AtomicInteger();
+
+    // public static int getTotalErrorCount() {
+    //     return ERROR_COUNT.get();
+    // }
+
+    public static final AtomicInteger ERROR_COUNT = new AtomicInteger(0);
+
+    private static final ConcurrentHashMap<String, AtomicInteger> ERRORS_BY_CODE =
+            new ConcurrentHashMap<>();
+
+    public static int incrementErrorCountForCode(Integer statusCode) {
+        String code = statusCode == null
+                ? "NO_HTTP_STATUS"
+                : statusCode.toString();
+
+        return ERRORS_BY_CODE
+                .computeIfAbsent(code, key -> new AtomicInteger(0))
+                .incrementAndGet();
+    }
+
+    public static Map<String, Integer> getErrorCountsByCode() {
+        Map<String, Integer> snapshot = new HashMap<>();
+
+        ERRORS_BY_CODE.forEach((code, count) ->
+                snapshot.put(code, count.get())
+        );
+
+        return Collections.unmodifiableMap(snapshot);
+    }
     
     private AccountCounters() {
     }

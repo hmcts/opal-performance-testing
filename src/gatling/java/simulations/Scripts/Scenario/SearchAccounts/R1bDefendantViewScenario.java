@@ -5,6 +5,7 @@ import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
@@ -25,9 +26,13 @@ public static ChainBuilder ViewDefendant() {
         //authentication is what you need
             exec(
                 http("OPAL - Sso - Authenticated")
-                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                .headers(Headers.getHeaders(11))
-            )        
+                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                    .headers(Headers.getHeaders(11))
+                    .check(status().is(200))
+                    .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()   
             //Open account details page
             .exec(
                 http("OPAL - Fines - Account - Defendant - Details")
@@ -89,7 +94,10 @@ public static ChainBuilder ViewDefendant() {
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{defendant_account_party_id}")
                     .headers(Headers.getHeaders(17))
                     .check(status().is(200))
-            )
+                    .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+                .exitHereIfFailed() 
         )
         
         .pause(15,30)

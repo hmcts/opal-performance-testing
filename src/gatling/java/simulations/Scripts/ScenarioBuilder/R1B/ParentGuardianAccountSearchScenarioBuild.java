@@ -11,7 +11,7 @@ public class ParentGuardianAccountSearchScenarioBuild {
 
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
-            .group("OPAL Login Requests")
+            .group("Parent Guardian Account")
             .on(
                 exec(
                     feed(Feeders.pGUsers())

@@ -25,8 +25,7 @@ public final class LoginScenario {
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
-
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed() 
 
                 .exec(
@@ -68,7 +67,7 @@ public final class LoginScenario {
                 .formParam("login", "#{Username}")
                 .formParam("loginfmt", "#{Username}")
                 .formParam("type", "11")
-                .formParam("LoginOptions", "3")
+               // .formParam("LoginOptions", "3")
                 .formParam("lrt", "")
                 .formParam("lrtPartition", "")
                 .formParam("hisRegion", "")
@@ -92,6 +91,8 @@ public final class LoginScenario {
                 .formParam("isSignupPost", "0")
                 .formParam("DfpArtifact", "")
                 .formParam("i19", "23305")
+                .formParam("DontShowAgain", "false")
+                .formParam("LoginOptions", "1")
                 .check(Feeders.saveTokenCode())
                 .check(Feeders.saveClientInfo())
                 .check(Feeders.saveSessionState())
@@ -100,9 +101,12 @@ public final class LoginScenario {
             //     System.out.println("TokenCode = " + session.getString("TokenCode"));
             //     System.out.println("getClientInfo = " + session.getString("getClientInfo"));
             //     System.out.println("getSessionState = " + session.getString("getSessionState"));
+            //     System.out.println("Username = " + session.getString("Username"));
+
             //     return session;
             // })
-                        
+
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Login"))         
             .exitHereIfFailed() 
     
             .exec(
@@ -112,7 +116,12 @@ public final class LoginScenario {
                     .formParam("code", "#{TokenCode}")
                     .formParam("client_info", "#{getClientInfo}")
                     .formParam("session_state", "#{getSessionState}")
+                //    .check(status().saveAs("httpStatus"))
+                    .check(status().is(200))
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - sso - login-callback"))
+            .exitHereIfFailed()  
+
             .exec(
                 http("OPAL - sso - Authenticated")
                     .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -147,31 +156,31 @@ public final class LoginScenario {
 
             // Search dashboard display from login.
 
-            .exec(
-                http("OPAL - sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(5))
-                        .check(status().saveAs("httpStatus"))
+                .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed()  
                 
-                .exec(
-                http("OPAL - sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(5))
-                        .check(status().saveAs("httpStatus"))
+                    .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed()  
-                             .exec(
-                http("OPAL - sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(5))
-                        .check(status().saveAs("httpStatus"))
+                                 .exec(
+                    http("OPAL - Sso - Authenticated")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed()  
@@ -183,7 +192,7 @@ public final class LoginScenario {
                         .check(status().is(200))
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                .exitHereIfFailed()  
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

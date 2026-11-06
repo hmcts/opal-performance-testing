@@ -3,6 +3,8 @@ package simulations.Scripts.Scenario.DefendantAmendments;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -39,8 +41,12 @@ public final class AddingOverrideEnforcementScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )             
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+            
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -79,8 +85,12 @@ public final class AddingOverrideEnforcementScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
 
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
@@ -135,16 +145,24 @@ public final class AddingOverrideEnforcementScenario {
                 )
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Enforcements")
-                    .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/enforcements")
-                    .headers(Headers.getHeaders(19))
-                    .body(StringBody(session -> session.get("enforcementRequestPayload"))).asJson()
+                        .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/enforcements")
+                        .headers(Headers.getHeaders(19))
+                        .body(StringBody(session -> session.get("enforcementRequestPayload"))).asJson()
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Enforcements"))
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")

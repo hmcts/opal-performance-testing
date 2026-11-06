@@ -6,9 +6,14 @@ public class PerformanceRunInfo {
 
         int inputters = AppConfig.PerformanceConfig.INPUTTER_USERS;
         int checkers  = AppConfig.PerformanceConfig.CHECKER_USERS;
-        int existing  = AppConfig.PerformanceConfig.EXISTING_USERS;
+        int major  = AppConfig.PerformanceConfig.MAJOR_CREDITOR_USERS;
+        int minor = AppConfig.PerformanceConfig.MINOR_CREDITOR_USERS;
+        int pg  = AppConfig.PerformanceConfig.PG_USERS_CSV;
+        int enforcement  = AppConfig.PerformanceConfig.ENFORCEMENT_USERS;
+        int convert  = AppConfig.PerformanceConfig.CONVERT_ACCOUNT_USERS;
+        int searchview  = AppConfig.PerformanceConfig.SEARCH_VIEW_USERS;
 
-        int totalUsers = inputters + checkers + existing;
+        int totalUsers = inputters + checkers + major + minor + pg + enforcement + convert + searchview;
 
         System.out.println("==============================================");
         System.out.println("         GATLING PERFORMANCE TEST CONFIG      ");
@@ -16,7 +21,12 @@ public class PerformanceRunInfo {
 
         System.out.println("Inputter Users : " + inputters);
         System.out.println("Checker Users  : " + checkers);
-        System.out.println("Existing Users : " + existing);
+        System.out.println("Major Creditor Users : " + major);
+        System.out.println("Minor Creditor  Users : " + minor);
+        System.out.println("PG Users  : " + pg);
+        System.out.println("Enforcement Users : " + enforcement);
+        System.out.println("Convert  Users : " + convert);
+        System.out.println("Search Dependant Users  : " + searchview);
         System.out.println("----------------------------------------------");
         System.out.println("TOTAL USERS    : " + totalUsers);
         System.out.println("----------------------------------------------");

@@ -3,6 +3,8 @@ package simulations.Scripts.Scenario.ParentAndGuardian;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -45,7 +47,11 @@ public final class ChangeParentAndGuardianAccount {
                         .check(jsonPath(session -> "$.defendant_account_party.party_details.party_id").find().optional().saveAs("getIndividualPartyId"))
                         .check(jsonPath(session -> "$.defendant_account_party.vehicle_details.vehicle_make_and_model").find().optional().saveAs("getVehicleMakeAndModel"))
                         .check(jsonPath(session -> "$.defendant_account_party.vehicle_details.vehicle_registration").find().optional().saveAs("getVehicleRegistration"))
-                        ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+                .exitHereIfFailed() 
                 
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
@@ -99,8 +105,12 @@ public final class ChangeParentAndGuardianAccount {
                         .put(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(19))
                         .body(StringBody(session -> session.get("defendantAccountPartiesRequestPayload"))).asJson()
-                        .check(status().is(200)) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - PUT"))
+                .exitHereIfFailed() 
+
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -111,8 +121,11 @@ public final class ChangeParentAndGuardianAccount {
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                             .headers(Headers.getHeaders(12))
-                            .check(status().is(200))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+                .exitHereIfFailed() 
             )
         );            
     }

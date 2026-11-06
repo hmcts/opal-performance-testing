@@ -1,11 +1,10 @@
 package simulations.Scripts.Utilities;
 
 import io.gatling.javaapi.core.ChainBuilder;
-
-import static io.gatling.javaapi.core.CoreDsl.exec;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.gatling.javaapi.core.CoreDsl.exec;
 
 public class UserInfoLogger {
 
@@ -16,23 +15,20 @@ public class UserInfoLogger {
         return code != null && (code == 502 || code == 504);
     }
 
-        public static ChainBuilder logSessionStatus(String stepName) {
+    public static ChainBuilder logSessionStatus(String stepName) {
         return exec(session -> {
+            LOGGER.info(
+                    "STEP: {} | session.isFailed()={}",
+                    stepName,
+                    session.isFailed()
+            );
 
-                LOGGER.info(
-                "STEP: {} | session.isFailed()={}",
-                stepName,
-                session.isFailed()
-                );
-
-                return session;
+            return session;
         });
-        }
+    }
 
     public static ChainBuilder logDetailedErrorMessage(String requestName) {
-
         return exec(session -> {
-
             Integer statusCode =
                     session.contains("httpStatus")
                             ? session.getInt("httpStatus")
@@ -68,53 +64,33 @@ public class UserInfoLogger {
                             ? session.getString("Username")
                             : "N/A";
 
-
+            boolean sessionFailed = session.isFailed();
             boolean gatewayError = isGateway(statusCode);
 
-
-            // ------------------------------------------------
-            // Determine THIS REQUEST result
-            // ------------------------------------------------
+            // This request passes only when its HTTP status is exactly 200.
             boolean requestSucceeded =
-                    statusCode != null &&
-                    statusCode >= 200 &&
-                    statusCode < 300 &&
-                    !gatewayError;
+                    statusCode != null && statusCode == 200 || statusCode == 201;
 
-
-            // ------------------------------------------------
-            // Diagnostic information
-            // ------------------------------------------------
-                if (AppConfig.LoggingConfig.ENABLE_DIAGNOSTIC_LOGGING) {
+            if (AppConfig.LoggingConfig.ENABLE_DIAGNOSTIC_LOGGING) {
                 LOGGER.info(
                         """
                         Request '{}'
                         Session Failed: {}
-                        Request Successful: {}
+                        Request Successful by HTTP status: {}
                         Gateway Error: {}
                         Status Code: {}
                         """,
                         requestName,
-                        session.isFailed(),
+                        sessionFailed,
                         requestSucceeded,
                         gatewayError,
                         statusCode
                 );
-                }
+            }
 
-
-            // ------------------------------------------------
-            // SUCCESS
-            // ------------------------------------------------
             if (requestSucceeded) {
-
                 LOGGER.info(
-                        """
-                        Request '{}' SUCCEEDED
-
-                        Status Code: {}
-                        User: {}
-                        """,
+                        "Request '{}' SUCCEEDED | Status Code: {} | User: {}",
                         requestName,
                         statusCode,
                         userName
@@ -123,24 +99,32 @@ public class UserInfoLogger {
                 return session;
             }
 
+            // Count every status that is not 200, including a missing status.
+            int totalErrorCount = AccountCounters.ERROR_COUNT.incrementAndGet();
+            int statusCodeCount =
+                    AccountCounters.incrementErrorCountForCode(statusCode);
 
-            // ------------------------------------------------
-            // GATEWAY ERROR
-            // ------------------------------------------------
+            String statusCodeLabel =
+                    statusCode == null
+                            ? "NO_HTTP_STATUS"
+                            : statusCode.toString();
+
             if (gatewayError) {
-
                 LOGGER.error(
                         """
+                        Total Error Count: {}
+                        Count for HTTP status {}: {}
                         Request '{}' FAILED (Gateway Error)
-
                         Status Code: {}
                         User: {}
-
                         Response Body:
                         {}
                         """,
+                        totalErrorCount,
+                        statusCodeLabel,
+                        statusCodeCount,
                         requestName,
-                        statusCode,
+                        statusCodeLabel,
                         userName,
                         responseBody
                 );
@@ -148,27 +132,25 @@ public class UserInfoLogger {
                 return session;
             }
 
-
-            // ------------------------------------------------
-            // FUNCTIONAL FAILURE
-            // ------------------------------------------------
             LOGGER.error(
                     """
+                    Total Error Count: {}
+                    Count for HTTP status {}: {}
                     Request '{}' FAILED
-
                     Status Code: {}
                     Error Type: {}
                     Error Title: {}
                     Error Status: {}
-
                     User: {}
                     Detail: {}
-
                     Response Body:
                     {}
                     """,
+                    totalErrorCount,
+                    statusCodeLabel,
+                    statusCodeCount,
                     requestName,
-                    statusCode,
+                    statusCodeLabel,
                     errorType,
                     errorTitle,
                     errorStatus,
@@ -176,7 +158,6 @@ public class UserInfoLogger {
                     detail,
                     responseBody
             );
-
 
             return session;
         });

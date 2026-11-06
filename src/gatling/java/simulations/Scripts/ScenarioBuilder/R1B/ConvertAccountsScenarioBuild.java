@@ -12,7 +12,7 @@ public class ConvertAccountsScenarioBuild {
 
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
-            .group("OPAL Login Requests")
+            .group("Convert Accounts")
             .on(
                 exec(
                     feed(Feeders.convertDefendantAccounts())

@@ -14,7 +14,7 @@ public class ApproveAccountScenarioBuild {
             .on(
                 exec(feed(Feeders.checkerUsers()))
                 .exec(LoginScenario.LoginRequest())
-                .repeat(5).on(
+                .repeat(100).on(
                 // // 50/50 split between approve and reject
                 randomSwitch()
                     .on(

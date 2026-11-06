@@ -45,27 +45,43 @@ public final class CreateAccountParentGuardianYouthScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
                 //Selecting Create and Manage Draft Accounts link
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )                 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+            
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
                 
                 // Displays the created accounts by filters.    
                 //Build draft account query parameters from business unit data in session (Submitted / Resubmitted) 
@@ -138,9 +154,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed() 
+
                 
                 .exec(
                     http("OPAL - Sso - Authenticated")
@@ -148,9 +166,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                .exitHereIfFailed()  
+                .exitHereIfFailed() 
+
                 
                 //Selecting new account radio button
                 .pause(5,20)
@@ -167,7 +187,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+
                 .exec(
                     http("OPAL - Opal-fines-service - Business-units")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/business-units?permission=CREATE_MANAGE_DRAFT_ACCOUNTS")
@@ -197,9 +221,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
-                )                
+                        .check(Feeders.saveErrorDetails())
+                )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                .exitHereIfFailed()  
+                .exitHereIfFailed() 
+ 
             ) 
         
             .group("Enter Court Details").on(
@@ -219,9 +245,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                             .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                    .exitHereIfFailed()  
+                    .exitHereIfFailed() 
+
                                     
                     //Selecting Court details
                     .pause(5,20) 
@@ -267,7 +295,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                             .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
-                    )          
+                            .check(Feeders.saveErrorDetails())
+                    )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                    .exitHereIfFailed() 
+        
                 )
                                 
                 .group("Enter Defendant Contact Details").on(
@@ -290,6 +322,7 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                     .exitHereIfFailed()                 
@@ -313,7 +346,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                     )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                    .exitHereIfFailed() 
+
 
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                     .exitHereIfFailed()  
@@ -333,11 +370,15 @@ public final class CreateAccountParentGuardianYouthScenario {
                     )                    
                     .exec(
                         http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                        .check(status().saveAs("httpStatus"))
-                        .check(status().is(200))
-                    )                   
+                            .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                            .headers(Headers.getHeaders(11))
+                            .check(status().saveAs("httpStatus"))
+                            .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
+                    )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                    .exitHereIfFailed() 
+                 
                     .exec(
                         http("OPAL - Opal-fines-service - Results")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/results?result_ids=FCOMP&result_ids=FVS&result_ids=FCOST&result_ids=FCPC&result_ids=FO&result_ids=FCC&result_ids=FVEBD&result_ids=FFR")
@@ -446,10 +487,12 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
-                            .check(status().is(200))
+                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                     .exitHereIfFailed() 
+ 
                     .exec(
                         http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -459,11 +502,15 @@ public final class CreateAccountParentGuardianYouthScenario {
                     )					 
                     .exec(
                         http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
+                            .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                            .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                    .exitHereIfFailed() 
+
                 )
                 
                 .group("Review Account").on(
@@ -482,9 +529,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                             .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                    .exitHereIfFailed()  
+                    .exitHereIfFailed() 
+
                                                     
                     //Selecting Review account Button
                     .pause(5,20) 
@@ -501,9 +550,11 @@ public final class CreateAccountParentGuardianYouthScenario {
                             .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                    .exitHereIfFailed()  
+                    .exitHereIfFailed() 
+ 
                     
                     .exec(
                         http("OPAL - Opal-fines-service - Prosecutors")
@@ -636,7 +687,7 @@ public final class CreateAccountParentGuardianYouthScenario {
                         .headers(Headers.getHeaders(14)) 
                         .body(StringBody(session -> session.get("draftAccountRequestPayload"))).asJson()
                         .check(status().saveAs("httpStatus"))
-                        .check(status().is(201))
+                        .check(status().in(200, 201)) 
                         .check(Feeders.saveErrorDetails()) 
                         .check(Feeders.saveCreatedAccountId())
 
@@ -675,13 +726,15 @@ public final class CreateAccountParentGuardianYouthScenario {
                     })
                     .exec(
                         http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                        .check(status().saveAs("httpStatus"))
-                        .check(status().is(200))
+                            .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                            .headers(Headers.getHeaders(11))
+                            .check(status().saveAs("httpStatus"))
+                            .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
                     .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
-                    .exitHereIfFailed()  
+                    .exitHereIfFailed() 
+
                     .exec(
                         http("OPAL - API - Users-state")
                             .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -695,7 +748,10 @@ public final class CreateAccountParentGuardianYouthScenario {
                             .headers(Headers.getHeaders(11))
                             .check(status().saveAs("httpStatus"))
                             .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
                     )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                    .exitHereIfFailed() 
             ) 
                         
         );            

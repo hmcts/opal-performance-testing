@@ -43,16 +43,12 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                ) 
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
-
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()  
+               
                 //Selecting Create and Manage Draft Accounts link    
                 .exec(
                     http("OPAL - API - Users-state")
@@ -65,62 +61,31 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed() 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )  
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
-                        .check(status().is(200))
-                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()   
+               
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )                
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
-                        .check(status().is(200))
-                )
-                .exec(
-                    http("OPAL - Sso - Authenticated")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )                 
-                .exec(
-                    http("OPAL - API - Users-state")
-                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
-                        .headers(Headers.getHeaders(12))
-                        .check(status().saveAs("httpStatus"))
-                        .check(status().is(200))
-                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()                 
+                
                 //Build draft account query parameters from business unit data in session (Submitted / Resubmitted) 
                 
                 .exec(session ->
@@ -140,11 +105,16 @@ public final class ApproveAccountScenario {
                             session.getString("draftAccountSubmittedQueryParams")
                         )
                         .headers(Headers.getHeaders(11))
-                    .check(status().saveAs("httpStatus"))
-                    .check(status().is(200))
-                    .check(Feeders.saveErrorDetails())
+                        .check(status().is(200))
+                        .check(
+                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
+                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
+                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
+                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
+                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
+                        )
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams"))
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted"))
                 .exitHereIfFailed()
 
                 //Build draft account query parameters from business unit data in session (Publishing Failed)               
@@ -168,27 +138,9 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
-                .exitHereIfFailed() 
-
-                //Second call for draft account query parameters from business unit data in session (Publishing Failed)  
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                        .check(
-                                jsonPath("$.summaries[*].draft_account_id").findAll().saveAs("draftAccountIds"),
-                                jsonPath("$.summaries[*].business_unit_id").findAll().saveAs("businessUnitIds"),
-                                jsonPath("$.summaries[*].account_status").findAll().saveAs("accountStatuses"),
-                                jsonPath("$.summaries[*].submitted_by").findAll().saveAs("submittedBys"),
-                                jsonPath("$.summaries[*].submitted_by_name").findAll().saveAs("submittedByNames")
-                            )
-
-                ) 
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Publishing Failed"))
+                .exitHereIfFailed()
+               
                 //If there are no draft accounts, stop the session.   
                 .exec(session -> {
                     List<?> draftAccountIds = session.getList("draftAccountIds");
@@ -327,7 +279,11 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -339,7 +295,11 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                )  
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()  
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts")
                         .get(session -> AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/draft-accounts/" + session.get("selectedDraftAccountId"))
@@ -428,6 +388,8 @@ public final class ApproveAccountScenario {
                         .check(status().is(200))
                         .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Draft-accounts - Approve"))
+                .exitHereIfFailed()  
                 //Keeps track of the Total accounts approved in the simulation
                 .exec(session -> {
                     AccountCounters.APPROVED.incrementAndGet();
@@ -466,7 +428,11 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                ) 
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                  .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -492,7 +458,11 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                  .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -504,7 +474,11 @@ public final class ApproveAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                  .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -512,11 +486,15 @@ public final class ApproveAccountScenario {
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
                 )                 
-                .exec(
+                 .exec(
                     http("OPAL - Sso - Authenticated")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                    .headers(Headers.getHeaders(11))
-                ) 
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                        .headers(Headers.getHeaders(11))
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
                         .get(session ->
@@ -537,17 +515,7 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
-                .pause(20,60)
-                .exec(
-                    http("OPAL - Opal-fines-service - Draft-accounts - QueryParams - Submitted")
-                        .get(session ->
-                            AppConfig.UrlConfig.BASE_URL +
-                            "/opal-fines-service/draft-accounts?" +
-                            session.getString("draftAccountSubmittedQueryParams")
-                        )
-                        .headers(Headers.getHeaders(11))
-                        .check(status().is(200))
-                )
+                .pause(20,60) 
             )
         );            
     }

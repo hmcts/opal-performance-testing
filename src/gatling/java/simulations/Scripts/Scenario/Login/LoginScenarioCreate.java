@@ -19,12 +19,12 @@ public final class LoginScenarioCreate {
 
         return group("OPAL Login").on(
                 exec(http("OPAL - Sso - Login - /")
-                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
-                    .headers(Headers.getHeaders(1))
-                    .check(status().is(200))
+                        .get(AppConfig.UrlConfig.BASE_URL + "/sso/login")
+                        .headers(Headers.getHeaders(1))
+                        .check(status().saveAs("httpStatus"))
+                        .check(status().is(200))
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Login - /"))
-
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed() 
 
                 .exec(
@@ -113,10 +113,9 @@ public final class LoginScenarioCreate {
                 System.out.println("getClientInfo = " + session.getString("getClientInfo"));
                 System.out.println("getSessionState = " + session.getString("getSessionState"));
                 return session;
-            })
-                        
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Login"))
-                .exitHereIfFailed()  
+            })                        
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Login"))
+            .exitHereIfFailed()  
     
             .exec(
                 http("OPAL - sso - login-callback")
@@ -125,12 +124,22 @@ public final class LoginScenarioCreate {
                 .formParam("code", "#{TokenCode}")
                 .formParam("client_info", "#{getClientInfo}")
                 .formParam("session_state", "#{getSessionState}")
+                .check(status().saveAs("httpStatus"))
+                .check(status().is(200))
+
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - sso - login-callback"))
+            .exitHereIfFailed()  
+
             .exec(
-                http("OPAL - sso - Authenticated")
-                .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
-                .headers(Headers.getHeaders(5))
+                http("OPAL - Sso - Authenticated")
+                    .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
+                    .headers(Headers.getHeaders(11))
+                    .check(status().is(200))
+                    .check(Feeders.saveErrorDetails())
             )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+            .exitHereIfFailed() 
             .exec(
               http("OPAL - Session - Expiry")
               .get(AppConfig.UrlConfig.BASE_URL + "/session/expiry")

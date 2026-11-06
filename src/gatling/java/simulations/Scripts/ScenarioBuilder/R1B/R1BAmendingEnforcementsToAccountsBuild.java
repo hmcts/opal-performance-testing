@@ -12,7 +12,7 @@ public class R1BAmendingEnforcementsToAccountsBuild {
 
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
-            .group("OPAL Login Requests")
+            .group("Enforcements")
             .on(
                 feed(Feeders.amendEnforcementUsers())
                 
@@ -32,37 +32,47 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                              // Determine the column name based on the iteration number
                             String forenameColumn = "";
                             String surnameColumn = "";
-                            String accountIdColumn = "";
+                            String defendantAccountIdColumn = "";
+                            String businessUnitIdColumn = "";
 
                             switch (iteration) {
                                 case 1:
                                     forenameColumn = "forename1";
                                     surnameColumn = "surname1";
-                                    accountIdColumn = "AccountId1";
+                                    defendantAccountIdColumn = "DefendantAccountId1";
+                                    businessUnitIdColumn = "BusinessUnitId1";
+
                                     break;
 
                                 case 2:
                                     forenameColumn = "forename2";
                                     surnameColumn = "surname2";
-                                    accountIdColumn = "AccountId2";
+                                    defendantAccountIdColumn = "DefendantAccountId2";
+                                    businessUnitIdColumn = "BusinessUnitId2";
                                     break;
 
                                 case 3:
                                     forenameColumn = "forename3";
                                     surnameColumn = "surname3";
-                                    accountIdColumn = "AccountId3";
+                                    defendantAccountIdColumn = "DefendantAccountId3";
+                                    businessUnitIdColumn = "BusinessUnitId3";
+
                                     break;
 
                                 case 4:
                                     forenameColumn = "forename4";
                                     surnameColumn = "surname4";
-                                    accountIdColumn = "AccountId4";
+                                    defendantAccountIdColumn = "DefendantAccountId4";
+                                    businessUnitIdColumn = "BusinessUnitId5";
+
                                     break;
 
                                 case 5:
                                     forenameColumn = "forename5";
                                     surnameColumn = "surname5";
-                                    accountIdColumn = "AccountId5";
+                                    defendantAccountIdColumn = "DefendantAccountId5";
+                                    businessUnitIdColumn = "BusinessUnitId5";
+
                                     break;
                                 default: 
                                     throw new RuntimeException("Unexpected iteration: " + iteration);
@@ -71,12 +81,14 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                             // Retrieve the forenames and surname from the session and set them for use in the scenario
                             String forenames = session.getString(forenameColumn);
                             String surname = session.getString(surnameColumn);
-                            String accountId = session.getString(accountIdColumn);
+                            String defendantAccountId = session.getString(defendantAccountIdColumn);
+                            String businessUnitId = session.getString(businessUnitIdColumn);
 
                             session = session
                                         .set("forename", forenames)         // Set the forenames
                                         .set("surname", surname)            // Set the surname usage
-                                        .set("accountId", accountId); 
+                                        .set("defendantAccountId", defendantAccountId)
+                                        .set("businessUnitId", businessUnitId); 
 
                             // Update the loop counter in the session for the next iteration
                             return session.set("loopCounter", iteration);

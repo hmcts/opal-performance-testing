@@ -3,6 +3,8 @@ package simulations.Scripts.Scenario.ParentAndGuardian;
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -33,7 +35,11 @@ public final class RemoveParentAndGuardianAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(12))  
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+                .exitHereIfFailed() 
+                
                 .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -45,14 +51,20 @@ public final class RemoveParentAndGuardianAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )                
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed()                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
 
                 .pause(5,20)
                 .exec(session -> {
@@ -87,9 +99,12 @@ public final class RemoveParentAndGuardianAccountScenario {
                         .delete(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(19))  
                         .body(StringBody(session -> session.get("removePGRequestPayload"))).asJson()
-                        .check(status().is(200))                                         
-
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - Delete"))
+                .exitHereIfFailed() 
+
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -103,8 +118,11 @@ public final class RemoveParentAndGuardianAccountScenario {
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{GetDefendantAccountPartyId}")
                         .headers(Headers.getHeaders(12))
-                        .check(status().is(200))    
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+                .exitHereIfFailed() 
             )
         );            
     }

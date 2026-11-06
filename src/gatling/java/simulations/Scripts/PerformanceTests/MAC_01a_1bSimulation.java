@@ -185,8 +185,25 @@ public class MAC_01a_1bSimulation extends Simulation {
         System.out.println("Searched Fixed: "
             + AccountCounters.FIXED_ACCOUNT.get());
         System.out.println("----------------------------------------");
+         
 
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("ERROR SUMMARY");
+        System.out.println("========================================");
+
+        System.out.println(
+                "Total errors: " + AccountCounters.ERROR_COUNT.get()
+        );
+
+        AccountCounters.getErrorCountsByCode().forEach((code, count) ->
+                System.out.println("HTTP status " + code + ": " + count)
+        );
+
+        System.out.println("----------------------------------------");
     }
+
+
        
 
     public MAC_01a_1bSimulation() {

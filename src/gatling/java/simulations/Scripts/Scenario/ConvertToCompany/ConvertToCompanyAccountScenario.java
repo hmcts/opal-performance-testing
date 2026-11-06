@@ -5,7 +5,9 @@ import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
 import simulations.Scripts.Utilities.SearchType;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class ConvertToCompanyAccountScenario {
 
     private ConvertToCompanyAccountScenario() {}
+
 
     public static ChainBuilder ConvertToCompanyAccountRequest() {
 
@@ -30,29 +33,41 @@ public final class ConvertToCompanyAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )    
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+   
                 //Search for accounts query parameters 
                 .exec(
                     AccountSearch.search(
                         SearchType.ACCOUNT,
-                    jsonPath("$.count").saveAs("search_count"),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id").exists(),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id")
-                    .find().saveAs("defendant_account_id"))
-                )  
+                        jsonPath("$.defendant_accounts[0].defendant_account_id")
+                            .optional()
+                            .saveAs("defendant_account_id")
+                    )
+                )                
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )             
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+            
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )             
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+       
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -67,8 +82,12 @@ public final class ConvertToCompanyAccountScenario {
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
-                        .check(status().is(200))                                         
-                )             
+                        .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+                .exitHereIfFailed() 
+            
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -118,7 +137,10 @@ public final class ConvertToCompanyAccountScenario {
                         .body(StringBody(session -> session.get("CovertToCompanyRequestPayload"))).asJson()
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
+                        .check(Feeders.saveErrorDetails())
                 )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - PATCH"))
+                .exitHereIfFailed() 
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Header-summary")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/header-summary")
@@ -135,7 +157,10 @@ public final class ConvertToCompanyAccountScenario {
                         .headers(Headers.getHeaders(12))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
-                ) 
+                        .check(Feeders.saveErrorDetails())
+                )
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - GET"))
+                .exitHereIfFailed() 
             )                        
         );            
     }

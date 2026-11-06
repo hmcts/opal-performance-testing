@@ -4,6 +4,8 @@ import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.ContentDigestGenerator;
+import simulations.Scripts.Utilities.Feeders;
+import simulations.Scripts.Utilities.UserInfoLogger;
 import io.gatling.javaapi.core.*;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
@@ -23,7 +25,11 @@ public static ChainBuilder R1bDefendantAmmendmentsRequest() {
             http("OPAL - Sso - Authenticated")
                 .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                 .headers(Headers.getHeaders(11))
-        )         
+                .check(status().is(200))
+                .check(Feeders.saveErrorDetails())
+        )
+        .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
+        .exitHereIfFailed()        
         .exec(
             http("Open account details page")          
             .get(session -> AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/" + session.getString("defendant_account_id") + "/details")   

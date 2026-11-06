@@ -3,6 +3,8 @@ package simulations.Scripts.Utilities;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.CheckBuilder;
 import io.gatling.javaapi.http.HttpRequestActionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilder;
@@ -13,143 +15,174 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 
 public class AccountSearch {
 
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(AccountSearch.class);
+
     public static ChainBuilder search(
             SearchType searchType,
             CheckBuilder... checks
     ) {
-
         ChainBuilder buildSearchPayload =
-            exec(session -> {
+                exec(session -> {
+                    try {
+                        String payload;
+                        String endpoint;
+                        String requestName;
 
-                try {
+                        switch (searchType) {
+                            case ENFORCEMENT -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchEnforcementAccountRequestBody(session);
 
-                    String payload;
-                    String endpoint;
-                    String requestName;
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
 
-                    switch (searchType) {
+                                requestName =
+                                        "OPAL - Defendant Accounts - Enforcement Search";
+                            }
 
-                        case ENFORCEMENT -> {
+                            case PGACCOUNT -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchParentandGuardianAccountRequestBody(session);
 
-                            payload =
-                                RequestBodyBuilderR1b.DefendantAccountSearch
-                                    .BuildSearchEnforcementAccountRequestBody(session);
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
 
-                            endpoint =
-                                "/opal-fines-service/defendant-accounts/search";
+                                requestName =
+                                        "OPAL - Defendant Accounts - Enforcement Search";
+                            }
 
-                            requestName =
-                                "OPAL - Defendant Accounts - Enforcement Search";
-                        }
- 
-                        case PGACCOUNT -> {
+                            case MINOR_CREDITOR -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .buildMinorCreditorSearchAccountRequestBody(session);
 
-                            payload =
-                                RequestBodyBuilderR1b.DefendantAccountSearch
-                                    .BuildSearchParentandGuardianAccountRequestBody(session);
+                                endpoint =
+                                        "/opal-fines-service/minor-creditor-accounts/search";
 
-                            endpoint =
-                                "/opal-fines-service/defendant-accounts/search";
+                                requestName =
+                                        "OPAL - Minor Creditor Accounts - Search";
+                            }
 
-                            requestName =
-                                "OPAL - Defendant Accounts - Enforcement Search";
-                        }
+                            case ACCOUNT -> {
+                                payload =
+                                        RequestBodyBuilder
+                                                .buildSearchAccountRequestBody(session);
 
-                        case MINOR_CREDITOR -> {
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
 
-                            payload =
-                                RequestBodyBuilderR1b.DefendantAccountSearch
-                                    .buildMinorCreditorSearchAccountRequestBody(session);
+                                requestName =
+                                        "OPAL - Defendant Accounts - Search";
+                            }
 
-                            endpoint =
-                                "/opal-fines-service/minor-creditor-accounts/search";
+                            case COMPANY -> {
+                                payload =
+                                        RequestBodyBuilder
+                                                .buildSearchCompanyAccountRequestBody(session);
 
-                            requestName =
-                                "OPAL - Minor Creditor Accounts - Search";
-                        }
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
 
-                        case ACCOUNT -> {
-                            payload =
-                                RequestBodyBuilder
-                                    .buildSearchAccountRequestBody(session);
+                                requestName =
+                                        "OPAL - Defendant Accounts - Search";
+                            }
 
-                            endpoint =
-                                "/opal-fines-service/defendant-accounts/search";
-                            
-                            requestName =
-                                "OPAL - Defendant Accounts - Search";
-                        }
-
-                        case COMPANY -> {
-                            payload =
-                                RequestBodyBuilder
-                                    .buildSearchCompanyAccountRequestBody(session);
-
-                            endpoint =
-                                "/opal-fines-service/defendant-accounts/search";
-                            
-                            requestName =
-                                "OPAL - Defendant Accounts - Search";
-                        }
-
-
-
-                        default ->
-                            throw new IllegalArgumentException(
-                                "Unsupported search type: " + searchType
+                            default -> throw new IllegalArgumentException(
+                                    "Unsupported search type: " + searchType
                             );
+                        }
+
+                        String contentDigest =
+                                ContentDigestGenerator
+                                        .generateSha512ContentDigest(payload);
+
+                        // Remove values from any previous search so a failed or
+                        // empty response cannot leave stale values in the session.
+                        return session
+                                .remove("search_count")
+                                .remove("defendant_account_id")
+                                .set("searchAccountRequestPayload", payload)
+                                .set("searchEndpoint", endpoint)
+                                .set("searchRequestName", requestName)
+                                .set("contentDigest", contentDigest);
+
+                    } catch (Exception e) {
+                        LOGGER.error(
+                                "Could not build account search request",
+                                e
+                        );
+
+                        return session.markAsFailed();
                     }
-
-                    String contentDigest =
-                        ContentDigestGenerator
-                            .generateSha512ContentDigest(payload);
-
-                    return session
-                        .set("searchAccountRequestPayload", payload)
-                        .set("searchEndpoint", endpoint)
-                        .set("searchRequestName", requestName)
-                        .set("contentDigest", contentDigest);
-
-                } catch (Exception e) {
-
-                    System.err.println(
-                        "Account search failed: " + e.getMessage()
-                    );
-
-                    return session.markAsFailed();
-                }
-            });
-
+                });
 
         HttpRequestActionBuilder request =
-            http(session ->
-                session.getString("searchRequestName")
-            )
-            .post(session ->
-                AppConfig.UrlConfig.BASE_URL
-                    + session.getString("searchEndpoint")
-            )
-            .headers(Headers.getHeaders(14))
-            .body(
-                StringBody(
-                    session ->
-                        session.getString(
-                            "searchAccountRequestPayload"
+                http(session ->
+                        session.getString("searchRequestName")
+                )
+                .post(session ->
+                        AppConfig.UrlConfig.BASE_URL
+                                + session.getString("searchEndpoint")
+                )
+                .headers(Headers.getHeaders(14))
+                .body(
+                        StringBody(session ->
+                                session.getString("searchAccountRequestPayload")
                         )
                 )
-            )
-            .asJson()
-            .check(status().is(200));
+                .asJson()
+                .check(status().saveAs("httpStatus"))
+                .check(status().is(200))
+                .check(jsonPath("$.count").ofInt().saveAs("search_count"));
 
-
-        // Add any extra checks supplied by the scenario
+        // Add any extra checks supplied by the scenario.
         for (CheckBuilder check : checks) {
             request = request.check(check);
         }
 
-
         return buildSearchPayload
-            .exitHereIfFailed()
-            .exec(request);
+                .exitHereIfFailed()
+                .exec(request)
+                .exec(session -> {
+                    if (!session.contains("search_count")) {
+                        LOGGER.warn(
+                                "Search '{}' returned no count value.",
+                                session.getString("searchRequestName")
+                        );
+                        return session;
+                    }
+
+                    int count = session.getInt("search_count");
+
+                    if (count == 0) {
+                        String username = session.contains("Username")
+                                ? session.getString("Username")
+                                : "N/A";
+
+                        String businessUnitId =
+                                session.contains("getBusinessUnitId")
+                                        ? session.getString("getBusinessUnitId")
+                                        : session.contains("selectedBusinessUnitId")
+                                                ? session.getString("selectedBusinessUnitId")
+                                                    : session.contains("businessUnitId")
+                                                    ? session.getString("businessUnitId")
+                                                    : "N/A";
+
+                        LOGGER.info(
+                                "Search '{}' for user '{}' in BU '{}' returned count 0; stopping this virtual user.",
+                                session.getString("searchRequestName"),
+                                username,
+                                businessUnitId
+                        );
+                    }
+                    return session;
+                })
+                .exitHereIf(session ->
+                        session.contains("search_count")
+                                && session.getInt("search_count") == 0
+                );
     }
 }
