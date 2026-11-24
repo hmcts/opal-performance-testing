@@ -31,7 +31,7 @@ public final class SearchAccountScenario {
                     jsonPath("$.defendant_accounts[0].defendant_account_id").saveAs("defendant_account_id"))
 
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Defendant Accounts - Search"))   
+                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Defendant Accounts - Account Search"))   
                 .exitHereIfFailed()              
             );            
     }

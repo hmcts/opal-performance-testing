@@ -51,7 +51,7 @@ public class AccountSearch {
                                         "/opal-fines-service/defendant-accounts/search";
 
                                 requestName =
-                                        "OPAL - Defendant Accounts - Enforcement Search";
+                                        "OPAL - Defendant Accounts - PG Search";
                             }
 
                             case MINOR_CREDITOR -> {
@@ -63,7 +63,7 @@ public class AccountSearch {
                                         "/opal-fines-service/minor-creditor-accounts/search";
 
                                 requestName =
-                                        "OPAL - Minor Creditor Accounts - Search";
+                                        "OPAL - Minor Creditor Accounts - Minor Creditor Search";
                             }
 
                             case ACCOUNT -> {
@@ -75,7 +75,7 @@ public class AccountSearch {
                                         "/opal-fines-service/defendant-accounts/search";
 
                                 requestName =
-                                        "OPAL - Defendant Accounts - Search";
+                                        "OPAL - Defendant Accounts - Account Search";
                             }
 
                             case COMPANY -> {
@@ -87,7 +87,19 @@ public class AccountSearch {
                                         "/opal-fines-service/defendant-accounts/search";
 
                                 requestName =
-                                        "OPAL - Defendant Accounts - Search";
+                                        "OPAL - Defendant Accounts - Company Search";
+                            }
+                        
+                            case ALIASES -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchAliasesAccountRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Aliases Search";
                             }
 
                             default -> throw new IllegalArgumentException(
@@ -136,6 +148,8 @@ public class AccountSearch {
                 .asJson()
                 .check(status().saveAs("httpStatus"))
                 .check(status().is(200))
+                .check(Feeders.saveErrorDetails())
+                .check(bodyString().optional().saveAs("responseBody"))
                 .check(jsonPath("$.count").ofInt().saveAs("search_count"));
 
         // Add any extra checks supplied by the scenario.

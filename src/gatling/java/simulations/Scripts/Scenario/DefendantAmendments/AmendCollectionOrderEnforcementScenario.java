@@ -21,9 +21,9 @@ public final class AmendCollectionOrderEnforcementScenario {
 
     public static ChainBuilder AmendCollectionOrderEnforcementRequest() {
 
-        return group("OPAL Adding Enforcements")
+        return group("Amending Enforcements")
         .on( 
-            group("Amend the Collection Oder for Enforcements").on(
+            group("Change Collection Order").on(
             
                 //Selecting Add Enforcement to add:
                 pause(10,20)

@@ -214,10 +214,8 @@ public final class CreateAccountFixedScenario {
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Business-units"))           
                 .exitHereIfFailed()  
             )
-            .group("Load Fixed Penalty Details")
+            .group("View Fixed Penalty")
             .on(
-
-
                 //Selecting Business Unit and Fixed Penalty, then selecting the next button                     
                 pause(5,20)
 

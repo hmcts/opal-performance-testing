@@ -175,7 +175,7 @@ public static ChainBuilder R1bDefendantAmmendmentsRequest() {
         //HOWEVER there doesn't appear to be any data on those tabs on the accounts I've looked at so it may be as simple as that and the get requetss would be fine?
 
         .exec(
-            http("Load Impositions")
+            http("View Defendant Impositions")
                 .get(AppConfig.UrlConfig.BASE_URL + " /opal-fines-service/defendant-accounts/#{defendant_account_id}/details#impositions")
                 //don't know if we need the headers on the get?
                 .headers(Headers.getHeaders(17))

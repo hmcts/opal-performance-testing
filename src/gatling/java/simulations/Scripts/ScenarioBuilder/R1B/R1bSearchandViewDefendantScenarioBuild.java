@@ -20,16 +20,13 @@ public class R1bSearchandViewDefendantScenarioBuild {
                     feed(Feeders.defendantSearchUsers())
                 )
                 .exec(LoginScenario.LoginRequest())
-
-                .exec(session -> session.set("loopCounter", 0))
-
-                .repeat(5).on(
-
-                    exec(
-                        feed(Feeders.defendantSearchAccounts())
-                    )
-
-                    .exec(session -> {
+                
+                .forever().on(   
+                    exec(feed(Feeders.defendantSearchAccounts()))                 
+                    .exec(session -> session.set("loopCounter", 0))
+                    
+                    .repeat(5).on(
+                    exec(session -> {
 
                         int iteration =
                             session.getInt("loopCounter") + 1;
@@ -81,6 +78,7 @@ public class R1bSearchandViewDefendantScenarioBuild {
                             .set("surname", surname)
                             .set("loopCounter", iteration);
                     })
+                    
 
                     .group("Defendant Search")
                     .on(
@@ -101,7 +99,7 @@ public class R1bSearchandViewDefendantScenarioBuild {
                     )
 
                     .pause(40, 120)
-                )
+                ))
             );
     }
 }

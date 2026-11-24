@@ -29,13 +29,13 @@ public class CreateAccountScenarioBuild {
                     .set("createdAccountCount", 0)
                 )
                     .exec(LoginScenario.LoginRequest())
-                    .repeat(5).on(
-                        exec(CreateAccountFixedScenario.CreateAccountFixedRequest())
-                   //     exec(CreateAccountFineMajorCreditScenario.CreateAccountFineRequest()),                        
-                   //     exec(CreateAccountFineMinorCreditScenario.CreateAccountMinorCreditRequest())
-                   //    exec(CreateAccountParentGuardianYouthScenario.createAccountRequest(AccountType.YOUTH)),
-                    //    exec(CreateAccountParentGuardianYouthScenario.createAccountRequest(AccountType.PARENT_GUARDIAN)),
-                    //    exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
+                    .repeat(2).on(
+                        exec(CreateAccountFixedScenario.CreateAccountFixedRequest()),
+                        exec(CreateAccountFineMajorCreditScenario.CreateAccountFineRequest()),                        
+                        exec(CreateAccountFineMinorCreditScenario.CreateAccountMinorCreditRequest()),
+                        exec(CreateAccountParentGuardianYouthScenario.createAccountRequest(AccountType.YOUTH)),
+                        exec(CreateAccountParentGuardianYouthScenario.createAccountRequest(AccountType.PARENT_GUARDIAN)),
+                        exec(CreateAccountConditionalCautionScenario.CreateAccountConditionalCautionRequest())
 
                     )
                 //    exec(CreateAccountParentGuardianScenario.CreateAccountParentGuardianRequest())

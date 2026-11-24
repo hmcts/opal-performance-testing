@@ -25,8 +25,11 @@ public class ParentGuardianAccountSearchScenarioBuild {
                     .set("removedPGCount", 0)
                     .set("changedPGCount", 0)
                 )
-
-                .repeat(5).on(
+                
+                .forever().on(                    
+                    exec(session -> session.set("loopCounter", 0))
+                    
+                    .repeat(5).on(
                     exec(session -> {
 
                         int iteration = session.getInt("loopCounter") + 1;
@@ -92,7 +95,7 @@ public class ParentGuardianAccountSearchScenarioBuild {
 
                     .exec(
                         AmendYouthAccountScenario.AmendYouthAccountRequest()
-                    )
+                    ))
                 )
 
                 .exec(session -> {

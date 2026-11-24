@@ -20,11 +20,11 @@ public final class AmendYouthAccountScenario {
 
     public static ChainBuilder AmendYouthAccountRequest() {
 
-        return group("OPAL Add Parent And Guardian Account")
+        return group("Add Parent And Guardian Account")
         .on(
-            group("Selecting Account")
+            group("Search Accounts")
             .on(
-                //Selecting Account tab:
+                //Selecting search button 
                 exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
@@ -38,8 +38,7 @@ public final class AmendYouthAccountScenario {
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))                                         
-                )
-             
+                )            
                 
                 .exec(session -> {
                     System.out.println(
@@ -49,11 +48,7 @@ public final class AmendYouthAccountScenario {
                     );
                     return session;
                 })
-            ) 
-            .group("Search Account").on(
-               
-                //Selecting search button 
-                pause(20,60)
+                .pause(20,60)
                 .exec(
                     AccountSearch.search(
                         SearchType.PGACCOUNT,
@@ -64,8 +59,10 @@ public final class AmendYouthAccountScenario {
                     .saveAs("defendant_account_id"))
                 )       
 
-            
-                .exec(
+            ) 
+            .group("View Defendant")
+            .on(
+                exec(
                     http("OPAL - Fines - Account - Defendant")
                         .get(AppConfig.UrlConfig.BASE_URL + "/fines/account/defendant/#{defendant_account_id}/details")
                         .headers(Headers.getHeaders(10))
@@ -103,11 +100,9 @@ public final class AmendYouthAccountScenario {
                     );
 
                     return session.set("shouldAddPG", shouldAddPG);
-                })
-            )
-            .group("Selecting Account").on(
+                })          
 
-                exec(
+                .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - At-a-glance")
                         .get(AppConfig.UrlConfig.BASE_URL
                             + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")
@@ -186,7 +181,7 @@ public final class AmendYouthAccountScenario {
                         )
                     )
             )
-            .group("Account Details").on(
+            .group("View Defendant").on(
                 exec(
                     http("OPAL - Opal-fines-service - Major-creditor-accounts - At-a-glance")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")

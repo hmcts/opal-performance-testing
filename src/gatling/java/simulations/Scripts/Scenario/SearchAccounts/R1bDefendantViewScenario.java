@@ -21,7 +21,7 @@ public static ChainBuilder ViewDefendant() {
     //must pass in ${defendant_account_id} from the Search Account
     return group("R1b View Defendant").on(
 
-        group("Header-summary")
+        group("Select Defendant Account")
         .on(
         //authentication is what you need
             exec(
@@ -69,14 +69,9 @@ public static ChainBuilder ViewDefendant() {
                     //turns out we also need the party ID
                     .check(jsonPath("$.defendant_account_party_id").saveAs("defendant_account_party_id"))
                     .check(jsonPath("$.business_unit_summary.business_unit_id").find().saveAs("getBusinessUnitId"))
-            )
-            
-        )
-        .pause(15,30)
-        .group("At-a-glance")
-        .on(             
-        //Load at a glance
-            exec(
+            )           
+        
+            .exec(
                 http("OPAL - Defendant-accounts - At-a-glance")
                     .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/at-a-glance")
                     //don't know if we need the headers on the get?
@@ -84,9 +79,12 @@ public static ChainBuilder ViewDefendant() {
                     .check(status().is(200))
                     .check(header("ETag").saveAs("etag") 
                 )
-            )        
-
-            .pause(15,30)
+            ) 
+        )       
+        .pause(15,30)
+        .group("Defendant")
+        .on(  
+            pause(15,30)
             //Load Defendant
             .exec(
                 http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
@@ -96,9 +94,9 @@ public static ChainBuilder ViewDefendant() {
                     .check(status().is(200))
                     .check(Feeders.saveErrorDetails())
                 )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
-                .exitHereIfFailed() 
-        )
+            .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties"))
+            .exitHereIfFailed() 
+        )       
         
         .pause(15,30)
         .group("Payment Terms")
@@ -129,7 +127,7 @@ public static ChainBuilder ViewDefendant() {
         //HOWEVER there doesn't appear to be any data on those tabs on the accounts I've looked at so it may be as simple as that and the get requetss would be fine?
         
         .pause(15,30)
-        .group("Impositions")
+        .group("View Defendant Impositions")
         .on(        
         //Load Impositions
 
@@ -144,7 +142,7 @@ public static ChainBuilder ViewDefendant() {
 
 
         .pause(15,30)
-        .group("History")
+        .group("View Defendant Account History")
         .on(         
         //Load History
             exec(
@@ -158,7 +156,7 @@ public static ChainBuilder ViewDefendant() {
         )
         //if this is a Fixed penalty account (from the header) then also go to the fixed penalty page
         .pause(15,30)
-        .group("Fixed Penalty")
+        .group("View Fixed Penalty")
         .on( 
         //Load fixed penalty
             doIf(session -> "Fixed Penalty".equals(session.getString("account_type")))

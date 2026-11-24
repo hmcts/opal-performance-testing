@@ -25,12 +25,11 @@ public final class ChangeParentAndGuardianAccount {
 
     public static ChainBuilder ChangeParentAndGuardianAccountRequest() {
 
-        return group("OPAL Change Parent And Guardian Account")
+        return group("Update Parent/Guardian")
         .on(
-            group("Selecting Parent and Guardian")
+            group("View Parent/Guardian")
             .on(
                 //Selecting parent and Guardian tab:
-
                 exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
@@ -60,7 +59,7 @@ public final class ChangeParentAndGuardianAccount {
                         .check(status().is(200))  
                 )
             )
-            .group("Amend Parent and Guardian")
+            .group("Update Parent/Guardian")
             .on(
                 pause(5,20)
                 .exec(session -> {

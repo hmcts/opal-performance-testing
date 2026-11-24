@@ -12,15 +12,15 @@ public class R1bMajorCreditorSearchBuild {
     public static ScenarioBuilder build(String scenarioName) {
         return scenario(scenarioName)
             .group("Major Creditor Search and View")
-             .on(
+            .on(
                 exec(exec(feed(Feeders.majorCreditorUsers()))
                 .exec(LoginScenario.LoginRequest())
-                .repeat(5).on(
-                //.forever().on(
+                
+                .forever().on(
+                //.repeat(5).on(
                 exec(R1bMajorCreditorSearchScenario.MajorCreditorSearch())
             .pause(40,120))
-            ));
-    }
-
-    
+            )
+        );
+    }    
 }

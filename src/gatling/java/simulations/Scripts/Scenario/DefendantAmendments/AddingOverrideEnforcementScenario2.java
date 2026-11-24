@@ -21,7 +21,7 @@ public final class AddingOverrideEnforcementScenario2 {
 
     public static ChainBuilder AddingOverrideEnforcementRequest2() {
 
-        return group("OPAL Adding Enforcements")
+        return group("Adding Enforcements")
         .on( 
             group("Adding Enforcement to Account").on(
             

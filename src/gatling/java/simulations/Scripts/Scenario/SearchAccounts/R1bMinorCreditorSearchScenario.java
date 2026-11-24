@@ -32,8 +32,8 @@ private R1bMinorCreditorSearchScenario() {
                         .headers(Headers.getHeaders(12))
                         .check(status().saveAs("httpStatus"))
                         .check(status().is(200))
-                                            .check(
-                        jsonPath("$.domains.fines.business_unit_users[?(@.business_unit_id > 0 && @.business_unit_id < 1000 && @.business_unit_id != 113 && @.business_unit_id != 107)].business_unit_id")
+                        .check(
+                            jsonPath("$.domains.fines.business_unit_users[?(@.business_unit_id > 0 && @.business_unit_id < 1000 && @.business_unit_id != 113 && @.business_unit_id != 107)].business_unit_id")
                             .findAll().saveAs("businessUnitIds"))              
                 )
                 .exec(
@@ -44,7 +44,7 @@ private R1bMinorCreditorSearchScenario() {
                     )
                 )
             )
-            .group("Selecting Account").on(
+            .group("Select Minor Creditor Account").on(
                 pause(10,20)
                 .exec(
                     http("OPAL - Fines - Account - Minor-creditor - Details")
@@ -75,7 +75,7 @@ private R1bMinorCreditorSearchScenario() {
 
                 ) 
             ) 
-            .group("Add Note")
+            .group("Add Minor Creditor Account Note")
             .on(
                 exec(session -> {
                     try {
@@ -142,7 +142,6 @@ private R1bMinorCreditorSearchScenario() {
                         .check(jsonPath(session -> "$.party.individual_details.title").find().optional().saveAs("getIndividualTitle"))
                         .check(jsonPath(session -> "$.party.party_id").find().optional().saveAs("getPartyId"))
                         .check(header("ETag").saveAs("etag"))
-
                 )  
             )
             
@@ -158,7 +157,7 @@ private R1bMinorCreditorSearchScenario() {
                         )
                 )
             )
-            .group("Amend Creditor details").on(                      
+            .group("Add/Remove Payment Hold").on(                      
                 pause(10,20)
                 .exec(
                     http("OPAL - Sso - Authenticated")
@@ -262,24 +261,19 @@ private R1bMinorCreditorSearchScenario() {
                             );
                     })
                 )
-                .exec(
-                    http("OPAL - Minor-creditor-accounts - Patch")
-                        .patch(
-                            AppConfig.UrlConfig.BASE_URL
-                                + "/opal-fines-service/minor-creditor-accounts/#{creditor_account_id}"
-                        )
-                        .headers(Headers.getHeaders(19))
-                        .body(
-                            StringBody(
-                                session ->
-                                    session.get(
-                                        "updateMinorCreditorSearchAccountRequestPayload"
-                                    )
-                            )
-                        )
-                        .asJson()
-                        .check(status().is(200))
-                )
+                .group("Update Minor Creditor").on(
+                    exec(
+                        http("OPAL - Minor-creditor-accounts - Patch")
+                            .patch(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/minor-creditor-accounts/#{creditor_account_id}")
+                            .headers(Headers.getHeaders(19))
+                            .body(StringBody(session -> session.get("updateMinorCreditorSearchAccountRequestPayload")))
+                            .asJson()
+                            .check(status().is(200))
+                            .check(Feeders.saveErrorDetails())
+                    )
+                    .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Minor-creditor-accounts - Patch"))
+                    .exitHereIfFailed() 
+                ) 
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")
@@ -302,7 +296,7 @@ private R1bMinorCreditorSearchScenario() {
                         .check(status().is(200))
                 )
             )
-            .group("Amend Creditor details").on(                      
+            .group("View Minor Creditor Account History").on(                      
                 pause(10,20)
                 .exec(
                     http("OPAL - Minor-creditor-accounts - History")

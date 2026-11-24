@@ -20,9 +20,11 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                 //     .set("username", session.getString("Username"))
                 //     .set("password", session.getString("Password"))
                 // )
-                    .exec(LoginScenario.LoginRequest())
-                    .exec(session -> session.set("loopCounter", 0)) // Initialize loop counter
-
+                .exec(LoginScenario.LoginRequest())
+                       
+                .forever().on(                    
+                    exec(session -> session.set("loopCounter", 0))
+                    
                     .repeat(5).on(
                         exec(session -> {
                         // Increment the loop counter
@@ -88,7 +90,8 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                                         .set("forename", forenames)         // Set the forenames
                                         .set("surname", surname)            // Set the surname usage
                                         .set("defendantAccountId", defendantAccountId)
-                                        .set("businessUnitId", businessUnitId); 
+                                        .set("businessUnitId", businessUnitId)
+                                        .set("loopCounter", iteration);
 
                             // Update the loop counter in the session for the next iteration
                             return session.set("loopCounter", iteration);
@@ -96,7 +99,7 @@ public class R1BAmendingEnforcementsToAccountsBuild {
                     )
                   //  .exec(AmendingEnforcementsToAccountsScenario.AmendingEnforcementsToAccountsRequest())
                     .exec(AmendingEnforcementsToAccountsScenario2.AmendingEnforcementsToAccountsRequest2())
-                    )
+                    ))
                 )
             ;
     }

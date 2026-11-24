@@ -25,13 +25,13 @@ public final class RemoveParentAndGuardianAccountScenario {
 
     public static ChainBuilder RemoveParentAndGuardianAccountRequest() {
 
-        return group("OPAL Remove Parent And Guardian")
+        return group("Remove Parent And Guardian")
         .on(
-            group("Remove Parent And Guardian")
+            group("Remove Parent/Guardian")
             .on(
 
                 exec(
-                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
+                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - GET")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getParentGuardianPartyId}")
                         .headers(Headers.getHeaders(12))  
                         .check(status().is(200))
@@ -115,7 +115,7 @@ public final class RemoveParentAndGuardianAccountScenario {
                 )
                 
                 .exec(
-                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
+                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - GET")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{GetDefendantAccountPartyId}")
                         .headers(Headers.getHeaders(12))
                         .check(status().is(200))

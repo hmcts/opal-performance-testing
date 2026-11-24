@@ -87,6 +87,9 @@ public final class AmendingEnforcementsToAccountsScenario2 {
             )
             .group("Selecting Enforcement tab").on(
                 pause(10,20)
+                //Set enforcementActionResultId as empty string
+                .exec(session -> session.set("enforcementActionResultId", ""))
+
                 .exec(
                     http("OPAL - Opal-fines-service - Defendant-accounts - Enforcement-status")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/enforcement-status")
@@ -164,12 +167,19 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                         String resultId =
                             session.get("enforcementActionResultId");
 
-                        return resultId != null &&
-                            resultId.equalsIgnoreCase("SC");
-                    }
-                )
+                        boolean shouldAdd = resultId == null
+                            || resultId.isBlank()
+                            || resultId.equalsIgnoreCase("SC");
+
+                        System.out.println("Should add enforcement: " + shouldAdd);
+                        return shouldAdd;
+                })
                 .then(
-                    exec(
+                    exec(session -> {
+                        System.out.println("Entering add-enforcement branch");
+                        return session;
+                    })
+                    .exec(
                         AddingEnforcementScenario
                             .AddingEnforcementRequest()
                     )

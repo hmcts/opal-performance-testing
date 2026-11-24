@@ -71,7 +71,8 @@ private R1bMajorCreditorSearchScenario() {
                 )
                 .pause(1)   
             )
-            .group("Searching and Opening a Major Creditor Account").on( 
+            .group("Select Major Creditor Account").on(
+                //Searching and Opening a Major Creditor Account 
                 // Open major creditor defendant view (Basically the Major Creditor search)
                 exec(
                     http("OPAL - Fines - Account - Details")
@@ -123,7 +124,7 @@ private R1bMajorCreditorSearchScenario() {
 
                 )
             )
-            .group("Selecting History Tab")
+            .group("View Major Creditor Account History")
             .on(    
                 pause(1)
                 .exec(

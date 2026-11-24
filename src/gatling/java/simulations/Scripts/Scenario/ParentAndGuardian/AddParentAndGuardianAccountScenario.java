@@ -25,12 +25,12 @@ public final class AddParentAndGuardianAccountScenario {
 
     public static ChainBuilder AddParentAndGuardianAccountRequest() {
 
-        return group("OPAL Add Parent And Guardian Account")
+        return group("Add Parent And Guardian Account")
         .on(
-            group("Create and Manage")
+            group("Add Parent/Guardian")
             .on(
                 exec(
-                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - Add")
+                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - GET")
                         .get(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties/#{getDefendantAccountPartyId}")
                         .headers(Headers.getHeaders(12))
                         .check(jsonPath(session -> "$.defendant_account_party.address.address_line_1").find().optional().saveAs("getAddressLine1"))
@@ -89,7 +89,7 @@ public final class AddParentAndGuardianAccountScenario {
                     }
                 })
                 .exec(
-                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties")
+                    http("OPAL - Opal-fines-service - Defendant-accounts - Defendant-account-parties - POST")
                         .post(AppConfig.UrlConfig.BASE_URL + "/opal-fines-service/defendant-accounts/#{defendant_account_id}/defendant-account-parties")
                         .headers(Headers.getHeaders(19))
                         .body(StringBody(session -> session.get("defendantAccountPartiesRequestPayload"))).asJson()

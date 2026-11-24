@@ -19,12 +19,10 @@ public class ConvertToDefendantAccountScenarioBuild {
                 )
                 .exec(LoginScenario.LoginRequest())
 
-                // Initialise counters
-                .exec(session -> session
-                    .set("loopCounter", 0)
-                )
-
-                .repeat(5).on(
+                .forever().on(                    
+                    exec(session -> session.set("loopCounter", 0))
+                    
+                    .repeat(5).on(
                     exec(session -> {
 
                         int iteration = session.getInt("loopCounter") + 1;
@@ -80,7 +78,7 @@ public class ConvertToDefendantAccountScenarioBuild {
                     })
 
                     .exec(ConvertToDefendantAccountScenario.ConvertToDefendantAccountRequest())
-                )
+                ))
             );
     }    
 }

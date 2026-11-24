@@ -21,7 +21,7 @@ public final class RemoveOverrideEnforcementScenario {
 
     public static ChainBuilder RemoveOverrideEnforcementRequest() {
 
-        return group("OPAL Remove Override Enforcements")
+        return group("Remove Override Enforcements")
         .on( 
             group("Remove Override Enforcement to Account").on(
             

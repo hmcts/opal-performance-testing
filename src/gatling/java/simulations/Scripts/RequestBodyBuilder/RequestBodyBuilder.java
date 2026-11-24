@@ -61,6 +61,8 @@ public class RequestBodyBuilder {
         String prosecutorCaseRef = session.get("generatedProsecutorCaseRef") != null ? session.get("generatedProsecutorCaseRef").toString() : ("CASE" + DataGenerator.generateRandomNumber(100000, 999999));
         String accountNoteText = "Account review for " + forename + " " + surname;
         String adultDob = DataGenerator.generateRandomAdultDateOfBirth();
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
 
         // Store generated data in session for reuse in other methods
         session.set("generatedForename", forename);
@@ -107,7 +109,13 @@ public class RequestBodyBuilder {
         "            \"cro_number\": null,\n" +
         "            \"custody_status\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +
         "                \"document_language\": null,\n" +
         "                \"employee_reference\": null,\n" +
         "                \"employer_address_line_1\": null,\n" +
@@ -202,7 +210,7 @@ public class RequestBodyBuilder {
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, addressLine2,         
-        adultDob, forename, surname, courtId, fpRegNumber, noticeNumber,
+        aliasesForename, aliasessurname, adultDob, forename, surname, courtId, fpRegNumber, noticeNumber,
         prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName, todaydate, userName);
     }
 
@@ -238,11 +246,13 @@ public class RequestBodyBuilder {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String responseDate = LocalDate.now().plusWeeks(3).format(formatter);
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
 
         System.out.println("courtId = " + courtId);
-System.out.println("LocalJusticeAreaId = " + LocalJusticeAreaId);
-System.out.println("LocalJusticeAreaName = " + LocalJusticeAreaName);
-System.out.println("businessUnitId = " + businessUnitId);
+        System.out.println("LocalJusticeAreaId = " + LocalJusticeAreaId);
+        System.out.println("LocalJusticeAreaName = " + LocalJusticeAreaName);
+        System.out.println("businessUnitId = " + businessUnitId);
 
         return String.format(
         "{\n" +
@@ -275,7 +285,13 @@ System.out.println("businessUnitId = " + businessUnitId);
         "            \"cro_number\": null,\n" +
         "            \"custody_status\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +        
         "                \"document_language\": null,\n" +
         "                \"employee_reference\": \"%s\",\n" +
         "                \"employer_address_line_1\": \"%s\",\n" +
@@ -376,7 +392,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, 
-        addressLine1, addressLine2, employeeRef, employerAddressLine1, 
+        addressLine1, addressLine2, aliasesForename, aliasessurname, employeeRef, employerAddressLine1, 
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         adultDob, email1, forename, surname,        
         courtId, majorCreditorId, LocalJusticeAreaId, LocalJusticeAreaName,responseDate, prosecutorCaseRef, 
@@ -415,6 +431,8 @@ System.out.println("businessUnitId = " + businessUnitId);
         String pgSurname = session.get("generatedPGSurname") != null ? session.get("generatedPGSurname").toString() : DataGenerator.generateRandomLastName();
         String adultDob = DataGenerator.generateRandomAdultDateOfBirth();
         String youthDob = DataGenerator.generateRandomYouthDateOfBirth();
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
 
         return String.format(
         "{\n" +
@@ -469,7 +487,13 @@ System.out.println("businessUnitId = " + businessUnitId);
         "               \"company_flag\": false,\n" +
         "               \"company_name\": null,\n" +
         "               \"debtor_detail\": {\n" +
-        "                   \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +
         "                   \"document_language\": null,\n" +
         "                   \"employee_reference\": \"%s\",\n" +
         "                   \"employer_address_line_1\": \"%s\",\n" +
@@ -559,7 +583,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         "}",
         accountNoteText, accountNoteText, 
 		addressLine1, addressLine2, youthDob, email1, forename,		
-        pgAddressLine1, pgAddressLine2, employeeRef, employerAddressLine1, 
+        pgAddressLine1, pgAddressLine2, aliasesForename, aliasessurname, employeeRef, employerAddressLine1, 
         employerCompanyName, vehicleMake, vehicleReg, adultDob,
 		pgEmail1, pgForename, pgSurname, surname,
 		courtId, LocalJusticeAreaId, LocalJusticeAreaName, prosecutorCaseRef, 
@@ -592,6 +616,8 @@ System.out.println("businessUnitId = " + businessUnitId);
         String employerAddressLine1 = session.get("generatedEmployerAddressLine1") != null ? session.get("generatedEmployerAddressLine1").toString() : DataGenerator.generateRandomAddress();
         String accountNoteText = "Account review for " + forename + " " + surname;
         String youthDob = DataGenerator.generateRandomYouthDateOfBirth();
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
 
         return String.format(
         "{\n" +
@@ -624,7 +650,13 @@ System.out.println("businessUnitId = " + businessUnitId);
         "            \"cro_number\": null,\n" +
         "            \"custody_status\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                 \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +
         "                 \"document_language\": null,\n" +
         "                 \"employee_reference\": \"%s\",\n" +
         "                 \"employer_address_line_1\": \"%s\",\n" +
@@ -716,7 +748,7 @@ System.out.println("businessUnitId = " + businessUnitId);
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, 
-		addressLine1, addressLine2,  employeeRef, employerAddressLine1, employerCompanyName, 
+		addressLine1, addressLine2,  aliasesForename, aliasessurname, employeeRef, employerAddressLine1, employerCompanyName, 
         vehicleMake, vehicleReg, youthDob, email1, forename, surname, courtId, LocalJusticeAreaId, LocalJusticeAreaName,
         prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName); 
     }
@@ -750,6 +782,8 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         String minorCreditorAddressLine1 = session.get("generatedMinorCreditorAddressLine1") != null ? session.get("generatedMinorCreditorAddressLine1").toString() : DataGenerator.generateRandomAddress();
         String minorForename = session.get("generatedMinorForename") != null ? session.get("generatedMinorForename").toString() : DataGenerator.generateRandomFirstName();
         String minorSurname = session.get("generatedMinorSurname") != null ? session.get("generatedMinorSurname").toString() : DataGenerator.generateRandomLastName();
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
 
         return String.format(
         "{\n" +
@@ -782,7 +816,13 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "            \"cro_number\": null,\n" +
         "            \"custody_status\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +        
         "                \"document_language\": null,\n" +
         "                \"employee_reference\": \"%s\",\n" +
         "                \"employer_address_line_1\": \"%s\",\n" +
@@ -889,7 +929,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, 
-        addressLine1, addressLine2, employeeRef, employerAddressLine1, 
+        addressLine1, addressLine2, aliasesForename, aliasessurname, employeeRef, employerAddressLine1, 
         employerAddressLine2, employerCompanyName, vehicleMake, vehicleReg, 
         email1, forename, surname,        
         courtId, minorCreditorAddressLine1, minorForename, minorSurname, LocalJusticeAreaId, LocalJusticeAreaName, prosecutorCaseRef, 
@@ -919,6 +959,11 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         String prosecutorCaseRef = session.get("generatedProsecutorCaseRef") != null ? session.get("generatedProsecutorCaseRef").toString() : ("CASE" + DataGenerator.generateRandomNumber(100000, 999999));
         String employerAddressLine1 = session.get("generatedEmployerAddressLine1") != null ? session.get("generatedEmployerAddressLine1").toString() : DataGenerator.generateRandomAddress();
         String accountNoteText = "Account review for " + forename + " " + surname;
+        String aliasesForename = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesFirstName();
+        String aliasessurname = session.get("generatedAliases") != null ? session.get("generatedAliases").toString() : DataGenerator.generateRandomAliasesLastName();
+
+    
+
 
         return String.format(
         "{\n" +
@@ -951,7 +996,13 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "            \"cro_number\": null,\n" +
         "            \"custody_status\": null,\n" +
         "            \"debtor_detail\": {\n" +
-        "                \"aliases\": null,\n" +
+        "                \"aliases\": [\n" +
+        "                   {\n" +
+        "                       \"alias_company_name\": null,\n" +
+        "                       \"alias_forenames\": \"%s\",\n" +
+        "                       \"alias_surname\": \"%s\"\n" +
+        "                   }\n" +
+        "                ],\n" +
         "                \"document_language\": null,\n" +
         "                \"employee_reference\": \"%s\",\n" +
         "                \"employer_address_line_1\": \"%s\",\n" +
@@ -1038,7 +1089,7 @@ public static String BuildDraftAccountMinorCreditorRequestBody(Session session) 
         "    \"version\": \"0\"\n" +
         "}",
         accountNoteText, accountNoteText, addressLine1, 
-        employeeRef, employerAddressLine1, employerCompanyName, 
+        aliasesForename, aliasessurname, employeeRef, employerAddressLine1, employerCompanyName, 
         email1, vehicleMake, vehicleReg, email1, forename,
         surname, courtId, prosecutorId, prosecutorName, prosecutorCaseRef, businessUnitId, businessUnitUserIds, userName);
     }

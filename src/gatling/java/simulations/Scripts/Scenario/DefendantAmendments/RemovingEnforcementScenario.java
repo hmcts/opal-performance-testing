@@ -23,7 +23,7 @@ public final class RemovingEnforcementScenario {
 
         return group("OPAL Removing Enforcements")
         .on( 
-            group("Removing Enforcements").on(
+            group("Remove Enforcement Hold").on(
             
                 //Selecting Remove Enforcement:
                 pause(10,20)

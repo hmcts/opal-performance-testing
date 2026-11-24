@@ -45,6 +45,36 @@ public class DataGenerator {
         "Daniels", "Palmer", "Mills", "Nichols", "Grant", "Knight", "Ferguson", "Rose", "Stone", "Hawkins"
     };
 
+    private static final String[] ALIASES_NAMES = {
+        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
+        "Wilson", "Taylor", "Anderson", "Thomas", "Moore", "Jackson", "Martin", "Thompson", "White", "Harris",
+        "Clark", "Lewis", "Robinson", "Walker", "Young", "Hall", "Allen", "Wright", "King", "Scott",
+        "Green", "Baker", "Adams", "Nelson", "Hill", "Ramirez", "Campbell", "Mitchell", "Roberts", "Carter",
+        "Phillips", "Evans", "Turner", "Torres", "Parker", "Collins", "Edwards", "Stewart", "Sanchez", "Morris",
+        "Rogers", "Reed", "Cook", "Morgan", "Bell", "Murphy", "Bailey", "Rivera", "Cooper", "Richardson",
+        "Cox", "Howard", "Ward", "Peterson", "Gray", "Watson", "Brooks", "Bennett", "Wood", "Barnes",
+        "Ross", "Henderson", "Coleman", "Jenkins", "Perry", "Powell", "Long", "Patterson", "Hughes", "Flores",
+        "Washington", "Butler", "Simmons", "Foster", "Gonzalez", "Bryant", "Alexander", "Russell", "Griffin", "Diaz",
+        "Hayes", "Myers", "Ford", "Hamilton", "Graham", "Sullivan", "Wallace", "Woods", "Cole", "West",
+        "Jordan", "Owens", "Reynolds", "Fisher", "Ellis", "Harrison", "Gibson", "McDonald", "Cruz", "Marshall",
+        "Ortiz", "Gomez", "Murray", "Freeman", "Wells", "Webb", "Simpson", "Stevens", "Tucker", "Porter",
+        "Hunter", "Hicks", "Crawford", "Henry", "Boyd", "Mason", "Morales", "Kennedy", "Warren", "Dixon",
+        "Ramos", "Reyes", "Burns", "Gordon", "Shaw", "Holmes", "Rice", "Robertson", "Hunt", "Black",
+        "Daniels", "Palmer", "Mills", "Nichols", "Grant", "Knight", "Ferguson", "Rose", "Stone", "Hawkins",         
+        "John", "Jane", "Michael", "Sarah", "David", "Emma", "Robert", "Lisa", "James", "Mary",
+        "Daniel", "Emily", "William", "Olivia", "Thomas", "Sophie", "George", "Amelia", "Charles", "Grace",
+        "Joseph", "Ella", "Edward", "Charlotte", "Henry", "Jessica", "Samuel", "Lucy", "Jack", "Mia",
+        "Alexander", "Isla", "Matthew", "Ava", "Daniel", "Lily", "Oscar", "Freya", "Harry", "Isabella",
+        "Arthur", "Poppy", "Theo", "Sienna", "Leo", "Daisy", "Muhammad", "Florence", "Archie", "Alice",
+        "Joshua", "Evie", "Frederick", "Phoebe", "Ethan", "Sofia", "Isaac", "Ruby", "Edward", "Isabelle",
+        "Noah", "Ella", "Oscar", "Chloe", "Finley", "Poppy", "Max", "Rosie", "Sebastian", "Millie",
+        "Adam", "Willow", "Lucas", "Evelyn", "Henry", "Elsie", "Benjamin", "Sophie", "Theodore", "Matilda",
+        "Harrison", "Harriet", "Archie", "Emily", "Teddy", "Elizabeth", "Dylan", "Layla", "Riley", "Erin",
+        "Jacob", "Holly", "Logan", "Georgia", "Toby", "Ellie", "Reuben", "Maisie", "Finley", "Abigail",
+        "Liam", "Molly", "Mason", "Jessica", "Hugo", "Amelie", "Reggie", "Esme", "Jenson", "Scarlett",
+        "Arlo", "Isabelle", "Louis", "Ivy", "Jude", "Violet", "Tommy", "Lola", "Frankie", "Eliza"
+    };
+
     private static final String[] STREETS = {
         "Main Street", "Oak Avenue", "Elm Road", "Park Lane", "High Street", "Church Street", "School Road", "Castle Drive", "Victoria Road",
         "Station Road", "Church Road", "Mill Lane", "King Street", "Queen Street", "George Street", "Albert Road", "Albert Street", "Victoria Street",
@@ -90,6 +120,14 @@ public class DataGenerator {
     
     public static String generateRandomLastName() {
         return LAST_NAMES[random.nextInt(LAST_NAMES.length)];
+    }
+
+    public static String generateRandomAliasesFirstName() {
+        return ALIASES_NAMES[random.nextInt(ALIASES_NAMES.length)];
+    }
+
+    public static String generateRandomAliasesLastName() {
+        return ALIASES_NAMES[random.nextInt(ALIASES_NAMES.length)];
     }
     
     public static String generateRandomAddress() {
@@ -278,6 +316,10 @@ public class DataGenerator {
     public static String generateRandomAccountName() {
     return generateRandomFirstName() + " " + generateRandomLastName();
     }
+
+    //     public static String generateRandomFirstNameAccountName() {
+    // return generateRandomFirstName();
+    // }
 
     public static String generateRandomAccountNumber() {
         // 6-8 digits

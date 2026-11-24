@@ -342,7 +342,7 @@ public static final class DefendantAccountSearch {
             String getIndividualTitle = session.getString("getIndividualTitle");
             String getPartyId = session.getString("getPartyId");
 
-            String accountName = DataGenerator.generateRandomAccountName();
+            String accountName = DataGenerator.generateRandomFirstName();
             String accountNumber = DataGenerator.generateRandomAccountNumber();
             String accountReference = DataGenerator.generateRandomAccountReference();
             String sortCode = DataGenerator.generateRandomSortCode();
@@ -1234,6 +1234,42 @@ public static final class DefendantAccountSearch {
                 surname
             );
         }  
+
+        public static String BuildSearchAliasesAccountRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String forenames = session.getString("forename");
+            String surname = session.getString("surname");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": true,\n" +
+                "  \"business_unit_ids\": %s,\n" +
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": {\n" +
+                "    \"address_line_1\": null,\n" +
+                "    \"birth_date\": null,\n" +
+                "    \"exact_match_forenames\": false,\n" +
+                "    \"exact_match_organisation_name\": null,\n" +
+                "    \"exact_match_surname\": false,\n" +
+                "    \"forenames\": \"%s\",\n" +
+                "    \"include_aliases\": true,\n" +
+                "    \"national_insurance_number\": null,\n" +
+                "    \"organisation\": false,\n" +
+                "    \"organisation_name\": null,\n" +
+                "    \"postcode\": null,\n" +
+                "    \"surname\": \"%s\"\n" +
+                "  },\n" +
+                "    \"reference_number\": null\n" +
+                "}",
+                businessUnitIdsJson,
+                forenames,
+                surname
+            );
+        } 
         
         public static String buildAddNoteRequestBody(Session session) {
 

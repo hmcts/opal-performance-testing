@@ -14,8 +14,12 @@ public class R1bMinorCreditorSearchBuild {
              .on(
                 exec(exec(feed(Feeders.minorCreditorUsers()))
                 .exec(LoginScenario.LoginRequest())
-                .exec(session -> session.set("loopCounter", 0)) // Initialize loop counter
-                .repeat(5).on(
+                //.exec(session -> session.set("loopCounter", 0)) // Initialize loop counter
+                
+                .forever().on(                    
+                    exec(session -> session.set("loopCounter", 0))
+                    
+                    .repeat(5).on(
                     exec(session -> {
                         // Increment the loop counter
                         int iteration = session.getInt("loopCounter") + 1;
@@ -67,14 +71,16 @@ public class R1bMinorCreditorSearchBuild {
                         session = session
                                     .set("forename", forenames)         // Set the forenames
                                     .set("surname", surname) // Set the surname usage
-                                    .set("accountId", accountId); 
+                                    .set("accountId", accountId) 
+                                    .set("loopCounter", iteration);
+
 
                         // Update the loop counter in the session for the next iteration
                         return session.set("loopCounter", iteration);
                     }
                 )
                 .exec(R1bMinorCreditorSearchScenario.R1bMinorCreditorSearchRequest())
-            .pause(40,120))
+            .pause(40,120)))
 
             ));
     }
