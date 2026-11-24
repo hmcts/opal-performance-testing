@@ -1270,6 +1270,127 @@ public static final class DefendantAccountSearch {
                 surname
             );
         } 
+
+        public static String BuildSearchAccountNumberRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String accountNumber = session.getString("accountNumber");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": false,\n" +
+                "  \"business_unit_ids\": %s,\n" +
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": null,\n" +
+                "  \"reference_number\": {\n" +
+                "    \"account_number\": %s,\n" +
+                "    \"organisation\": false,\n" +
+                "    \"prosecutor_case_reference\": \"null\"\n" +
+                "  },\n" +
+                "}",
+                businessUnitIdsJson,
+                accountNumber
+            );
+        } 
+
+        public static String BuildSearchAccountNumberOrganisationRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String accountNumber = session.getString("accountNumber");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": false,\n" +
+                "  \"business_unit_ids\": %s,\n" +
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": null,\n" +
+                "  \"reference_number\": {\n" +
+                "    \"account_number\": %s,\n" +
+                "    \"organisation\": true,\n" +
+                "    \"prosecutor_case_reference\": \"null\"\n" +
+                "  },\n" +
+                "}",
+                businessUnitIdsJson,
+                accountNumber
+            );
+        } 
+
+        public static String BuildSearchAccountNumberMinorCreditRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String accountNumber = session.getString("accountNumber");
+
+            return String.format(
+                "{\n" +
+                "  \"account_number\": %s,\n" +
+                "  \"active_accounts_only\": false,\n" +
+                "  \"business_unit_ids\": %s,\n" +            
+                "  \"creditor\": \"null\"\n" +
+                "  },\n" +
+                "}",
+                businessUnitIdsJson,
+                accountNumber
+            );
+        } 
+
+        public static String BuildSearchProsecutorCaseReferenceRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String prosecutorCaseReference = session.getString("prosecutorCaseReference");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": false,\n" +
+                "  \"business_unit_ids\": %s,\n" +
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": null,\n" +
+                "  \"reference_number\": {\n" +
+                "    \"account_number\": null,\n" +
+                "    \"organisation\": false,\n" +
+                "    \"prosecutor_case_reference\": %s\n" +
+                "  },\n" +
+                "}",
+                businessUnitIdsJson,
+                prosecutorCaseReference
+            );
+        } 
+
+        public static String BuildSearchProsecutorCaseReferenceOrganisationRequestBody(Session session) {
+
+            String businessUnitIdsJson = session.get("businessUnitIds") != null
+                    ? session.get("businessUnitIds").toString()
+                    : "[]";
+ 
+            String prosecutorCaseReference = session.getString("prosecutorCaseReference");
+
+            return String.format(
+                "{\n" +
+                "  \"active_accounts_only\": false,\n" +
+                "  \"business_unit_ids\": %s,\n" +
+                "  \"consolidation_search\": false,\n" +
+                "  \"defendant\": null,\n" +
+                "  \"reference_number\": {\n" +
+                "    \"account_number\": null,\n" +
+                "    \"organisation\": true,\n" +
+                "    \"prosecutor_case_reference\": %s\n" +
+                "  },\n" +
+                "}",
+                businessUnitIdsJson,
+                prosecutorCaseReference
+            );
+        } 
         
         public static String buildAddNoteRequestBody(Session session) {
 

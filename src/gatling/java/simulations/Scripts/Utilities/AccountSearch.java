@@ -102,6 +102,66 @@ public class AccountSearch {
                                         "OPAL - Defendant Accounts - Aliases Search";
                             }
 
+                            case ACCOUNT_NUMBER -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchAliasesAccountRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Account Number Search";
+                            }
+
+                            case ACCOUNT_NUMBER_ORGANISATION -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchAccountNumberOrganisationRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Account Number Search";
+                            }
+
+                            case ACCOUNT_NUMBER_MINOR_CREDIT -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchAccountNumberMinorCreditRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/minor-creditor/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Account Number Search";
+                            }
+
+                            case PROSECUTOR_CASE_REFERENCE -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchProsecutorCaseReferenceRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Account Number Search";
+                            }
+
+                            case PROSECUTOR_CASE_REFERENCE_ORGANISATION -> {
+                                payload =
+                                        RequestBodyBuilderR1b.DefendantAccountSearch
+                                                .BuildSearchProsecutorCaseReferenceOrganisationRequestBody(session);
+
+                                endpoint =
+                                        "/opal-fines-service/defendant-accounts/search";
+
+                                requestName =
+                                        "OPAL - Defendant Accounts - Account Number Search";
+                            }
+
                             default -> throw new IllegalArgumentException(
                                     "Unsupported search type: " + searchType
                             );
