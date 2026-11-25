@@ -14,6 +14,9 @@ import simulations.Scripts.ScenarioBuilder.R1B.ParentGuardianAccountSearchScenar
 import simulations.Scripts.ScenarioBuilder.R1B.R1BAmendingEnforcementsToAccountsBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.R1bMajorCreditorSearchBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.R1bMinorCreditorSearchBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.R1bSearchAccountAliasesScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.R1bSearchAccountNumberScenarioBuild;
+import simulations.Scripts.ScenarioBuilder.R1B.R1bSearchProsecutorCaseReferenceAccountScenarioBuild;
 import simulations.Scripts.ScenarioBuilder.R1B.R1bSearchandViewDefendantScenarioBuild;
 import io.gatling.javaapi.core.*;
 
@@ -232,6 +235,24 @@ public class MAC_01a_1bSimulation extends Simulation {
             R1bSearchandViewDefendantScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.SEARCH_VIEW_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                ),
+                
+            R1bSearchAccountAliasesScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.SEARCH_ALIASES_ACCOUNT_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                ),
+            
+            R1bSearchAccountNumberScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.SEARCH_ACCOUNT_NUMBER_USERS)
+                        .during(AppConfig.PerformanceConfig.getRampDuration())
+                ),
+                
+            R1bSearchProsecutorCaseReferenceAccountScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+                .injectOpen(
+                    rampUsers(AppConfig.PerformanceConfig.SEARCH_PROSECUTOR_REFERENCE_ACCOUNT_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
 
