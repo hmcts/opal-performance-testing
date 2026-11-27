@@ -11,9 +11,12 @@ public class PerformanceRunInfo {
         int pg  = AppConfig.PerformanceConfig.PG_USERS_CSV;
         int enforcement  = AppConfig.PerformanceConfig.ENFORCEMENT_USERS;
         int convert  = AppConfig.PerformanceConfig.CONVERT_ACCOUNT_USERS;
-        int searchview  = AppConfig.PerformanceConfig.SEARCH_VIEW_USERS;
+        int searchView  = AppConfig.PerformanceConfig.SEARCH_VIEW_USERS;
+        int searchAccountNumbers  = AppConfig.PerformanceConfig.SEARCH_ACCOUNT_NUMBER_USERS;
+        int searchAliases  = AppConfig.PerformanceConfig.SEARCH_ALIASES_ACCOUNT_USERS;
+        int searchProsecutorReference  = AppConfig.PerformanceConfig.SEARCH_PROSECUTOR_REFERENCE_ACCOUNT_USERS;
 
-        int totalUsers = inputters + checkers + major + minor + pg + enforcement + convert + searchview;
+        int totalUsers = inputters + checkers + major + minor + pg + enforcement + convert + searchView + searchAccountNumbers + searchAliases + searchProsecutorReference;
 
         System.out.println("==============================================");
         System.out.println("         GATLING PERFORMANCE TEST CONFIG      ");
@@ -26,7 +29,10 @@ public class PerformanceRunInfo {
         System.out.println("PG Users  : " + pg);
         System.out.println("Enforcement Users : " + enforcement);
         System.out.println("Convert  Users : " + convert);
-        System.out.println("Search Dependant Users  : " + searchview);
+        System.out.println("Search Dependant Users  : " + searchView);
+        System.out.println("Search Dependant Users  : " + searchAccountNumbers);
+        System.out.println("Search Dependant Users  : " + searchAliases);
+        System.out.println("Search Dependant Users  : " + searchProsecutorReference);
         System.out.println("----------------------------------------------");
         System.out.println("TOTAL USERS    : " + totalUsers);
         System.out.println("----------------------------------------------");

@@ -36,7 +36,14 @@ public final class RemoveOverrideEnforcementScenario {
                 )
                 .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Sso - Authenticated"))
                 .exitHereIfFailed() 
-               
+
+                .exec(
+                    http("OPAL - API - Users-state")
+                        .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
+                        .headers(Headers.getHeaders(12))
+                        .check(status().saveAs("httpStatus"))
+                        .check(status().is(200))
+                )
                 .exec(
                     http("OPAL - Sso - Authenticated")
                         .get(AppConfig.UrlConfig.BASE_URL + "/sso/authenticated")

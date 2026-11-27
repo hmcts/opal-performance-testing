@@ -2,9 +2,11 @@ package simulations.Scripts.Scenario.SearchAccounts;
 
 import simulations.Scripts.Headers.Headers;
 import simulations.Scripts.Scenario.DefendantAmendments.AddingEnforcementScenario;
-import simulations.Scripts.Scenario.DefendantAmendments.AddingOverrideEnforcementScenario2;
+import simulations.Scripts.Scenario.DefendantAmendments.AddingOverrideEnforcementScenario;
+import simulations.Scripts.Scenario.DefendantAmendments.DELETEAddingOverrideEnforcementScenario2;
 import simulations.Scripts.Scenario.DefendantAmendments.AmendCollectionOrderEnforcementScenario;
 import simulations.Scripts.Scenario.DefendantAmendments.RemovingEnforcementScenario;
+import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.AccountSearch;
 import simulations.Scripts.Utilities.AppConfig;
 import simulations.Scripts.Utilities.Feeders;
@@ -31,11 +33,21 @@ public final class EnforcementOverrideToAccountsScenario {
                     AccountSearch.search(
                         SearchType.ENFORCEMENT,
                     jsonPath(
-                            "$.defendant_accounts[?(@.defendant_account_id == '#{accountId}')].defendant_account_id")
+                            "$.defendant_accounts[?(@.defendant_account_id == '#{defendantAccountId}')].defendant_account_id")
                     //.find()
                     .saveAs("defendant_account_id"))
                 )                    
             )
+            .exec(session -> {
+
+                String defendant_account_id = session.get("defendant_account_id");
+
+                System.out.println(
+                    "Override Enforcement: [" + defendant_account_id + "]"
+                );
+
+                return session;
+            })
             .group("Selecting Account").on(
                 pause(10,20)
                 .exec(
@@ -96,7 +108,7 @@ public final class EnforcementOverrideToAccountsScenario {
                         .check(
                             jsonPath("$.enforcement_override.enforcement_override_result.enforcement_override_result_id")
                                 .optional()
-                                .saveAs("enforcementActionResultId")
+                                .saveAs("enforcementOverrideActionResultId")
                         )
                 )
                 .exec(
@@ -120,10 +132,10 @@ public final class EnforcementOverrideToAccountsScenario {
             )
             .exec(session -> {
 
-                String resultId = session.get("enforcementActionResultId");
+                String overrideResultId = session.get("enforcementOverrideActionResultId");
 
                 System.out.println(
-                    "Existing Enforcement Result: [" + resultId + "]"
+                    "Existing Override Enforcement Result: [" + overrideResultId + "]"
                 );
 
                 return session;
@@ -131,13 +143,13 @@ public final class EnforcementOverrideToAccountsScenario {
 
            .doIfOrElse(
                 session -> {
-                    String resultId = session.get("enforcementActionResultId");
-                    return resultId == null;
+                    String overrideResultId = session.get("enforcementOverrideActionResultId");
+                    return overrideResultId == null;
                 }
             )
             .then(
                 exec(
-                    AddingOverrideEnforcementScenario2.AddingOverrideEnforcementRequest2()
+                    AddingOverrideEnforcementScenario.AddingOverrideEnforcementRequest()
                 )
             )
             .orElse(

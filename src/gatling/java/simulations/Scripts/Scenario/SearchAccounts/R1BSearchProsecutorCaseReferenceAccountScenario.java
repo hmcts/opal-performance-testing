@@ -20,29 +20,81 @@ public final class R1BSearchProsecutorCaseReferenceAccountScenario {
 
     public static ChainBuilder R1BSearchProsecutorCaseReferenceAccountRequest() {
 
-        return group("Search Account Aliases").on(
+        return group("Search Account Prosecutor Case Reference").on(
 
-                //Search for accounts query parameters 
-                exec(
-                    AccountSearch.search(
+                // Clear candidates in case this group runs again for the same user.
+                exec(session -> session
+                        .remove("prosecutor_case_ref_id_candidate")
+                        .remove("prosecutor_case_ref_org_id_candidate")
+                        .remove("defendant_account_id")
+                )
+
+                .exec(AccountSearch.search(
                         SearchType.PROSECUTOR_CASE_REFERENCE,
-                    jsonPath("$.count").saveAs("search_count"),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id").exists(),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id").saveAs("defendant_account_id"))
-                )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Defendant Accounts - Account Prosecutor Case Reference Search"))   
-                .exitHereIfFailed()  
-                
-                .exec(
-                    AccountSearch.search(
+                        true,
+                        jsonPath("$.defendant_accounts[?(@.prosecutor_case_reference == '#{prosecutorCaseReference}')].defendant_account_id")
+                                .find(0)
+                                .optional()
+                                .saveAs("prosecutor_case_ref_id_candidate")
+                ))
+                .exec(UserInfoLogger.logDetailedErrorMessage(
+                        "OPAL - Defendant Accounts - Account Prosecutor Case Reference Search"
+                ))
+                .exitHereIfFailed()
+
+                .exec(AccountSearch.search(
                         SearchType.PROSECUTOR_CASE_REFERENCE_ORGANISATION,
-                    jsonPath("$.count").saveAs("search_count"),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id").exists(),
-                    jsonPath("$.defendant_accounts[0].defendant_account_id").saveAs("defendant_account_id"))
-                )
-                .exec(UserInfoLogger.logDetailedErrorMessage("OPAL - Defendant Accounts - Account Prosecutor Case Reference Organisation Search"))   
-                .exitHereIfFailed() 
-            );            
+                        true,
+                        jsonPath("$.defendant_accounts[?(@.prosecutor_case_reference == '#{prosecutorCaseReference}')].defendant_account_id")
+                                .find(0)
+                                .optional()
+                                .saveAs("prosecutor_case_ref_org_id_candidate")
+                ))
+                .exec(UserInfoLogger.logDetailedErrorMessage(
+                        "OPAL - Defendant Accounts - Account Prosecutor Case Reference Organisation Search"
+                ))
+                .exitHereIfFailed()
+
+                // Select the first non-empty matching ID, in search order.
+                .exec(session -> {
+                    String[] candidateKeys = {
+                            "prosecutor_case_ref_id_candidate",
+                            "prosecutor_case_ref_org_id_candidate"
+                    };
+
+                    String defendantAccountId = null;
+
+                    for (String key : candidateKeys) {
+                        if (session.contains(key)) {
+                            Object candidate = session.get(key);
+
+                            if (candidate != null) {
+                                String value = candidate.toString().trim();
+
+                                if (!value.isEmpty()
+                                        && !"null".equalsIgnoreCase(value)) {
+                                    defendantAccountId = value;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (defendantAccountId == null) {
+                        System.out.println(
+                                "No defendant_account_id found for account number "
+                                        + session.getString("prosecutorCaseReference")
+                        );
+                        return session.markAsFailed();
+                    }
+
+                    System.out.println(
+                            "Selected defendant_account_id = " + defendantAccountId
+                    );
+
+                    return session.set("defendant_account_id", defendantAccountId);
+                })
+        );    
     }
 }
                     

@@ -266,9 +266,9 @@ public final class ApproveAccountScenario {
             .on(
 
                 //Select account to Approve
-                //pause(20,60)
+                pause(20,60)
 
-                exec(
+                .exec(
                     http("OPAL - API - Users-state")
                         .get(AppConfig.UrlConfig.BASE_URL + "/api/user-state")
                         .headers(Headers.getHeaders(12))
@@ -360,8 +360,8 @@ public final class ApproveAccountScenario {
             .group("Approve Account")
             .on(
                 //Approve selected draft account
-            //    pause(300,580)
-                exec(session -> {
+                pause(300,580)
+                .exec(session -> {
                     String draftAccountRequestPayload =
                         RequestBodyBuilder.BuildApproveAccountRequestBody(session);
 
@@ -515,7 +515,7 @@ public final class ApproveAccountScenario {
                         .headers(Headers.getHeaders(11))
                         .check(status().is(200))
                 )
-            //    .pause(20,60) 
+                .pause(20,60) 
             )
         );            
     }

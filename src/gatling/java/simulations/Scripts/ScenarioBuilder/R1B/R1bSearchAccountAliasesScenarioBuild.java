@@ -15,15 +15,15 @@ public class R1bSearchAccountAliasesScenarioBuild {
     public static ScenarioBuilder build(String scenarioName) {
 
         return scenario(scenarioName)
-            .group("Defendant Account Number Search and View")
+            .group("Defendant Account Aliases Search and View")
             .on(
                 exec(
-                    feed(Feeders.defendantSearchUsers())
+                    feed(Feeders.defendantAliasSearchUsers())
                 )
                 .exec(LoginScenario.LoginRequest())
                 
                 .forever().on(   
-                    exec(feed(Feeders.defendantSearchAccounts()))                 
+                    exec(feed(Feeders.defendantSearchAliasAccounts()))                 
                     .exec(session -> session.set("loopCounter", 0))
                     
                     .repeat(5).on(
@@ -96,8 +96,7 @@ public class R1bSearchAccountAliasesScenarioBuild {
                             R1BSearchAliasesAccountScenario.R1BSearchAliasesAccountRequest()
                         )
                         .exec(session -> {
-                            System.out.println("FIXED ACCOUNT: TRUE");
-                            AccountCounters.SEARCH_ACCOUNT.incrementAndGet();
+                            AccountCounters.SEARCH_ALIASES.incrementAndGet();
                             return session;
                         })
                     )

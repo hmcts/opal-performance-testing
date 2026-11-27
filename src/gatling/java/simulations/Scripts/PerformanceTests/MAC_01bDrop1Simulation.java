@@ -115,6 +115,15 @@ public class MAC_01bDrop1Simulation extends Simulation {
         
         System.out.println("Searched Fixed: "
             + AccountCounters.FIXED_ACCOUNT.get());
+        
+        System.out.println("Searched Account Number: "
+            + AccountCounters.SEARCH_ACCOUNT_NUMBER.get());
+
+        System.out.println("Searched Aliases: "
+            + AccountCounters.SEARCH_ALIASES.get());
+
+        System.out.println("Searched Prosecutor Case Reference: "
+            + AccountCounters.SEARCH_PROSECUTOR_CASE_REFERENCE.get());
         System.out.println("----------------------------------------");
 
     }

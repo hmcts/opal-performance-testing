@@ -176,7 +176,7 @@ public class MAC_01a_1bSimulation extends Simulation {
         );
 
         System.out.println("========================================");
-
+        
         System.out.println();
         System.out.println("========================================");
         System.out.println("SEARCH DEFENDANT ACCOUNT SUMMARY");
@@ -187,6 +187,15 @@ public class MAC_01a_1bSimulation extends Simulation {
         
         System.out.println("Searched Fixed: "
             + AccountCounters.FIXED_ACCOUNT.get());
+        
+        System.out.println("Searched Account Number: "
+            + AccountCounters.SEARCH_ACCOUNT_NUMBER.get());
+
+        System.out.println("Searched Aliases: "
+            + AccountCounters.SEARCH_ALIASES.get());
+
+        System.out.println("Searched Prosecutor Case Reference: "
+            + AccountCounters.SEARCH_PROSECUTOR_CASE_REFERENCE.get());
         System.out.println("----------------------------------------");
          
 
@@ -238,19 +247,19 @@ public class MAC_01a_1bSimulation extends Simulation {
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
                 
-            R1bSearchAccountAliasesScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+            R1bSearchAccountAliasesScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search Alias and View accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.SEARCH_ALIASES_ACCOUNT_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
             
-            R1bSearchAccountNumberScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+            R1bSearchAccountNumberScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search Account Numbers and View accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.SEARCH_ACCOUNT_NUMBER_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())
                 ),
-                
-            R1bSearchProsecutorCaseReferenceAccountScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search and View accounts")
+
+            R1bSearchProsecutorCaseReferenceAccountScenarioBuild.build(SimulationNames.MAC_01B_TEST + " - Search Prosecutor Case Reference and View accounts")
                 .injectOpen(
                     rampUsers(AppConfig.PerformanceConfig.SEARCH_PROSECUTOR_REFERENCE_ACCOUNT_USERS)
                         .during(AppConfig.PerformanceConfig.getRampDuration())

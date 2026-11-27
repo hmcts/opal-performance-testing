@@ -198,7 +198,7 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                 .orElse(
                     randomSwitch()
                         .on(
-                            percent(33.33).then(
+                            percent(0).then(
                                 exec(
                                     AmendCollectionOrderEnforcementScenario
                                         .AmendCollectionOrderEnforcementRequest()
@@ -216,7 +216,7 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                                 })
                             ),
 
-                            percent(33.33).then(
+                            percent(0).then(
                                 exec(
                                     AddingEnforcementScenario
                                         .AddingEnforcementRequest()
@@ -233,7 +233,7 @@ public final class AmendingEnforcementsToAccountsScenario2 {
                                     return session;
                                 })
                             ),
-                            percent(33.33).then(
+                            percent(0).then(
                                 exec(
                                     AmendPaymentTermsScenario
                                         .AmendPaymentTermsRequest()
@@ -245,6 +245,23 @@ public final class AmendingEnforcementsToAccountsScenario2 {
 
                                     System.out.println(
                                         "PAYMENT CHANGE ACTION: ADDED"
+                                    );
+
+                                    return session;
+                                })
+                             ),
+                            percent(100).then(
+                                exec(
+                                    EnforcementOverrideToAccountsScenario
+                                        .EnforcementOverrideToAccountsScenarioRequest()
+                                )
+                                .exec(session -> {
+
+                                    AccountCounters.PAYMENT_CHANGE_ADDED
+                                        .incrementAndGet();
+
+                                    System.out.println(
+                                        "OVERRIDE CHANGE ACTION: ADDED/REMOVED"
                                     );
 
                                     return session;

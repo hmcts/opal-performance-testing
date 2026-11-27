@@ -1,8 +1,10 @@
 package simulations.Scripts.ScenarioBuilder.R1B;
 
 import simulations.Scripts.Scenario.Login.LoginScenario;
+import simulations.Scripts.Scenario.SearchAccounts.R1BSearchAccountNumberScenario;
 import simulations.Scripts.Scenario.SearchAccounts.R1bDefendantViewScenario;
 import simulations.Scripts.Scenario.SearchAccounts.SearchAccountScenario;
+import simulations.Scripts.ScenarioBuilder.Testing.SearchAccountScenarioBuild;
 import simulations.Scripts.Utilities.AccountCounters;
 import simulations.Scripts.Utilities.Feeders;
 import io.gatling.javaapi.core.*;
@@ -17,12 +19,12 @@ public class R1bSearchAccountNumberScenarioBuild {
             .group("Defendant Account Number Search and View")
             .on(
                 exec(
-                    feed(Feeders.defendantSearchUsers())
+                    feed(Feeders.defendantAccountNumberSearchUsers())
                 )
                 .exec(LoginScenario.LoginRequest())
                 
                 .forever().on(   
-                    exec(feed(Feeders.defendantSearchAccounts()))                 
+                    exec(feed(Feeders.defendantAccountNumberSearch()))                 
                     .exec(session -> session.set("loopCounter", 0))
                     
                     .repeat(5).on(
@@ -30,45 +32,33 @@ public class R1bSearchAccountNumberScenarioBuild {
 
                         int iteration =
                             session.getInt("loopCounter") + 1;
-
-                        String forenameColumn = "";
-                        String surnameColumn = "";
+                       
                         String accountnumberColumn = "";
 
                         switch (iteration) {
 
-                            case 1:
-                                forenameColumn = "forename1";
-                                surnameColumn = "surname1";
-                                accountnumberColumn = "accountnumber1";
+                            case 1:                                
+                                accountnumberColumn = "AccountNumber1";
 
                                 break;
 
                             case 2:
-                                forenameColumn = "forename2";
-                                surnameColumn = "surname2";
-                                accountnumberColumn = "accountnumber2";
+                                accountnumberColumn = "AccountNumber2";
 
                                 break;
 
-                            case 3:
-                                forenameColumn = "forename3";
-                                surnameColumn = "surname3";
-                                accountnumberColumn = "accountnumber3";
+                            case 3:                               
+                                accountnumberColumn = "AccountNumber3";
 
                                 break;
 
-                            case 4:
-                                forenameColumn = "forename4";
-                                surnameColumn = "surname4";
-                                accountnumberColumn = "accountnumber4";
+                            case 4:                              
+                                accountnumberColumn = "AccountNumber4";
 
                                 break;
 
-                            case 5:
-                                forenameColumn = "forename5";
-                                surnameColumn = "surname5";
-                                accountnumberColumn = "accountnumber5";
+                            case 5:                              
+                                accountnumberColumn = "AccountNumber5";
 
                                 break;
 
@@ -78,26 +68,20 @@ public class R1bSearchAccountNumberScenarioBuild {
                                 );
                         }
 
-                        String forenames = session.getString(forenameColumn);
-                        String surname = session.getString(surnameColumn);
-                        String accountnumber = session.getString(accountnumberColumn);
+                        String accountNumber = session.getString(accountnumberColumn);
 
                         return session
-                            .set("forename", forenames)
-                            .set("surname", surname)
-                            .set("accountnumber", accountnumber)
+                            .set("accountNumber", accountNumber)
                             .set("loopCounter", iteration);
-                    })
-                    
+                    })                    
 
                     .group("Defendant Search")
                     .on(
                         exec(
-                            SearchAccountScenario.SearchAccountRequest()
+                            R1BSearchAccountNumberScenario.R1BSearchAccountNumberRequest()
                         )
                         .exec(session -> {
-                            System.out.println("FIXED ACCOUNT: TRUE");
-                            AccountCounters.SEARCH_ACCOUNT.incrementAndGet();
+                            AccountCounters.SEARCH_ACCOUNT_NUMBER.incrementAndGet();
                             return session;
                         })
                     )

@@ -15,9 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import simulations.Scripts.RequestBodyBuilder.RequestBodyBuilderR1b;
 
-public final class AddingOverrideEnforcementScenario2 {
+public final class DELETEAddingOverrideEnforcementScenario2 {
 
-    private AddingOverrideEnforcementScenario2() {}
+    private DELETEAddingOverrideEnforcementScenario2() {}
 
     public static ChainBuilder AddingOverrideEnforcementRequest2() {
 

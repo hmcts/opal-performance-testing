@@ -16,15 +16,15 @@ public class R1bSearchProsecutorCaseReferenceAccountScenarioBuild {
     public static ScenarioBuilder build(String scenarioName) {
 
         return scenario(scenarioName)
-            .group("Defendant Account Number Search and View")
+            .group("Defendant Account Prosecutor Case Reference Search and View")
             .on(
                 exec(
-                    feed(Feeders.defendantSearchUsers())
+                    feed(Feeders.defendantAccountProsecutorCaseReferenceSearchUsers())
                 )
                 .exec(LoginScenario.LoginRequest())
                 
                 .forever().on(   
-                    exec(feed(Feeders.defendantSearchAccounts()))                 
+                    exec(feed(Feeders.defendantAccountProsecutorCaseReferenceSearch()))                 
                     .exec(session -> session.set("loopCounter", 0))
                     
                     .repeat(5).on(
@@ -33,44 +33,32 @@ public class R1bSearchProsecutorCaseReferenceAccountScenarioBuild {
                         int iteration =
                             session.getInt("loopCounter") + 1;
 
-                        String forenameColumn = "";
-                        String surnameColumn = "";
-                        String accountnumberColumn = "";
+                        String prosecutorCaseReferenceColumn = "";
 
                         switch (iteration) {
 
                             case 1:
-                                forenameColumn = "forename1";
-                                surnameColumn = "surname1";
-                                accountnumberColumn = "accountnumber1";
+                                prosecutorCaseReferenceColumn = "ProsecutorCaseReference1";
 
                                 break;
 
-                            case 2:
-                                forenameColumn = "forename2";
-                                surnameColumn = "surname2";
-                                accountnumberColumn = "accountnumber2";
+                            case 2:                            
+                                prosecutorCaseReferenceColumn = "ProsecutorCaseReference2";
 
                                 break;
 
                             case 3:
-                                forenameColumn = "forename3";
-                                surnameColumn = "surname3";
-                                accountnumberColumn = "accountnumber3";
+                                prosecutorCaseReferenceColumn = "ProsecutorCaseReference3";
 
                                 break;
 
                             case 4:
-                                forenameColumn = "forename4";
-                                surnameColumn = "surname4";
-                                accountnumberColumn = "accountnumber4";
+                                prosecutorCaseReferenceColumn = "ProsecutorCaseReference4";
 
                                 break;
 
                             case 5:
-                                forenameColumn = "forename5";
-                                surnameColumn = "surname5";
-                                accountnumberColumn = "accountnumber5";
+                                prosecutorCaseReferenceColumn = "ProsecutorCaseReference5";
 
                                 break;
 
@@ -80,14 +68,10 @@ public class R1bSearchProsecutorCaseReferenceAccountScenarioBuild {
                                 );
                         }
 
-                        String forenames = session.getString(forenameColumn);
-                        String surname = session.getString(surnameColumn);
-                        String accountnumber = session.getString(accountnumberColumn);
+                        String prosecutorCaseReference = session.getString(prosecutorCaseReferenceColumn);
 
                         return session
-                            .set("forename", forenames)
-                            .set("surname", surname)
-                            .set("accountnumber", accountnumber)
+                            .set("prosecutorCaseReference", prosecutorCaseReference)
                             .set("loopCounter", iteration);
                     })                    
 
@@ -97,8 +81,7 @@ public class R1bSearchProsecutorCaseReferenceAccountScenarioBuild {
                             R1BSearchProsecutorCaseReferenceAccountScenario.R1BSearchProsecutorCaseReferenceAccountRequest()
                         )
                         .exec(session -> {
-                            System.out.println("FIXED ACCOUNT: TRUE");
-                            AccountCounters.SEARCH_ACCOUNT.incrementAndGet();
+                            AccountCounters.SEARCH_PROSECUTOR_CASE_REFERENCE.incrementAndGet();
                             return session;
                         })
                     )

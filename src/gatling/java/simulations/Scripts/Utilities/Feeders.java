@@ -29,6 +29,12 @@ public class Feeders {
     public static final FeederBuilder<String> AmendEnforcementUsers;
     public static final FeederBuilder<String> DefendantSearchAccounts;
     public static final FeederBuilder<String> DefendantSearchUsers;
+    public static final FeederBuilder<String> DefendantAliasSearchUsers;
+    public static final FeederBuilder<String> DefendantSearchAliasAccounts;
+    public static final FeederBuilder<String> DefendantAccountNumberSearchUsers;
+    public static final FeederBuilder<String> DefendantAccountNumberSearch;
+    public static final FeederBuilder<String> DefendantAccountProsecutorCaseReferenceSearchUsers;
+    public static final FeederBuilder<String> DefendantAccountProsecutorCaseReferenceSearch;
     public static final FeederBuilder<String> CompanyAccountUsers;
     public static final FeederBuilder<String> ConvertDefendantAccounts;
 
@@ -53,8 +59,14 @@ public class Feeders {
         MinorCreditorUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.MINOR_CREDITOR_USERS_CSV).circular();
         DraftAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DRAFT_ACCOUNTS_CSV).circular();
         AmendEnforcementUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.AMEND_ENFORCEMENT_USERS_CSV).circular();
-        DefendantSearchAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANTSEARCHACCOUNTS_CSV).circular();
-        DefendantSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANTSEARCH_USERS_CSV).circular();
+        DefendantSearchAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ACCOUNTS_CSV).circular();
+        DefendantSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_USERS_CSV).circular();
+        DefendantAliasSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_ALIAS_SEARCH_USERS_CSV).circular();
+        DefendantSearchAliasAccounts = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ALIAS_ACCOUNTS_CSV).circular();        
+        DefendantAccountNumberSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ACCOUNTS_NUMBER_USERS_CSV).circular();
+        DefendantAccountNumberSearch = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ACCOUNTS_NUMBER_CSV).circular();
+        DefendantAccountProsecutorCaseReferenceSearchUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ACCOUNTS_PROSECUTOR_CASE_REFERENCE_USERS_CSV).circular();
+        DefendantAccountProsecutorCaseReferenceSearch = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.DEFENDANT_SEARCH_ACCOUNTS_PROSECUTOR_CASE_REFERENCE_CSV).circular();
         CompanyAccountUsers = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.COMPANYACCOUNT_USERS_CSV).circular();
         ConvertDefendantAccounts  = CoreDsl.csv(AppConfig.FileConfig.CsvFiles.CONVERTDEFENDANTACCOUNT_CSV).circular();
 
@@ -114,7 +126,24 @@ public class Feeders {
     public static FeederBuilder<String> defendantSearchUsers() {
         return DefendantSearchUsers;
     }
-
+    public static FeederBuilder<String> defendantAliasSearchUsers() {
+        return DefendantAliasSearchUsers;
+    }    
+    public static FeederBuilder<String> defendantSearchAliasAccounts() {
+        return DefendantSearchAliasAccounts;
+    }
+    public static FeederBuilder<String> defendantAccountNumberSearchUsers() {
+        return DefendantAccountNumberSearchUsers;   
+    } 
+    public static FeederBuilder<String> defendantAccountNumberSearch() {
+        return DefendantAccountNumberSearch;
+    } 
+    public static FeederBuilder<String> defendantAccountProsecutorCaseReferenceSearchUsers() {
+        return DefendantAccountProsecutorCaseReferenceSearchUsers;   
+    } 
+    public static FeederBuilder<String> defendantAccountProsecutorCaseReferenceSearch() {
+        return DefendantAccountProsecutorCaseReferenceSearch;
+    } 
     public static CheckBuilder.Final saveTokenCode() {
         return CoreDsl.css("input[name='code']", "value").saveAs("TokenCode");
     }

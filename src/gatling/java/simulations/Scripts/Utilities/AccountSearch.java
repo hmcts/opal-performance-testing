@@ -18,8 +18,19 @@ public class AccountSearch {
     private static final Logger LOGGER =
             LoggerFactory.getLogger(AccountSearch.class);
 
+    // Existing calls use this overload and keep the default:
+    // a zero count stops the virtual user.
     public static ChainBuilder search(
             SearchType searchType,
+            CheckBuilder... checks
+    ) {
+        return search(searchType, false, checks);
+    }
+
+    // Pass allowZeroResults = true for searches where a zero count is acceptable.
+    public static ChainBuilder search(
+            SearchType searchType,
+            boolean allowZeroResults,
             CheckBuilder... checks
     ) {
         ChainBuilder buildSearchPayload =
@@ -89,7 +100,7 @@ public class AccountSearch {
                                 requestName =
                                         "OPAL - Defendant Accounts - Company Search";
                             }
-                        
+
                             case ALIASES -> {
                                 payload =
                                         RequestBodyBuilderR1b.DefendantAccountSearch
@@ -105,7 +116,7 @@ public class AccountSearch {
                             case ACCOUNT_NUMBER -> {
                                 payload =
                                         RequestBodyBuilderR1b.DefendantAccountSearch
-                                                .BuildSearchAliasesAccountRequestBody(session);
+                                                .BuildSearchAccountNumberRequestBody(session);
 
                                 endpoint =
                                         "/opal-fines-service/defendant-accounts/search";
@@ -132,7 +143,7 @@ public class AccountSearch {
                                                 .BuildSearchAccountNumberMinorCreditRequestBody(session);
 
                                 endpoint =
-                                        "/opal-fines-service/minor-creditor/search";
+                                        "/opal-fines-service/minor-creditor-accounts/search";
 
                                 requestName =
                                         "OPAL - Defendant Accounts - Account Number Search";
@@ -217,7 +228,7 @@ public class AccountSearch {
             request = request.check(check);
         }
 
-        return buildSearchPayload
+        ChainBuilder searchChain = buildSearchPayload
                 .exitHereIfFailed()
                 .exec(request)
                 .exec(session -> {
@@ -241,22 +252,31 @@ public class AccountSearch {
                                         ? session.getString("getBusinessUnitId")
                                         : session.contains("selectedBusinessUnitId")
                                                 ? session.getString("selectedBusinessUnitId")
-                                                    : session.contains("businessUnitId")
-                                                    ? session.getString("businessUnitId")
-                                                    : "N/A";
+                                                : session.contains("businessUnitId")
+                                                        ? session.getString("businessUnitId")
+                                                        : "N/A";
 
                         LOGGER.info(
-                                "Search '{}' for user '{}' in BU '{}' returned count 0; stopping this virtual user.",
+                                "Search '{}' for user '{}' in BU '{}' returned count 0; {}.",
                                 session.getString("searchRequestName"),
                                 username,
-                                businessUnitId
+                                businessUnitId,
+                                allowZeroResults
+                                        ? "continuing"
+                                        : "stopping this virtual user"
                         );
                     }
+
                     return session;
-                })
-                .exitHereIf(session ->
-                        session.contains("search_count")
-                                && session.getInt("search_count") == 0
-                );
+                });
+
+        if (!allowZeroResults) {
+            searchChain = searchChain.exitHereIf(session ->
+                    session.contains("search_count")
+                            && session.getInt("search_count") == 0
+            );
+        }
+
+        return searchChain;
     }
 }

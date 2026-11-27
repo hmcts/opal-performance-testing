@@ -28,7 +28,10 @@ public final class AccountCounters {
     public static final AtomicInteger ENFORCEMENT_ADDED = new AtomicInteger();
     public static final AtomicInteger ENFORCEMENT_REMOVED = new AtomicInteger();
     public static final AtomicInteger ENFORCEMENT_CHANGED = new AtomicInteger();
-    
+    public static final AtomicInteger OVERRIDE_CHANGE = new AtomicInteger();
+    public static final AtomicInteger OVERRIDE_ADDED = new AtomicInteger();
+    public static final AtomicInteger OVERRIDE_REMOVED = new AtomicInteger();
+
     // Payment change action counters
 
     public static final AtomicInteger PAYMENT_CHANGE_ADDED = new AtomicInteger();
@@ -40,6 +43,10 @@ public final class AccountCounters {
 
     // Search
     public static final AtomicInteger SEARCH_ACCOUNT = new AtomicInteger();
+    public static final AtomicInteger SEARCH_ACCOUNT_NUMBER = new AtomicInteger();
+    public static final AtomicInteger SEARCH_PROSECUTOR_CASE_REFERENCE = new AtomicInteger();
+    public static final AtomicInteger SEARCH_ALIASES = new AtomicInteger();
+
     public static final AtomicInteger FIXED_ACCOUNT = new AtomicInteger();
 
     // Errror counters

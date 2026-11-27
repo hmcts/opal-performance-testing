@@ -667,6 +667,14 @@ public static final class DefendantAccountSearch {
             String enforcement = session.get("EnforcementId") != null
                     ? session.get("EnforcementId").toString().trim().toUpperCase()
                     : "";
+            
+            String enforcerId = session.get("enforcerId") != null
+                    ? session.get("enforcerId").toString().trim().toUpperCase()
+                    : "";
+
+            String localJusticeAreaId = session.get("localJusticeAreaId") != null
+                    ? session.get("localJusticeAreaId").toString().trim().toUpperCase()
+                    : "";
           
             // Stop early if enforcement is missing
             if (enforcement.isEmpty()) {
@@ -676,6 +684,8 @@ public static final class DefendantAccountSearch {
                 );
             }
 
+
+
             DataGenerator randomStringGenerator = new DataGenerator();
 
             String reasonText1 = randomStringGenerator.generateRandomString(10);
@@ -684,10 +694,11 @@ public static final class DefendantAccountSearch {
             switch (enforcement) {
 
                 /*
-                * NOENF / CONF / INTL
                 * All use the same parameters.
                 */
-                case "SUMA": 
+                case "SUMA":
+                case "MAN":
+                case "AEOC":               
                     return String.format(
                         "{\n" +
                         "  \"enforcement_override\": {\n" +
@@ -701,7 +712,7 @@ public static final class DefendantAccountSearch {
                         enforcement
                     );  
                 
-                case "ABDC": 
+                case "TFOOUT": 
                     return String.format(
                         "{\n" +
                         "  \"enforcement_override\": {\n" +
@@ -709,10 +720,26 @@ public static final class DefendantAccountSearch {
                         "           \"enforcement_override_result_id\": \"%s\"\n" +
                         "    },\n" +
                         "  \"enforcer\": \"null,\"\n" +
+                        "  \"lja\": \"%s\"\n" +
+                            "}" +
+                        "}",
+                        enforcement,
+                        localJusticeAreaId
+                    );
+
+                case "ABDC": 
+                    return String.format(
+                        "{\n" +
+                        "  \"enforcement_override\": {\n" +
+                        "      \"enforcement_override_result\": {\n" +
+                        "           \"enforcement_override_result_id\": \"%s\"\n" +
+                        "    },\n" +
+                        "  \"enforcer\": \"%s\",\n" +
                         "  \"lja\": \"null\"\n" +
                             "}" +
                         "}",
-                        enforcement
+                        enforcement,
+                        enforcerId
                     );
                
                 /*
@@ -1247,7 +1274,8 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"active_accounts_only\": true,\n" +
-                "  \"business_unit_ids\": %s,\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
                 "  \"consolidation_search\": false,\n" +
                 "  \"defendant\": {\n" +
                 "    \"address_line_1\": null,\n" +
@@ -1265,7 +1293,7 @@ public static final class DefendantAccountSearch {
                 "  },\n" +
                 "    \"reference_number\": null\n" +
                 "}",
-                businessUnitIdsJson,
+             //   businessUnitIdsJson,
                 forenames,
                 surname
             );
@@ -1282,16 +1310,17 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"active_accounts_only\": false,\n" +
-                "  \"business_unit_ids\": %s,\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
                 "  \"consolidation_search\": false,\n" +
                 "  \"defendant\": null,\n" +
                 "  \"reference_number\": {\n" +
-                "    \"account_number\": %s,\n" +
+                "    \"account_number\": \"%s\",\n" +
                 "    \"organisation\": false,\n" +
-                "    \"prosecutor_case_reference\": \"null\"\n" +
-                "  },\n" +
+                "    \"prosecutor_case_reference\": null\n" +
+                "  }\n" +
                 "}",
-                businessUnitIdsJson,
+            //    businessUnitIdsJson,
                 accountNumber
             );
         } 
@@ -1307,16 +1336,17 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"active_accounts_only\": false,\n" +
-                "  \"business_unit_ids\": %s,\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
                 "  \"consolidation_search\": false,\n" +
                 "  \"defendant\": null,\n" +
                 "  \"reference_number\": {\n" +
-                "    \"account_number\": %s,\n" +
+                "    \"account_number\": \"%s\",\n" +
                 "    \"organisation\": true,\n" +
-                "    \"prosecutor_case_reference\": \"null\"\n" +
-                "  },\n" +
+                "    \"prosecutor_case_reference\": null\n" +
+                "  }\n" +
                 "}",
-                businessUnitIdsJson,
+            //    businessUnitIdsJson,
                 accountNumber
             );
         } 
@@ -1331,13 +1361,13 @@ public static final class DefendantAccountSearch {
 
             return String.format(
                 "{\n" +
-                "  \"account_number\": %s,\n" +
+                "  \"account_number\": \"%s\",\n" +
                 "  \"active_accounts_only\": false,\n" +
-                "  \"business_unit_ids\": %s,\n" +            
-                "  \"creditor\": \"null\"\n" +
-                "  },\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
+                "  \"creditor\": null\n" +
                 "}",
-                businessUnitIdsJson,
+            //    businessUnitIdsJson,
                 accountNumber
             );
         } 
@@ -1353,16 +1383,17 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"active_accounts_only\": false,\n" +
-                "  \"business_unit_ids\": %s,\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
                 "  \"consolidation_search\": false,\n" +
                 "  \"defendant\": null,\n" +
                 "  \"reference_number\": {\n" +
                 "    \"account_number\": null,\n" +
                 "    \"organisation\": false,\n" +
-                "    \"prosecutor_case_reference\": %s\n" +
-                "  },\n" +
+                "    \"prosecutor_case_reference\": \"%s\"\n" +
+                "  }\n" +
                 "}",
-                businessUnitIdsJson,
+            //    businessUnitIdsJson,
                 prosecutorCaseReference
             );
         } 
@@ -1378,16 +1409,17 @@ public static final class DefendantAccountSearch {
             return String.format(
                 "{\n" +
                 "  \"active_accounts_only\": false,\n" +
-                "  \"business_unit_ids\": %s,\n" +
+               // "  \"business_unit_ids\": \"%s\"\n" +  Changes this to fixed ids to sort out the data issues.
+                "  \"business_unit_ids\": [106,89,60,36,116,99,29,138,82,113,125,119,96,52,80,9,10,105,45,38,107,139,12,26,78,24,57,61,92,77,31,30,21,14,97,47,66,112,109,22,28,135,65,5,124,110,129,128,130,126,73,8,11,103],\n" +
                 "  \"consolidation_search\": false,\n" +
                 "  \"defendant\": null,\n" +
                 "  \"reference_number\": {\n" +
                 "    \"account_number\": null,\n" +
                 "    \"organisation\": true,\n" +
-                "    \"prosecutor_case_reference\": %s\n" +
-                "  },\n" +
+                "    \"prosecutor_case_reference\": \"%s\"\n" +
+                "  }\n" +
                 "}",
-                businessUnitIdsJson,
+            //    businessUnitIdsJson,
                 prosecutorCaseReference
             );
         } 
